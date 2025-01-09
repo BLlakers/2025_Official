@@ -12,9 +12,10 @@ import edu.wpi.first.math.trajectory.TrapezoidProfile;
 import edu.wpi.first.math.util.Units;
 import edu.wpi.first.util.sendable.SendableBuilder;
 
-import com.revrobotics.CANSparkMax;
-import com.revrobotics.SparkPIDController;
-import com.revrobotics.SparkPIDController.AccelStrategy;
+import com.revrobotics.spark.SparkMax;
+import com.revrobotics.spark.SparkClosedLoopController;
+import com.revrobotics.spark.SparkLowLevel.MotorType;
+import com.revrobotics.spark.config.SparkMaxConfig;
 import com.revrobotics.RelativeEncoder;
 import edu.wpi.first.wpilibj.DutyCycleEncoder;
 import edu.wpi.first.wpilibj.smartdashboard.SmartDashboard;
@@ -38,12 +39,12 @@ public class SwerveModule extends SubsystemBase {
   public static final double kModuleMaxAngularAcceleration =
       2 * Math.PI; // radians per second squared
 
-  public final CANSparkMax m_driveMotor;
-  public final CANSparkMax m_turningMotor;
+  public final SparkMax m_driveMotor;
+  public final SparkMax m_turningMotor;
 
-  private final SparkPIDController m_drivePID;
+  
 
-  public final RelativeEncoder m_driveEncoder;
+  public final SparkMaxConfig config = new SparkMaxConfig()
   public final DutyCycleEncoder m_turningEncoder;
 
   // Gains are for example purposes only - must be determined for your own robot!
@@ -70,11 +71,11 @@ public class SwerveModule extends SubsystemBase {
       double turnOffset) {
     // can spark max motor controller objects
     m_driveMotor =
-        new CANSparkMax(driveMotorChannel, com.revrobotics.CANSparkLowLevel.MotorType.kBrushless);
-    m_driveMotor.restoreFactoryDefaults();
+        new SparkMax(driveMotorChannel, com.revrobotics.spark.SparkLowLevel.MotorType.kBrushless);
+    config.
 
     m_turningMotor =
-        new CANSparkMax(turningMotorChannel, com.revrobotics.CANSparkLowLevel.MotorType.kBrushless);
+        new SparkMax(turningMotorChannel, com.revrobotics.spark.SparkLowLevel.MotorType.kBrushless);
     m_turningMotor.restoreFactoryDefaults();
 
     m_driveMotor.setOpenLoopRampRate(0.1);

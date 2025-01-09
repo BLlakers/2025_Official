@@ -11,7 +11,7 @@ import edu.wpi.first.wpilibj.DriverStation;
 import edu.wpi.first.wpilibj.smartdashboard.SmartDashboard;
 
 import com.pathplanner.lib.auto.AutoBuilder;
-import com.kauailabs.navx.frc.AHRS;
+import com.studica.frc.AHRS;
 import frc.robot.Constants;
 import frc.robot.Other.RobotVersion;
 import edu.wpi.first.math.geometry.Pose2d;

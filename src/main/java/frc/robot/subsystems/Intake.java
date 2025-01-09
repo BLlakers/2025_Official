@@ -8,7 +8,8 @@ import edu.wpi.first.wpilibj2.command.Command;
 import java.util.HashMap;
 import java.util.Map;
 
-import com.revrobotics.CANSparkMax;
+import com.revrobotics.spark.SparkMax;
+import com.revrobotics.spark.config.SparkMaxConfig;
 import com.revrobotics.RelativeEncoder;
 
 public class Intake extends SubsystemBase {
@@ -31,9 +32,11 @@ public class Intake extends SubsystemBase {
     }
   }
 
-  private CANSparkMax intakeAngleMtr =
-      new CANSparkMax(
-          Constants.Intake.AngleMtrC, com.revrobotics.CANSparkLowLevel.MotorType.kBrushless);
+  private SparkMax intakeAngleMtr =
+      new SparkMax(
+          Constants.Intake.AngleMtrC, com.revrobotics.spark.SparkLowLevel.MotorType.kBrushless);
+
+  private SparkMaxConfig sparkMaxConfig = new SparkMaxConfig();
 
   private State m_CurrentState = State.PositionUp;
 
@@ -66,8 +69,9 @@ public class Intake extends SubsystemBase {
         2 * Math.PI / Intake.GEAR_RATIO; // revolutions -> radians
     double intakeAngleMotorVelocityConversion =
         intakeAngleMotorPositionConversion / 60; // rpm -> radians/second
-    intakeAngleMtrEnc.setPositionConversionFactor(intakeAngleMotorPositionConversion);
-    intakeAngleMtrEnc.setVelocityConversionFactor(intakeAngleMotorVelocityConversion);
+      
+    sparkMaxConfig.encoder.positionConversionFactor(intakeAngleMotorPositionConversion);
+    sparkMaxConfig.encoder.velocityConversionFactor(intakeAngleMotorVelocityConversion);
     resetIntakeAngle();
     setName("Intake/Angle");
   }
