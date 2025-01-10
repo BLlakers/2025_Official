@@ -13,9 +13,11 @@ import edu.wpi.first.math.util.Units;
 import edu.wpi.first.util.sendable.SendableBuilder;
 
 import com.revrobotics.spark.SparkMax;
-import com.revrobotics.spark.SparkClosedLoopController;
-import com.revrobotics.spark.SparkLowLevel.MotorType;
 import com.revrobotics.spark.config.SparkMaxConfig;
+import com.revrobotics.spark.config.ClosedLoopConfig.FeedbackSensor;
+import com.revrobotics.spark.config.SparkBaseConfig.IdleMode;
+import com.revrobotics.spark.SparkClosedLoopController;
+
 import com.revrobotics.RelativeEncoder;
 import edu.wpi.first.wpilibj.DutyCycleEncoder;
 import edu.wpi.first.wpilibj.smartdashboard.SmartDashboard;
@@ -72,30 +74,41 @@ public class SwerveModule extends SubsystemBase {
     // can spark max motor controller objects
     m_driveMotor =
         new SparkMax(driveMotorChannel, com.revrobotics.spark.SparkLowLevel.MotorType.kBrushless);
-    m_driveMotor.restoreFactoryDefaults();
+    //m_driveMotor.restoreFactoryDefaults();
 
     m_turningMotor =
         new SparkMax(turningMotorChannel, com.revrobotics.spark.SparkLowLevel.MotorType.kBrushless);
-        new SparkMax(turningMotorChannel, com.revrobotics.spark.SparkLowLevel.MotorType.kBrushless);
-    m_turningMotor.restoreFactoryDefaults();
+    //m_turningMotor.restoreFactoryDefaults();
 
-    m_driveMotor.setOpenLoopRampRate(0.1);
+    //m_driveMotor.setOpenLoopRampRate(0.1);
 
-    m_drivePID = m_driveMotor.getPIDController();
-    m_drivePID.setSmartMotionAccelStrategy(AccelStrategy.kTrapezoidal, 0);
-    m_drivePID.setSmartMotionMaxAccel(0.2, 0);
+    //m_drivePID = m_driveMotor.getPIDController();
+    //m_drivePID.setSmartMotionAccelStrategy(AccelStrategy.kTrapezoidal, 0);
+    //m_drivePID.setSmartMotionMaxAccel(0.2, 0);
 
     // spark max built-in encoder
-    m_driveEncoder = m_driveMotor.getEncoder();
-    m_driveEncoder.setPositionConversionFactor(kPositionConversionFactor); // meters
-    m_driveEncoder.setVelocityConversionFactor(kVelocityConversionFactor); // meters per second
-    m_driveEncoder.setPosition(0);
+    //m_driveEncoder = m_driveMotor.getEncoder();
+    //m_driveEncoder.setPositionConversionFactor(kPositionConversionFactor); // meters
+    //m_driveEncoder.setVelocityConversionFactor(kVelocityConversionFactor); // meters per second
+    //m_driveEncoder.setPosition(0);
 
     // PWM encoder from CTRE mag encoders
     m_turningEncoder = new DutyCycleEncoder(turnEncoderPWMChannel);
     m_turningEncoder.reset();
     m_turningEncoder.setPositionOffset(turnOffset);
     m_turningEncoder.setDistancePerRotation(2 * Math.PI); // radians ?
+
+    SparkMaxConfig config = new SparkMaxConfig();
+
+    config
+      .inverted(true)
+      .idleMode(IdleMode.kBrake);
+    config.encoder
+      .positionConversionFactor(kPositionConversionFactor)
+      .velocityConversionFactor(kVelocityConversionFactor);
+    config.closedLoop
+      .feedbackSensor(FeedbackSensor.kPrimaryEncoder)
+      .pid(1.0,0,0);
 
     // Limit the PID Controller's input range between -pi and pi and set the input
     // to be continuous.
@@ -136,7 +149,7 @@ public class SwerveModule extends SubsystemBase {
   public void setDesiredState(SwerveModuleState desiredState) {
     // Optimize the reference state to avoid spinning further than 90 degrees
     SwerveModuleState optimizedState =
-        SwerveModuleState.optimize(desiredState, getModulePosition().angle);
+        desiredState.optimize(getModulePosition().angle);
 
     final double signedAngleDifference =
         closestAngleCalculator(

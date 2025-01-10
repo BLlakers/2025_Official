@@ -3,9 +3,9 @@ package frc.robot;
 import static edu.wpi.first.units.Units.Inches;
 import static edu.wpi.first.units.Units.Meters;
 
-import com.pathplanner.lib.config.configureHolonomic;
+import com.pathplanner.lib.controllers.PPHolonomicDriveController;
 import com.pathplanner.lib.config.PIDConstants;
-import com.pathplanner.lib.util.ReplanningConfig;
+import com.pathplanner.lib.config.RobotConfig;
 
 import edu.wpi.first.math.geometry.Pose2d;
 import edu.wpi.first.math.geometry.Rotation3d;
@@ -17,17 +17,18 @@ import frc.robot.subsystems.DriveTrain;
 
 public final class Constants {
   public static class Drive {
+
     public static final Translation2d SMFrontRightLocation = new Translation2d(0.285, -0.285);
     public static final Translation2d SMFrontLeftLocation = new Translation2d(0.285, 0.285);
     public static final Translation2d SMBackLeftLocation = new Translation2d(-0.285, 0.285);
     public static final Translation2d SMBackRightLocation = new Translation2d(-0.285, -0.285);
-    public static final HolonomicPathFollowerConfig pathFollowerConfig =
-        new HolonomicPathFollowerConfig(
-            new PIDConstants(5, 0, 0), // Translation constants
-            new PIDConstants(3, 0, 0), // Rotation constants
-            3.68, // what should be our robots fastest chassis speeds in m/s
-            0.3875, // The radius of the robot in meters
-            new ReplanningConfig());
+    //public static final PPHolonomicDriveController pathFollowerConfig =
+    //    new PPHolonomicDriveController(
+    //        new PIDConstants(5, 0, 0), // Translation constants
+    //        new PIDConstants(3, 0, 0), // Rotation constants
+    //        3.68, // what should be our robots fastest chassis speeds in m/s
+    //        0.3875, // The radius of the robot in meters
+    //        new ReplanningConfig());
     public static final Transform3d CAMERA_TO_ROBOT =
         new Transform3d(
             0,
