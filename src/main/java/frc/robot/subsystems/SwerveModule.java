@@ -42,7 +42,7 @@ public class SwerveModule extends SubsystemBase {
   public final SparkMax m_driveMotor;
   public final SparkMax m_turningMotor;
 
-  
+  private final SparkClosedLoopController m_drivePID;
 
   public final SparkMaxConfig config = new SparkMaxConfig()
   public final DutyCycleEncoder m_turningEncoder;
@@ -72,9 +72,10 @@ public class SwerveModule extends SubsystemBase {
     // can spark max motor controller objects
     m_driveMotor =
         new SparkMax(driveMotorChannel, com.revrobotics.spark.SparkLowLevel.MotorType.kBrushless);
-    config.
+    m_driveMotor.restoreFactoryDefaults();
 
     m_turningMotor =
+        new SparkMax(turningMotorChannel, com.revrobotics.spark.SparkLowLevel.MotorType.kBrushless);
         new SparkMax(turningMotorChannel, com.revrobotics.spark.SparkLowLevel.MotorType.kBrushless);
     m_turningMotor.restoreFactoryDefaults();
 

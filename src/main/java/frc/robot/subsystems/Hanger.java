@@ -6,19 +6,19 @@ import edu.wpi.first.wpilibj2.command.Command;
 import edu.wpi.first.wpilibj2.command.Commands;
 import edu.wpi.first.util.sendable.SendableBuilder;
 import edu.wpi.first.wpilibj.DigitalInput;
-import com.revrobotics.CANSparkMax;
+import com.revrobotics.spark.SparkMax;
 import com.revrobotics.RelativeEncoder;
 
 public class Hanger extends SubsystemBase {
   private DigitalInput hangLeftMagSwitch = new DigitalInput(Constants.Port.hangerLeftMagSwitchDIOC);
   private DigitalInput hangRightMagSwitch =
       new DigitalInput(Constants.Port.hangerRightMagSwitchDIOC);
-  private CANSparkMax hangerLeftMtr =
-      new CANSparkMax(
-          Constants.Hanger.LeftMtrC, com.revrobotics.CANSparkLowLevel.MotorType.kBrushless);
-  private CANSparkMax hangerRightMtr =
-      new CANSparkMax(
-          Constants.Hanger.RightMtrC, com.revrobotics.CANSparkLowLevel.MotorType.kBrushless);
+  private SparkMax hangerLeftMtr =
+      new SparkMax(
+          Constants.Hanger.LeftMtrC, com.revrobotics.spark.SparkLowLevel.MotorType.kBrushless);
+  private SparkMax hangerRightMtr =
+      new SparkMax(
+          Constants.Hanger.RightMtrC, com.revrobotics.spark.SparkLowLevel.MotorType.kBrushless);
 
   private RelativeEncoder hangerLeftMtrEnc = hangerLeftMtr.getEncoder();
   private RelativeEncoder hangerRightMtrEnc = hangerRightMtr.getEncoder();

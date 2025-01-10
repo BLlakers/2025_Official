@@ -8,19 +8,24 @@ import edu.wpi.first.util.sendable.SendableBuilder;
 import edu.wpi.first.wpilibj2.command.Command;
 import edu.wpi.first.wpilibj2.command.ConditionalCommand;
 import edu.wpi.first.wpilibj.DigitalInput;
-import com.revrobotics.CANSparkMax;
+
+import com.revrobotics.spark.SparkBase.PersistMode;
+import com.revrobotics.spark.SparkBase.ResetMode;
+import com.revrobotics.spark.SparkMax;
+import com.revrobotics.spark.config.SparkMaxConfig;
 import com.revrobotics.RelativeEncoder;
 
 public class Shooter extends SubsystemBase {
-  private CANSparkMax m_shooterMtrLeft =
-      new CANSparkMax(
-          Constants.Shooter.LeftMtrC, com.revrobotics.CANSparkLowLevel.MotorType.kBrushless);
-  private CANSparkMax m_shooterMtrRight =
-      new CANSparkMax(
-          Constants.Shooter.RightMtrC, com.revrobotics.CANSparkLowLevel.MotorType.kBrushless);
-  private CANSparkMax m_shooterAngleMtr =
-      new CANSparkMax(
-          Constants.Shooter.AngleMtrC, com.revrobotics.CANSparkLowLevel.MotorType.kBrushless);
+  private SparkMax m_shooterMtrLeft =
+      new SparkMax(
+          Constants.Shooter.LeftMtrC, com.revrobotics.spark.SparkLowLevel.MotorType.kBrushless);
+  private SparkMax m_shooterMtrRight =
+      new SparkMax(
+          Constants.Shooter.RightMtrC, com.revrobotics.spark.SparkLowLevel.MotorType.kBrushless);
+  private SparkMax m_shooterAngleMtr =
+      new SparkMax(
+          Constants.Shooter.AngleMtrC, com.revrobotics.spark.SparkLowLevel.MotorType.kBrushless);
+  private SparkMaxConfig m_shooterAngleMtrConfig = new SparkMaxConfig();
 
   private RelativeEncoder m_shooterMtrLeftEnc = m_shooterMtrLeft.getEncoder();
   private RelativeEncoder m_shooterMtrRightEnc = m_shooterMtrRight.getEncoder();
@@ -68,8 +73,11 @@ public class Shooter extends SubsystemBase {
 
     // shooterMtrLeft.follow(shooterMtrRight, true);
     double positionConversionFactor = LEAD_SCREW_PITCH / MOTOR_ANGLE_GEAR_RATIO;
-    m_angleMtrEnc.setPositionConversionFactor(positionConversionFactor);
-    m_angleMtrEnc.setVelocityConversionFactor(positionConversionFactor / 60);
+    
+    // NOTE: Per RevLib 2025 upgrade, conversion factor setters nolonger available on RelativeEncoder
+    m_shooterAngleMtrConfig.encoder.positionConversionFactor(positionConversionFactor);
+    m_shooterAngleMtrConfig.encoder.velocityConversionFactor(positionConversionFactor / 60);
+    m_shooterAngleMtr.configure(m_shooterAngleMtrConfig, ResetMode.kResetSafeParameters, PersistMode.kPersistParameters);    
 
     // limit switches
     m_limitSwitchTop = new DigitalInput(Constants.Shooter.LimitSwitchTopDIO);
@@ -294,12 +302,14 @@ public class Shooter extends SubsystemBase {
     builder.addDoubleProperty(
         "Motor Right/Speed Percentage",
         () -> m_shooterMtrLeftEnc.getVelocity() / Constants.Conversion.NeoMaxSpeedRPM,
-        null);
+        null);        
+
+        m_shooterMtrLeft.getBusVoltage();
     builder.addDoubleProperty(
         "Motor Right/Voltage",
         () -> m_shooterMtrRight.getVoltageCompensationNominalVoltage(),
         null);
-
+        
     builder.addDoubleProperty(
         "Motor Left/Voltage", () -> m_shooterMtrLeft.getVoltageCompensationNominalVoltage(), null);
     builder.addDoubleProperty("Angle Motor/Encoder/Position", m_angleMtrEnc::getPosition, null);
