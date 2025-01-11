@@ -11,6 +11,8 @@ import edu.wpi.first.wpilibj.DriverStation;
 import edu.wpi.first.wpilibj.smartdashboard.SmartDashboard;
 
 import com.pathplanner.lib.auto.AutoBuilder;
+import com.pathplanner.lib.config.RobotConfig;
+import com.pathplanner.lib.controllers.PPLTVController;
 import com.studica.frc.AHRS;
 import frc.robot.Constants;
 import frc.robot.Other.RobotVersion;
@@ -52,7 +54,7 @@ public class DriveTrain extends SubsystemBase {
 
   // creates a gyro object. Gyro gives the robots rotation/ where the robot is
   // pointed.
-  private final AHRS navx = new AHRS();
+  private final AHRS navx = new AHRS(AHRS.NavXComType.kMXP_SPI);
 
   // Creates each swerve module. Swerve modules have a turning and drive motor + a
   // turning and drive encoder.
@@ -63,6 +65,13 @@ public class DriveTrain extends SubsystemBase {
 
   // Creates an odometry object. Odometry tells the robot its position on the
   // field.
+  public RobotConfig config;{
+    try{
+      config = RobotConfig.fromGUISettings();
+    } catch (Exception e) {
+      // Handle exception as needed
+      e.printStackTrace();
+    }}
   private final SwerveDriveOdometry m_odometry;
 
   // Constructor
@@ -76,26 +85,29 @@ public class DriveTrain extends SubsystemBase {
    *
    * @param RobotVersion
    */
+  
   public DriveTrain(RobotVersion version) {
-    AutoBuilder.configureHolonomic(
-        this::getPose2d,
-        this::resetPose,
-        this::getChassisSpeeds,
-        this::driveChassisSpeeds,
-        Constants.Drive.pathFollowerConfig,
-        () -> {
-          // Boolean supplier that controls when the path will be mirrored for the red
-          // alliance
-          // This will flip the path being followed to the red side of the field.
-          // THE ORIGIN WILL REMAIN ON THE BLUE SIDE
+    AutoBuilder.configure(
+      this::getPose2d, // Robot pose supplier
+      this::resetPose, // Method to reset odometry (will be called if your auto has a starting pose)
+      this::getChassisSpeeds, 
+      this::driveChassisSpeeds, // ChassisSpeeds supplier. MUST BE ROBOT RELATIVE
+       // Method that will drive the robot given ROBOT RELATIVE ChassisSpeeds. Also optionally outputs individual module feedforwards
+      new PPLTVController(0.02), // PPLTVController is the built in path following controller for differential drive trains
+    config,// The robot configuration
+      () -> {
+        // Boolean supplier that controls when the path will be mirrored for the red alliance
+        // This will flip the path being followed to the red side of the field.
+        // THE ORIGIN WILL REMAIN ON THE BLUE SIDE
 
-          var alliance = DriverStation.getAlliance();
-          if (alliance.isPresent()) {
-            return alliance.get() == DriverStation.Alliance.Red;
-          }
-          return false;
-        },
-        this);
+        var alliance = DriverStation.getAlliance();
+        if (alliance.isPresent()) {
+          return alliance.get() == DriverStation.Alliance.Red;
+        }
+        return false;
+      },
+      this); // Reference to this subsystem to set requirements
+
     // sets our wanted offsets. Varies between 2023 and 2024.
     double flTurnOffset = 0, frTurnOffset = 0, blTurnOffset = 0, brTurnOffset = 0;
     if (Constants.defaultRobotVersion == RobotVersion.v2023) {

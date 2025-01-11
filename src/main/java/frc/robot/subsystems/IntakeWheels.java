@@ -4,16 +4,16 @@ import frc.robot.Constants;
 import edu.wpi.first.wpilibj2.command.SubsystemBase;
 import edu.wpi.first.wpilibj2.command.Command;
 import edu.wpi.first.wpilibj2.command.Commands;
-import com.revrobotics.CANSparkMax;
+import com.revrobotics.spark.SparkMax;
 import com.revrobotics.ColorSensorV3;
 
 import edu.wpi.first.util.sendable.SendableBuilder;
 import edu.wpi.first.wpilibj.I2C;
 
 public class IntakeWheels extends SubsystemBase {
-  private CANSparkMax intakeWheelMtrR =
-      new CANSparkMax(
-          Constants.Intake.WheelMtrC, com.revrobotics.CANSparkLowLevel.MotorType.kBrushless);
+  private SparkMax intakeWheelMtrR =
+      new SparkMax(
+          Constants.Intake.WheelMtrC, com.revrobotics.spark.SparkLowLevel.MotorType.kBrushless);
 
   private final I2C.Port i2cPort = I2C.Port.kOnboard;
   private final ColorSensorV3 m_colorSensorV3 = new ColorSensorV3(i2cPort);

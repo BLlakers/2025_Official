@@ -9,7 +9,6 @@ import java.util.HashMap;
 import java.util.Map;
 
 import com.revrobotics.spark.SparkMax;
-import com.revrobotics.spark.config.SparkMaxConfig;
 import com.revrobotics.RelativeEncoder;
 
 public class Intake extends SubsystemBase {
@@ -35,8 +34,6 @@ public class Intake extends SubsystemBase {
   private SparkMax intakeAngleMtr =
       new SparkMax(
           Constants.Intake.AngleMtrC, com.revrobotics.spark.SparkLowLevel.MotorType.kBrushless);
-
-  private SparkMaxConfig sparkMaxConfig = new SparkMaxConfig();
 
   private State m_CurrentState = State.PositionUp;
 
@@ -69,9 +66,10 @@ public class Intake extends SubsystemBase {
         2 * Math.PI / Intake.GEAR_RATIO; // revolutions -> radians
     double intakeAngleMotorVelocityConversion =
         intakeAngleMotorPositionConversion / 60; // rpm -> radians/second
-      
-    sparkMaxConfig.encoder.positionConversionFactor(intakeAngleMotorPositionConversion);
-    sparkMaxConfig.encoder.velocityConversionFactor(intakeAngleMotorVelocityConversion);
+
+    // NOTE: Per RevLib 2025 upgrade, conversion factor available on SparkMax vs. CANSparkMax
+    // intakeAngleMtrEnc.setPositionConversionFactor(intakeAngleMotorPositionConversion);
+    // intakeAngleMtrEnc.setVelocityConversionFactor(intakeAngleMotorVelocityConversion);
     resetIntakeAngle();
     setName("Intake/Angle");
   }
