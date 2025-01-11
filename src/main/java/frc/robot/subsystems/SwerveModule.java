@@ -16,6 +16,8 @@ import com.revrobotics.spark.SparkMax;
 import com.revrobotics.spark.config.SparkMaxConfig;
 import com.revrobotics.spark.config.ClosedLoopConfig.FeedbackSensor;
 import com.revrobotics.spark.config.SparkBaseConfig.IdleMode;
+import com.revrobotics.spark.SparkBase.PersistMode;
+import com.revrobotics.spark.SparkBase.ResetMode;
 import com.revrobotics.spark.SparkClosedLoopController;
 
 import com.revrobotics.RelativeEncoder;
@@ -94,9 +96,11 @@ public class SwerveModule extends SubsystemBase {
 
     // PWM encoder from CTRE mag encoders
     m_turningEncoder = new DutyCycleEncoder(turnEncoderPWMChannel);
-    m_turningEncoder.reset();
-    m_turningEncoder.setPositionOffset(turnOffset);
-    m_turningEncoder.setDistancePerRotation(2 * Math.PI); // radians ?
+
+    //**To do: What do we do with these in new api? **/
+    //m_turningEncoder.reset();
+    //m_turningEncoder.setPositionOffset(turnOffset);
+    //m_turningEncoder.setDistancePerRotation(2 * Math.PI); // radians ?
 
     SparkMaxConfig config = new SparkMaxConfig();
 
@@ -110,6 +114,7 @@ public class SwerveModule extends SubsystemBase {
       .feedbackSensor(FeedbackSensor.kPrimaryEncoder)
       .pid(1.0,0,0);
 
+    m_driveMotor.configure(config, ResetMode.kResetSafeParameters, PersistMode.kPersistParameters);
     // Limit the PID Controller's input range between -pi and pi and set the input
     // to be continuous.
     m_turningPIDController.enableContinuousInput(-Math.PI, Math.PI);
