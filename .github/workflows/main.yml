@@ -4,7 +4,7 @@ on:
     branches:
       - main
       - Dev
-      - Test
+      - Testing
   pull_request:
 jobs:
   build:
