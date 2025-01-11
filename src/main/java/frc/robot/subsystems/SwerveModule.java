@@ -18,7 +18,6 @@ import com.revrobotics.spark.config.ClosedLoopConfig.FeedbackSensor;
 import com.revrobotics.spark.config.SparkBaseConfig.IdleMode;
 import com.revrobotics.spark.SparkBase.PersistMode;
 import com.revrobotics.spark.SparkBase.ResetMode;
-import com.revrobotics.spark.SparkClosedLoopController;
 
 import com.revrobotics.RelativeEncoder;
 import edu.wpi.first.wpilibj.DutyCycleEncoder;
@@ -33,6 +32,8 @@ import frc.robot.Constants;
  */
 public class SwerveModule extends SubsystemBase {
 
+  private static final double FULL_RANGE = 2*Math.PI;
+
   private static final double kPositionConversionFactor =
       (Constants.Conversion.kWheelDiameterM * Math.PI) / Constants.Conversion.DriveGearRatio;
   private static final double kVelocityConversionFactor = kPositionConversionFactor / 60;
@@ -45,10 +46,10 @@ public class SwerveModule extends SubsystemBase {
 
   public final SparkMax m_driveMotor;
   public final SparkMax m_turningMotor;
+  private final RelativeEncoder driverMotorEncoder;
 
-  private final SparkClosedLoopController m_drivePID;
+  private SparkMaxConfig config;
 
-  public final SparkMaxConfig config = new SparkMaxConfig()
   public final DutyCycleEncoder m_turningEncoder;
 
   // Gains are for example purposes only - must be determined for your own robot!
@@ -78,31 +79,33 @@ public class SwerveModule extends SubsystemBase {
         new SparkMax(driveMotorChannel, com.revrobotics.spark.SparkLowLevel.MotorType.kBrushless);
     //m_driveMotor.restoreFactoryDefaults();
 
+    this.driverMotorEncoder = m_driveMotor.getEncoder();
+
     m_turningMotor =
         new SparkMax(turningMotorChannel, com.revrobotics.spark.SparkLowLevel.MotorType.kBrushless);
     //m_turningMotor.restoreFactoryDefaults();
 
     //m_driveMotor.setOpenLoopRampRate(0.1);
 
+
     //m_drivePID = m_driveMotor.getPIDController();
-    //m_drivePID.setSmartMotionAccelStrategy(AccelStrategy.kTrapezoidal, 0);
-    //m_drivePID.setSmartMotionMaxAccel(0.2, 0);
+    // m_drivePID.setSmartMotionAccelStrategy(AccelStrategy.kTrapezoidal, 0);
+    // m_drivePID.setSmartMotionMaxAccel(0.2, 0);
 
     // spark max built-in encoder
-    //m_driveEncoder = m_driveMotor.getEncoder();
     //m_driveEncoder.setPositionConversionFactor(kPositionConversionFactor); // meters
-    //m_driveEncoder.setVelocityConversionFactor(kVelocityConversionFactor); // meters per second
+    //w.setVelocityConversionFactor(kVelocityConversionFactor); // meters per second
     //m_driveEncoder.setPosition(0);
 
     // PWM encoder from CTRE mag encoders
-    m_turningEncoder = new DutyCycleEncoder(turnEncoderPWMChannel);
+    m_turningEncoder = new DutyCycleEncoder(turnEncoderPWMChannel, FULL_RANGE, turnOffset);
 
     //**To do: What do we do with these in new api? **/
-    //m_turningEncoder.reset();
-    //m_turningEncoder.setPositionOffset(turnOffset);
-    //m_turningEncoder.setDistancePerRotation(2 * Math.PI); // radians ?
+    // m_turningEncoder.reset();
+    // m_turningEncoder.setPositionOffset(turnOffset);
+    // m_turningEncoder.setDistancePerRotation(2 * Math.PI); // radians ?
 
-    SparkMaxConfig config = new SparkMaxConfig();
+    this.config = new SparkMaxConfig();
 
     config
       .inverted(true)
@@ -129,8 +132,9 @@ public class SwerveModule extends SubsystemBase {
   public SwerveModuleState getModuleState() {
     // the getVelocity() function normally returns RPM but is scaled in the
     // SwerveModule constructor to return actual wheel speed
+
     return new SwerveModuleState(
-        m_driveEncoder.getVelocity(), Rotation2d.fromRadians(m_turningEncoder.getDistance()));
+      m_driveMotor.getEncoder().getVelocity(), Rotation2d.fromRadians(m_turningEncoder.get()));
   }
 
   /**
@@ -141,7 +145,7 @@ public class SwerveModule extends SubsystemBase {
    */
   public SwerveModulePosition getModulePosition() {
     return new SwerveModulePosition(
-        m_driveEncoder.getPosition(), Rotation2d.fromRadians(m_turningEncoder.getDistance()));
+      m_driveMotor.getEncoder().getPosition(), Rotation2d.fromRadians(m_turningEncoder.get()));
   }
 
   /**
@@ -153,16 +157,16 @@ public class SwerveModule extends SubsystemBase {
    */
   public void setDesiredState(SwerveModuleState desiredState) {
     // Optimize the reference state to avoid spinning further than 90 degrees
-    SwerveModuleState optimizedState =
-        desiredState.optimize(getModulePosition().angle);
+    desiredState.optimize(getModulePosition().angle);
+    //SwerveModuleState optimizedState = desiredState.optimize(getModulePosition().angle);
 
     final double signedAngleDifference =
         closestAngleCalculator(
-            getModulePosition().angle.getRadians(), optimizedState.angle.getRadians());
+            getModulePosition().angle.getRadians(), desiredState.angle.getRadians());
     double rotateMotorPercentPower =
         signedAngleDifference / (2 * Math.PI); // proportion error control
 
-    double driveMotorPercentPower = optimizedState.speedMetersPerSecond / kDriveMaxSpeed;
+    double driveMotorPercentPower = desiredState.speedMetersPerSecond / kDriveMaxSpeed;
     double turnMotorPercentPower = 1.6 * rotateMotorPercentPower;
 
     SmartDashboard.putNumber(
@@ -234,12 +238,12 @@ public class SwerveModule extends SubsystemBase {
     builder.publishConstInteger("DriveMotor/ID", m_driveMotor.getDeviceId());
 
     builder.addDoubleProperty(
-        "TurnMotor/Angle", () -> Units.radiansToDegrees(m_turningEncoder.getDistance()), null);
-    builder.addDoubleProperty("DriveMotor/Pos", m_driveEncoder::getPosition, null);
-    builder.addDoubleProperty("DriveMotor/Vel", m_driveEncoder::getVelocity, null);
+        "TurnMotor/Angle", () -> Units.radiansToDegrees(m_turningEncoder.get()), null);
+    builder.addDoubleProperty("DriveMotor/Pos", this.driverMotorEncoder::getPosition, null);
+    builder.addDoubleProperty("DriveMotor/Vel", this.driverMotorEncoder::getVelocity, null);
 
     builder.addDoubleProperty(
-        "TurnMotor/Encoder/AbsolutePosition", this.m_turningEncoder::getAbsolutePosition, null);
+        "TurnMotor/Encoder/AbsolutePosition", this.m_turningEncoder::get, null);
 
     builder.setSafeState(this::stop);
   }
