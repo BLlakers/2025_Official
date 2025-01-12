@@ -16,37 +16,33 @@ import edu.wpi.first.util.sendable.SendableBuilder;
 import edu.wpi.first.wpilibj2.command.SubsystemBase;
 
 public class Limelight extends SubsystemBase {
-  private DoubleArraySubscriber m_aprilTagPoseTopic;
-  private IntegerPublisher m_priorityTagIdPub;
-
-  private String m_limelightName;
-  private AprilTag m_currentAprilTag = new AprilTag(-1, new Pose3d());
+  private final DoubleArraySubscriber aprilTagPoseTopic;
+  private final IntegerPublisher priorityTagIdPub;
+  private final String limelightName;
+  private AprilTag currentAprilTag = new AprilTag(-1, new Pose3d());
 
   public Limelight() {
     this("limelight");
   }
 
   public Limelight(String cameraName) {
-    m_limelightName = cameraName;
-    NetworkTable table = NetworkTableInstance.getDefault().getTable(m_limelightName);
-    m_aprilTagPoseTopic =
-        table
-            .getDoubleArrayTopic("targetpose_robotspace")
-            .subscribe(new double[] {0, 0, 0, 0, 0, 0});
-    m_priorityTagIdPub = table.getIntegerTopic("priorityid").publish();
+    limelightName = cameraName;
+    NetworkTable table = NetworkTableInstance.getDefault().getTable(limelightName);
+    aprilTagPoseTopic = table.getDoubleArrayTopic("targetpose_robotspace").subscribe(new double[]{0, 0, 0, 0, 0, 0});
+    priorityTagIdPub = table.getIntegerTopic("priorityid").publish();
   }
 
   public void SetTagIDToTrack(int tagID) {
-    m_priorityTagIdPub.accept(tagID);
+    priorityTagIdPub.accept(tagID);
   }
 
   @Override
   public void periodic() {
-    m_currentAprilTag = getCurrentAprilTag();
-    SmartDashboard.putNumber("AprilTag/tagID", m_currentAprilTag.ID);
-    SmartDashboard.putNumber("AprilTag/pose/X", m_currentAprilTag.pose.getX());
-    SmartDashboard.putNumber("AprilTag/pose/Y", m_currentAprilTag.pose.getY());
-    SmartDashboard.putNumber("AprilTag/pose/Z", m_currentAprilTag.pose.getZ());
+    currentAprilTag = getCurrentAprilTag();
+    SmartDashboard.putNumber("AprilTag/tagID", currentAprilTag.ID);
+    SmartDashboard.putNumber("AprilTag/pose/X", currentAprilTag.pose.getX());
+    SmartDashboard.putNumber("AprilTag/pose/Y", currentAprilTag.pose.getY());
+    SmartDashboard.putNumber("AprilTag/pose/Z", currentAprilTag.pose.getZ());
   }
 
   /**
@@ -55,30 +51,24 @@ public class Limelight extends SubsystemBase {
    * @return The AprilTag the camera is looking at plus a Pose3d - x, y, z, ROTx, ROTy, ROTz.
    */
   public AprilTag getCurrentAprilTag() {
-    NetworkTable table = NetworkTableInstance.getDefault().getTable(m_limelightName);
+    NetworkTable table = NetworkTableInstance.getDefault().getTable(limelightName);
     NetworkTableEntry tid = table.getEntry("tid");
     int aprilTagId = (int) tid.getInteger(-1);
-    TimestampedDoubleArray poseArray =
-        m_aprilTagPoseTopic.getAtomic(); // (x, y, z, rotx, roty, rotz)
+    TimestampedDoubleArray poseArray = aprilTagPoseTopic.getAtomic(); // (x, y, z, rotx, roty, rotz)
 
     if (poseArray.value.length < 6) return new AprilTag(-1, new Pose3d());
 
-    Translation3d poseTranslation =
-        new Translation3d(
-            poseArray.value[0], // x
+    Translation3d poseTranslation = new Translation3d(poseArray.value[0], // x
             poseArray.value[1], // y
             poseArray.value[2] // z
-            );
+    );
 
-    Rotation3d poseOrientation =
-        new Rotation3d(
-            poseArray.value[3], // roll = rotx
+    Rotation3d poseOrientation = new Rotation3d(poseArray.value[3], // roll = rotx
             poseArray.value[4], // pitch = roty
             poseArray.value[5] // yaw = rotz
-            );
+    );
 
-    Pose3d aprilTagPose =
-        new Pose3d(poseTranslation, poseOrientation); // creating pose3d based off of our
+    Pose3d aprilTagPose = new Pose3d(poseTranslation, poseOrientation); // creating pose3d based off of our
     // translation3d and rot3d and tid
     return new AprilTag(aprilTagId, aprilTagPose);
   }
@@ -87,9 +77,9 @@ public class Limelight extends SubsystemBase {
   public void initSendable(SendableBuilder builder) {
     super.initSendable(builder);
 
-    builder.addDoubleProperty("AprilTag/tagID", () -> m_currentAprilTag.ID, null);
-    builder.addDoubleProperty("AprilTag/pose/X", m_currentAprilTag.pose::getX, null);
-    builder.addDoubleProperty("AprilTag/pose/Y", m_currentAprilTag.pose::getY, null);
-    builder.addDoubleProperty("AprilTag/pose/Z", m_currentAprilTag.pose::getZ, null);
+    builder.addDoubleProperty("AprilTag/tagID", () -> currentAprilTag.ID, null);
+    builder.addDoubleProperty("AprilTag/pose/X", currentAprilTag.pose::getX, null);
+    builder.addDoubleProperty("AprilTag/pose/Y", currentAprilTag.pose::getY, null);
+    builder.addDoubleProperty("AprilTag/pose/Z", currentAprilTag.pose::getZ, null);
   }
 }
