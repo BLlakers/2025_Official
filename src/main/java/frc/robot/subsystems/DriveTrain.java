@@ -15,7 +15,7 @@ import com.pathplanner.lib.config.RobotConfig;
 import com.pathplanner.lib.controllers.PPLTVController;
 import com.studica.frc.AHRS;
 import frc.robot.Constants;
-import frc.robot.Other.RobotVersion;
+import frc.robot.support.RobotVersion;
 import edu.wpi.first.math.geometry.Pose2d;
 import edu.wpi.first.math.geometry.Rotation2d;
 import edu.wpi.first.wpilibj2.command.Command;

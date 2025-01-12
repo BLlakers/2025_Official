@@ -3,16 +3,12 @@ package frc.robot;
 import static edu.wpi.first.units.Units.Inches;
 import static edu.wpi.first.units.Units.Meters;
 
-import com.pathplanner.lib.controllers.PPHolonomicDriveController;
-import com.pathplanner.lib.config.PIDConstants;
-import com.pathplanner.lib.config.RobotConfig;
-
 import edu.wpi.first.math.geometry.Pose2d;
 import edu.wpi.first.math.geometry.Rotation3d;
 import edu.wpi.first.math.geometry.Transform3d;
 import edu.wpi.first.math.geometry.Translation2d;
 import edu.wpi.first.math.trajectory.TrapezoidProfile;
-import frc.robot.Other.RobotVersion;
+import frc.robot.support.RobotVersion;
 import frc.robot.subsystems.DriveTrain;
 
 public final class Constants {
