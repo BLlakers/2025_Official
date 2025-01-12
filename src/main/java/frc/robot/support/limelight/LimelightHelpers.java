@@ -1,7 +1,7 @@
 // LimelightHelpers v1.10 (REQUIRES LLOS 2024.9.1 OR LATER)
 // https://docs.limelightvision.io/docs/docs-limelight/apis/limelight-lib
 
-package frc.robot.support;
+package frc.robot.support.limelight;
 
 import edu.wpi.first.networktables.DoubleArrayEntry;
 import edu.wpi.first.networktables.NetworkTable;

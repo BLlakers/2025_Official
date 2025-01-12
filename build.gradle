@@ -3,6 +3,10 @@ plugins {
     id "edu.wpi.first.GradleRIO" version "2025.1.1"
 }
 
+repositories {
+    mavenCentral()
+}
+
 java {
     sourceCompatibility = JavaVersion.VERSION_17
     targetCompatibility = JavaVersion.VERSION_17
@@ -34,7 +38,7 @@ deploy {
                     files = project.fileTree('src/main/deploy')
                     directory = '/home/lvuser/deploy'
                     deleteOldFiles = false // Change to true to delete files on roboRIO that no
-                                           // longer exist in deploy directory of this project
+                    // longer exist in deploy directory of this project
                 }
             }
         }
@@ -71,7 +75,9 @@ dependencies {
     simulationRelease wpi.sim.enableRelease()
 
     testImplementation 'org.junit.jupiter:junit-jupiter:5.10.1'
+    testImplementation "org.mockito:mockito-inline:3.+"
     testRuntimeOnly 'org.junit.platform:junit-platform-launcher'
+
 }
 
 test {
