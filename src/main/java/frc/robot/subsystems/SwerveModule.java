@@ -99,6 +99,7 @@ public class SwerveModule extends SubsystemBase {
 
     // PWM encoder from CTRE mag encoders
     m_turningEncoder = new DutyCycleEncoder(turnEncoderPWMChannel, FULL_RANGE, turnOffset);
+    m_turningEncoder.setAssumedFrequency(242);
 
     //**To do: What do we do with these in new api? **/
     // m_turningEncoder.reset();
