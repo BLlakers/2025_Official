@@ -184,6 +184,20 @@ public class SwerveModule extends SubsystemBase {
             + m_turningMotor.getDeviceId()
             + "/DrivePercent",
         turnMotorPercentPower);
+    SmartDashboard.putNumber(
+        "DriveTrain/"
+            + getName()
+            + "/Turn Encoder/SignedAngleBLAHBLAHBLAH:"
+            + m_turningMotor.getDeviceId()
+            + "/Angle",
+        signedAngleDifference);
+    SmartDashboard.putNumber(
+        "DriveTrain/"
+            + getName()
+            + "/Turn Encoder/DesiredState:"
+            + m_turningMotor.getDeviceId()
+            + "/DesiredAngle",
+          desiredState.angle.getRadians());
 
     m_driveMotor.set(driveMotorPercentPower);
     m_turningMotor.set(turnMotorPercentPower);
