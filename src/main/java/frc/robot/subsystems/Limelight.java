@@ -43,6 +43,9 @@ public class Limelight extends SubsystemBase {
     SmartDashboard.putNumber("AprilTag/pose/X", currentAprilTag.pose.getX());
     SmartDashboard.putNumber("AprilTag/pose/Y", currentAprilTag.pose.getY());
     SmartDashboard.putNumber("AprilTag/pose/Z", currentAprilTag.pose.getZ());
+    SmartDashboard.putNumber("AprilTag/pose/rotX", Math.toDegrees(currentAprilTag.pose.getRotation().getX()));
+    SmartDashboard.putNumber("AprilTag/pose/rotY", Math.toDegrees(currentAprilTag.pose.getRotation().getY()));
+    SmartDashboard.putNumber("AprilTag/pose/rotZ", Math.toDegrees(currentAprilTag.pose.getRotation().getZ()));
   }
 
   /**
@@ -81,5 +84,8 @@ public class Limelight extends SubsystemBase {
     builder.addDoubleProperty("AprilTag/pose/X", currentAprilTag.pose::getX, null);
     builder.addDoubleProperty("AprilTag/pose/Y", currentAprilTag.pose::getY, null);
     builder.addDoubleProperty("AprilTag/pose/Z", currentAprilTag.pose::getZ, null);
+    builder.addDoubleProperty("AprilTag/pose/rotX", currentAprilTag.pose.getRotation()::getX, null);
+    builder.addDoubleProperty("AprilTag/pose/rotY", currentAprilTag.pose.getRotation()::getY, null);
+    builder.addDoubleProperty("AprilTag/pose/rotZ", currentAprilTag.pose.getRotation()::getZ, null);
   }
 }
