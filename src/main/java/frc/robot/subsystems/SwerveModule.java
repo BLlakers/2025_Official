@@ -10,6 +10,7 @@ import edu.wpi.first.math.kinematics.SwerveModuleState;
 import edu.wpi.first.math.kinematics.SwerveModulePosition;
 import edu.wpi.first.math.trajectory.TrapezoidProfile;
 import edu.wpi.first.math.util.Units;
+import edu.wpi.first.units.measure.Current;
 import edu.wpi.first.util.sendable.SendableBuilder;
 
 import com.revrobotics.spark.SparkMax;
@@ -198,7 +199,13 @@ public class SwerveModule extends SubsystemBase {
             + m_turningMotor.getDeviceId()
             + "/DesiredAngle",
           desiredState.angle.getRadians());
-
+          SmartDashboard.putNumber(
+            "DriveTrain/"
+                + getName()
+                + "/Turn Encoder/CurrentState:"
+                + m_turningMotor.getDeviceId()
+                + "/DesiredAngle",
+              getModulePosition().angle.getRadians());
     m_driveMotor.set(driveMotorPercentPower);
     m_turningMotor.set(turnMotorPercentPower);
   }

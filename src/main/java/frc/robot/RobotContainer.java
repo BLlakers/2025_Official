@@ -27,7 +27,7 @@ public class RobotContainer {
   Limelight m_Limelight = new Limelight();
   Intake m_Intake = new Intake();
   Hanger m_Hanger = new Hanger();
-
+  AprilAlignToTransformCommand LimelightCode = new AprilAlignToTransformCommand(() -> m_Limelight.getCurrentAprilTag(), m_DriveTrain, AprilAlignToTransformCommand.TRANSFORM_SPEAKER_FRONT);
   // Shooter
 
   /**
@@ -160,7 +160,7 @@ public class RobotContainer {
     driverController.b().onTrue(m_DriveTrain.ZeroGyro());
     driverController.start().onTrue(m_DriveTrain.resetPose2d()); // RESETING OUR POSE 2d/ odometry
     driverController.rightStick().onTrue(m_DriveTrain.WheelLockCommand()); // lock wheels
-
+    driverController.x().whileTrue(LimelightCode);
     // Manipulator Controller commands
     manipController
         .leftBumper() // Angle down the shooter
@@ -211,6 +211,7 @@ public class RobotContainer {
 
     debugController.x().whileTrue(DriveForward);
     debugController.rightTrigger(.5).whileTrue(m_Intake.GetIntakeWheels().ReIntakeNoteCommand());
+    debugController.povDown().whileTrue(DriveSide);
   }
 
   private void configureShuffleboard() {

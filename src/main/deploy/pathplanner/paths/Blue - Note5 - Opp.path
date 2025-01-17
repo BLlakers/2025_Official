@@ -42,10 +42,10 @@
   },
   "goalEndState": {
     "velocity": 0,
-    "rotation": -35.0
+    "rotation": 0.0
   },
   "reversed": false,
-  "folder": "Right Starting Position Blue",
+  "folder": null,
   "idealStartingState": {
     "velocity": 0,
     "rotation": 0.0

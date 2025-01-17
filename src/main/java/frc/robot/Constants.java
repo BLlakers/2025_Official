@@ -136,19 +136,19 @@ public final class Constants {
     public static final double brTurnEncoderOffset = 0;
   }
 
-  public class RobotVersion2023 extends RobotVersionConstants {
-    public static final double flTurnEncoderOffset = 0.3459;
-    public static final double frTurnEncoderOffset = 0.730;
-    public static final double blTurnEncoderOffset = .1819;
-    public static final double brTurnEncoderOffset = 0.9262;
-  }
-
   public class RobotVersion2024 extends RobotVersionConstants {
-    public static final double flTurnEncoderOffset = 5.3038;
-    public static final double frTurnEncoderOffset = Math.PI/2 - 0.1242;
-    public static final double blTurnEncoderOffset = 4.2;
-    public static final double brTurnEncoderOffset = 2.736;
+    public static final double flTurnEncoderOffset = 0;
+    public static final double frTurnEncoderOffset = 0;
+    public static final double blTurnEncoderOffset = 0;
+    public static final double brTurnEncoderOffset = 0;
   }
 
-  public static final RobotVersion defaultRobotVersion = RobotVersion.v2024;
+  public class RobotVersion2023 extends RobotVersionConstants {
+    public static final double flTurnEncoderOffset = 5.3038;
+    public static final double frTurnEncoderOffset = Math.PI/2 - 0.1242 - .05759;
+    public static final double blTurnEncoderOffset = 4.2+0.0385;
+    public static final double brTurnEncoderOffset = 2.736-.06098;
+  }
+
+  public static final RobotVersion defaultRobotVersion = RobotVersion.v2023;
 }
