@@ -10,6 +10,7 @@ import edu.wpi.first.math.kinematics.SwerveModuleState;
 import edu.wpi.first.math.kinematics.SwerveModulePosition;
 import edu.wpi.first.math.trajectory.TrapezoidProfile;
 import edu.wpi.first.math.util.Units;
+import edu.wpi.first.units.measure.Current;
 import edu.wpi.first.util.sendable.SendableBuilder;
 
 import com.revrobotics.spark.SparkMax;
@@ -99,6 +100,7 @@ public class SwerveModule extends SubsystemBase {
 
     // PWM encoder from CTRE mag encoders
     m_turningEncoder = new DutyCycleEncoder(turnEncoderPWMChannel, FULL_RANGE, turnOffset);
+    m_turningEncoder.setAssumedFrequency(242);
 
     //**To do: What do we do with these in new api? **/
     // m_turningEncoder.reset();
@@ -183,7 +185,27 @@ public class SwerveModule extends SubsystemBase {
             + m_turningMotor.getDeviceId()
             + "/DrivePercent",
         turnMotorPercentPower);
-
+    SmartDashboard.putNumber(
+        "DriveTrain/"
+            + getName()
+            + "/Turn Encoder/SignedAngleBLAHBLAHBLAH:"
+            + m_turningMotor.getDeviceId()
+            + "/Angle",
+        signedAngleDifference);
+    SmartDashboard.putNumber(
+        "DriveTrain/"
+            + getName()
+            + "/Turn Encoder/DesiredState:"
+            + m_turningMotor.getDeviceId()
+            + "/DesiredAngle",
+          desiredState.angle.getRadians());
+          SmartDashboard.putNumber(
+            "DriveTrain/"
+                + getName()
+                + "/Turn Encoder/CurrentState:"
+                + m_turningMotor.getDeviceId()
+                + "/DesiredAngle",
+              getModulePosition().angle.getRadians());
     m_driveMotor.set(driveMotorPercentPower);
     m_turningMotor.set(turnMotorPercentPower);
   }

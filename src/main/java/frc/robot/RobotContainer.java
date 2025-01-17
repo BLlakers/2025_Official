@@ -12,6 +12,7 @@ import com.pathplanner.lib.auto.NamedCommands;
 
 import edu.wpi.first.math.geometry.Pose2d;
 import edu.wpi.first.math.geometry.Rotation2d;
+import edu.wpi.first.math.geometry.Transform2d;
 import edu.wpi.first.wpilibj.smartdashboard.SendableChooser;
 import edu.wpi.first.wpilibj.smartdashboard.SmartDashboard;
 import edu.wpi.first.wpilibj2.command.button.CommandXboxController;
@@ -27,7 +28,7 @@ public class RobotContainer {
   Limelight m_Limelight = new Limelight();
   Intake m_Intake = new Intake();
   Hanger m_Hanger = new Hanger();
-
+  AprilAlignToTransformCommand LimelightCode = new AprilAlignToTransformCommand(() -> m_Limelight.getCurrentAprilTag(), m_DriveTrain, new Transform2d(1,0, new Rotation2d()));
   // Shooter
 
   /**
@@ -160,7 +161,7 @@ public class RobotContainer {
     driverController.b().onTrue(m_DriveTrain.ZeroGyro());
     driverController.start().onTrue(m_DriveTrain.resetPose2d()); // RESETING OUR POSE 2d/ odometry
     driverController.rightStick().onTrue(m_DriveTrain.WheelLockCommand()); // lock wheels
-
+    driverController.x().whileTrue(LimelightCode);
     // Manipulator Controller commands
     manipController
         .leftBumper() // Angle down the shooter
@@ -211,6 +212,7 @@ public class RobotContainer {
 
     debugController.x().whileTrue(DriveForward);
     debugController.rightTrigger(.5).whileTrue(m_Intake.GetIntakeWheels().ReIntakeNoteCommand());
+    debugController.povDown().whileTrue(DriveSide);
   }
 
   private void configureShuffleboard() {

@@ -23,4 +23,9 @@ public class SmokeTest {
   public void testSmoke() {
     assertTrue(true);
   }
+
+  @Test
+  public void testSmoke2() {
+    assertTrue(true);
+  }
 }

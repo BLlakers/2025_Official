@@ -1,4 +1,4 @@
-package frc.robot.Other;
+package frc.robot.support;
 
 public enum RobotVersion {
   v2023,

@@ -1,12 +1,5 @@
 {
-  "version": 1.0,
-  "startingPose": {
-    "position": {
-      "x": 1.11,
-      "y": 4.7
-    },
-    "rotation": -35.0
-  },
+  "version": "2025.0",
   "command": {
     "type": "sequential",
     "data": {
@@ -51,6 +44,7 @@
       ]
     }
   },
+  "resetOdom": true,
   "folder": "Opp Autos",
   "choreoAuto": false
 }

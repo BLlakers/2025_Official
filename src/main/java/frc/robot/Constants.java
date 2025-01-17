@@ -3,16 +3,12 @@ package frc.robot;
 import static edu.wpi.first.units.Units.Inches;
 import static edu.wpi.first.units.Units.Meters;
 
-import com.pathplanner.lib.controllers.PPHolonomicDriveController;
-import com.pathplanner.lib.config.PIDConstants;
-import com.pathplanner.lib.config.RobotConfig;
-
 import edu.wpi.first.math.geometry.Pose2d;
 import edu.wpi.first.math.geometry.Rotation3d;
 import edu.wpi.first.math.geometry.Transform3d;
 import edu.wpi.first.math.geometry.Translation2d;
 import edu.wpi.first.math.trajectory.TrapezoidProfile;
-import frc.robot.Other.RobotVersion;
+import frc.robot.support.RobotVersion;
 import frc.robot.subsystems.DriveTrain;
 
 public final class Constants {
@@ -140,19 +136,19 @@ public final class Constants {
     public static final double brTurnEncoderOffset = 0;
   }
 
-  public class RobotVersion2023 extends RobotVersionConstants {
-    public static final double flTurnEncoderOffset = 0.3459;
-    public static final double frTurnEncoderOffset = 0.730;
-    public static final double blTurnEncoderOffset = .1819;
-    public static final double brTurnEncoderOffset = 0.9262;
-  }
-
   public class RobotVersion2024 extends RobotVersionConstants {
-    public static final double flTurnEncoderOffset = 0.600;
-    public static final double frTurnEncoderOffset = 0.772;
-    public static final double blTurnEncoderOffset = 0.530;
-    public static final double brTurnEncoderOffset = 0.620;
+    public static final double flTurnEncoderOffset = 0;
+    public static final double frTurnEncoderOffset = 0;
+    public static final double blTurnEncoderOffset = 0;
+    public static final double brTurnEncoderOffset = 0;
   }
 
-  public static final RobotVersion defaultRobotVersion = RobotVersion.v2024;
+  public class RobotVersion2023 extends RobotVersionConstants {
+    public static final double flTurnEncoderOffset = 5.3038;
+    public static final double frTurnEncoderOffset = Math.PI/2 - 0.1242 - .05759;
+    public static final double blTurnEncoderOffset = 4.2+0.0385;
+    public static final double brTurnEncoderOffset = 2.736-.06098;
+  }
+
+  public static final RobotVersion defaultRobotVersion = RobotVersion.v2023;
 }
