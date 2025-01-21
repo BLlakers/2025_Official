@@ -45,6 +45,6 @@
     }
   },
   "resetOdom": true,
-  "folder": "Amp Autos",
+  "folder": null,
   "choreoAuto": false
 }

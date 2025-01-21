@@ -146,6 +146,6 @@
     }
   },
   "resetOdom": true,
-  "folder": "Opp Autos",
+  "folder": null,
   "choreoAuto": false
 }
