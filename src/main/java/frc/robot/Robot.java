@@ -60,7 +60,6 @@ public class Robot extends TimedRobot {
 
     @Override
     public void autonomousInit() {
-        m_robotContainer.m_Intake.resetIntakeAngle();
         m_robotContainer.m_DriveTrain.m_FieldRelativeEnable = false;
         m_autonomousCommand = m_robotContainer.getAutonomousCommand();
         if (m_autonomousCommand != null) {
@@ -79,7 +78,6 @@ public class Robot extends TimedRobot {
             m_autonomousCommand.cancel();
         }
 
-        m_robotContainer.AutoIntakeNoteCommand.cancel();
     }
 
     @Override

@@ -26,8 +26,6 @@ public class RobotContainer {
   // Creates our objects from our methods for our classes
   DriveTrain m_DriveTrain = new DriveTrain(Constants.defaultRobotVersion);
   Limelight m_Limelight = new Limelight();
-  Intake m_Intake = new Intake();
-  Hanger m_Hanger = new Hanger();
   AprilAlignToTransformCommand LimelightCode = new AprilAlignToTransformCommand(() -> m_Limelight.getCurrentAprilTag(),  m_Limelight.getAprilRotation2d(), m_DriveTrain, new Transform2d(0,-1, new Rotation2d()));
   // Shooter
 
@@ -49,22 +47,6 @@ public class RobotContainer {
   final Command Rotate = new SwerveDriveCommand(() -> 0, () -> 0, () -> .3, () -> 0, m_DriveTrain);
   // commands
   
-  final Command AutoIntakeOut =
-      m_Intake
-          .GetIntakeWheels() // shooter speed up
-          .EjectNoteCommand()
-          .withTimeout(1.0) // 0.5 (shooter) + 0.5 command
-          .withName("Auto Shoot Command");
-  final Command AutoIntakeNoteCommand =
-      m_Intake
-          .autoIntakeDown()
-          .onlyIf(() -> !m_Intake.NoteIsLoaded())
-          .alongWith(m_Intake.GetIntakeWheels().IntakeNoteCommand())
-          .finallyDo(m_Intake.autoIntakeUp()::schedule);
-  final Command AutoEjectNoteCommand =
-      m_Intake
-          .autoIntakeDown()
-          .andThen(m_Intake.GetIntakeWheels().EjectNoteCommand().withTimeout(0.5));
 
   // A chooser for autonomous commands
   private final SendableChooser<Command> autoChooser;
@@ -80,16 +62,6 @@ public class RobotContainer {
     configureBindings();
     // Build an auto chooser. This will use Commands.none() as the default option.
 
-    NamedCommands.registerCommand("IntakeOut", AutoIntakeOut);
-    NamedCommands.registerCommand(
-        "AutoLowerIntake",
-        new AutoIntake(
-            m_Intake, m_Intake.GetIntakeWheels(), AutoIntake.DrivingState.DriveIntakeDown));
-    NamedCommands.registerCommand(
-        "AutoRaiseIntake",
-        new AutoIntake(
-            m_Intake, m_Intake.GetIntakeWheels(), AutoIntake.DrivingState.DriveIntakeUp));
-    NamedCommands.registerCommand("Intake", new AutoIntake(m_Intake, m_Intake.GetIntakeWheels()));
     autoChooser = AutoBuilder.buildAutoChooser();
 
     // Another option that allows you to specify the default auto by its name:
@@ -163,55 +135,7 @@ public class RobotContainer {
     driverController.rightStick().onTrue(m_DriveTrain.WheelLockCommand()); // lock wheels
     driverController.x().whileTrue(LimelightCode);
     // Manipulator Controller commands
-    manipController
-        .leftBumper() // Angle down the shooter
-        .whileTrue(m_Hanger.LowerHangAuto());
-    manipController
-        .rightBumper() // Angle up the shooter
-        .whileTrue(m_Hanger.RaiseHangAuto());
-
-    manipController.start().onTrue(m_Intake.resetIntakePos());
-
-    manipController.b().whileTrue(AutoIntakeNoteCommand);
-    manipController
-        .x() // eject the intake command
-        .whileTrue(m_Intake.GetIntakeWheels().IntakeNoteCommand());
-
-    manipController.povUp().onTrue(m_Intake.autoIntakeUp());
-    manipController.povDown().onTrue(m_Intake.autoIntakeDown());
-    manipController
-        .povLeft()
-        .whileTrue(m_Intake.ManualLowerIntakeCommand()); // lower the intake arm
-    manipController
-        .povRight()
-        .whileTrue(m_Intake.ManualRaiseIntakeCommand()); // raise the intake arm
-
-    manipController
-        .y() // eject the intake command
-        .whileTrue(m_Intake.GetIntakeWheels().EjectNoteCommand());
-
-    manipController
-        .leftTrigger(0.5)
-        .whileTrue(m_Intake.GetIntakeWheels().IntakeNoteCommandrunRegardless());
-
-    // Debug controller
-    // - Manual hanger commands
-    debugController
-        .leftBumper() // Left Hanger arm down
-        .whileTrue(m_Hanger.runEnd(m_Hanger::LeftHangDown, m_Hanger::LeftHangStop));
-    debugController
-        .a() // Left Hanger arm up
-        .whileTrue(m_Hanger.runEnd(m_Hanger::LeftHangUp, m_Hanger::LeftHangStop));
-
-    debugController
-        .rightBumper() // Right Hanger arm down
-        .whileTrue(m_Hanger.runEnd(m_Hanger::RightHangDown, m_Hanger::RightHangStop));
-    debugController
-        .b() // Right Hanger arm up
-        .whileTrue(m_Hanger.runEnd(m_Hanger::RightHangUp, m_Hanger::RightHangStop));
-
-    debugController.x().whileTrue(DriveForward);
-    debugController.rightTrigger(.5).whileTrue(m_Intake.GetIntakeWheels().ReIntakeNoteCommand());
+   
     debugController.povDown().whileTrue(DriveSide);
   }
 
@@ -222,9 +146,6 @@ public class RobotContainer {
     SmartDashboard.putData(m_DriveTrain);
     SmartDashboard.putData(m_DriveTrain.getName() + "/Reset Pose 2D", m_DriveTrain.resetPose2d());
 
-    SmartDashboard.putData(m_Hanger);
-    SmartDashboard.putData(m_Intake);
-    SmartDashboard.putData(m_Intake.GetIntakeWheels());
     SmartDashboard.putData(m_Limelight);
   }
 
