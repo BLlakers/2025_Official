@@ -1,5 +1,7 @@
 package frc.robot.commands;
 
+import java.security.Provider;
+
 // import static frc.robot.Constants.VisionConstants.CAMERA_TO_ROBOT;
 
 import java.util.function.Supplier;
@@ -10,6 +12,7 @@ import edu.wpi.first.math.geometry.Pose2d;
 import edu.wpi.first.math.geometry.Pose3d;
 import edu.wpi.first.math.geometry.Rotation2d;
 import edu.wpi.first.math.geometry.Transform2d;
+import edu.wpi.first.math.geometry.Translation2d;
 import edu.wpi.first.math.kinematics.ChassisSpeeds;
 import edu.wpi.first.math.trajectory.TrapezoidProfile;
 import edu.wpi.first.math.util.Units;
@@ -62,9 +65,14 @@ public class AprilAlignToTransformCommand extends Command {
   // fields for tracking
   private Pose2d m_goalPose;
   private Transform2d m_tagToGoal;
+  
+  //Rotation2d of AprilTag
+  private Rotation2d m_aprilRotation;
+
 
   public AprilAlignToTransformCommand(
       Supplier<AprilTag> aprilTagSupplier,
+      Rotation2d aprilTagRotation2d,
       DriveTrain drivetrainSubsystem,
       Transform2d
           goalTransformRelativeToAprilTag) { // GoalTransformTo tag is where we want to stop. Should
@@ -72,6 +80,7 @@ public class AprilAlignToTransformCommand extends Command {
     this.m_drivetrain = drivetrainSubsystem;
     this.m_aprilTagProvider = aprilTagSupplier;
     this.m_tagToGoal = goalTransformRelativeToAprilTag;
+    this.m_aprilRotation = aprilTagRotation2d;
 
     m_xController.setTolerance(0.1);
     m_yController.setTolerance(0.1);
@@ -103,12 +112,16 @@ public class AprilAlignToTransformCommand extends Command {
     }
     // Find the tag we want to chase
     Pose3d botToTag = aprilTag.pose;
-    Transform2d testingBotToTag2d = new Transform2d(new Pose2d(), new Pose2d(botToTag.getTranslation().toTranslation2d(), new Rotation2d(botToTag.getRotation().getY())));
+    Transform2d testingBotToTag2d = new Transform2d(new Pose2d(), new Pose2d(botToTag.getTranslation().toTranslation2d(), m_aprilRotation));
     Transform2d botToTag2d = new Transform2d(new Pose2d(), botToTag.toPose2d());
 
     Transform2d botToGoalPose = botToTag2d.plus(m_tagToGoal);
 
-    m_goalPose = robotPose.transformBy(botToGoalPose);
+    //m_goalPose = robotPose.transformBy(botToGoalPose);
+
+    Transform2d testingBotToGoalPose2d = testingBotToTag2d.plus(m_tagToGoal);
+
+    m_goalPose = robotPose.transformBy(testingBotToGoalPose2d);
 
     if (null != m_goalPose) {
       // Drive

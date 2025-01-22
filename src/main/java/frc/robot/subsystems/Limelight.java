@@ -4,6 +4,7 @@ import edu.wpi.first.wpilibj.smartdashboard.SmartDashboard;
 
 import edu.wpi.first.apriltag.AprilTag;
 import edu.wpi.first.math.geometry.Pose3d;
+import edu.wpi.first.math.geometry.Rotation2d;
 import edu.wpi.first.math.geometry.Rotation3d;
 import edu.wpi.first.math.geometry.Translation3d;
 import edu.wpi.first.networktables.DoubleArraySubscriber;
@@ -46,6 +47,10 @@ public class Limelight extends SubsystemBase {
     SmartDashboard.putNumber("AprilTag/pose/rotX", Math.toDegrees(currentAprilTag.pose.getRotation().getX()));
     SmartDashboard.putNumber("AprilTag/pose/rotY", Math.toDegrees(currentAprilTag.pose.getRotation().getY()));
     SmartDashboard.putNumber("AprilTag/pose/rotZ", Math.toDegrees(currentAprilTag.pose.getRotation().getZ()));
+    SmartDashboard.putNumber("AprilTag/pose/measureRotZ", currentAprilTag.pose.getRotation().getMeasureZ().magnitude());
+    SmartDashboard.putNumber("AprilTag/pose/GetAngle", currentAprilTag.pose.getRotation().getAngle());
+    SmartDashboard.putNumber("AprilTag/pose/GetAxis", currentAprilTag.pose.getRotation().getAxis().get(2));
+    SmartDashboard.putNumber("AprilTag/pose/RAWz", aprilTagPoseTopic.getAtomic().value[5]);
   }
 
   /**
@@ -74,6 +79,17 @@ public class Limelight extends SubsystemBase {
     Pose3d aprilTagPose = new Pose3d(poseTranslation, poseOrientation); // creating pose3d based off of our
     // translation3d and rot3d and tid
     return new AprilTag(aprilTagId, aprilTagPose);
+  }
+
+  /**
+   * This function gets the raw Rotation3d values
+   *
+   * @return The Rotation2d of aprilTag
+   */
+  public Rotation2d getAprilRotation2d() {
+    TimestampedDoubleArray poseArray = aprilTagPoseTopic.getAtomic(); // (x, y, z, rotx, roty, rotz)
+
+    return new Rotation2d(Math.toRadians(poseArray.value[5]));
   }
 
   @Override
