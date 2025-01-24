@@ -51,6 +51,7 @@ public class Limelight extends SubsystemBase {
     SmartDashboard.putNumber("AprilTag/pose/GetAngle", currentAprilTag.pose.getRotation().getAngle());
     SmartDashboard.putNumber("AprilTag/pose/GetAxis", currentAprilTag.pose.getRotation().getAxis().get(2));
     SmartDashboard.putNumber("AprilTag/pose/RAWz", aprilTagPoseTopic.getAtomic().value[5]);
+    SmartDashboard.putNumber("AprilTag/pose/RAWZFromMethod", getAprilRotation2d().getDegrees());
   }
 
   /**

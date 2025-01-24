@@ -28,7 +28,8 @@ public class RobotContainer {
   Limelight m_Limelight = new Limelight();
   Intake m_Intake = new Intake();
   Hanger m_Hanger = new Hanger();
-  AprilAlignToTransformCommand LimelightCode = new AprilAlignToTransformCommand(() -> m_Limelight.getCurrentAprilTag(),  m_Limelight.getAprilRotation2d(), m_DriveTrain, new Transform2d(0,-1, new Rotation2d()));
+  AprilAlignToTransformCommand LimelightCode = new AprilAlignToTransformCommand(() -> m_Limelight.getCurrentAprilTag(), () ->  m_Limelight.getAprilRotation2d(), m_DriveTrain, new Transform2d(0,-1, new Rotation2d()));
+  AprilAlignCommand LimelightCodeV2 = new AprilAlignCommand(() -> m_Limelight.getCurrentAprilTag(), () ->  m_Limelight.getAprilRotation2d(), m_DriveTrain, new Transform2d(0,1, new Rotation2d()));
   // Shooter
 
   /**
@@ -161,7 +162,7 @@ public class RobotContainer {
     driverController.b().onTrue(m_DriveTrain.ZeroGyro());
     driverController.start().onTrue(m_DriveTrain.resetPose2d()); // RESETING OUR POSE 2d/ odometry
     driverController.rightStick().onTrue(m_DriveTrain.WheelLockCommand()); // lock wheels
-    driverController.x().whileTrue(LimelightCode);
+    driverController.x().whileTrue(LimelightCodeV2);
     // Manipulator Controller commands
     manipController
         .leftBumper() // Angle down the shooter

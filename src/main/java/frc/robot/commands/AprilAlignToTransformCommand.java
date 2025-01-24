@@ -67,12 +67,12 @@ public class AprilAlignToTransformCommand extends Command {
   private Transform2d m_tagToGoal;
   
   //Rotation2d of AprilTag
-  private Rotation2d m_aprilRotation;
+  private Supplier<Rotation2d> m_aprilRotation;
 
 
   public AprilAlignToTransformCommand(
       Supplier<AprilTag> aprilTagSupplier,
-      Rotation2d aprilTagRotation2d,
+      Supplier<Rotation2d> aprilTagRotation2d,
       DriveTrain drivetrainSubsystem,
       Transform2d
           goalTransformRelativeToAprilTag) { // GoalTransformTo tag is where we want to stop. Should
@@ -112,7 +112,7 @@ public class AprilAlignToTransformCommand extends Command {
     }
     // Find the tag we want to chase
     Pose3d botToTag = aprilTag.pose;
-    Transform2d testingBotToTag2d = new Transform2d(new Pose2d(), new Pose2d(botToTag.getTranslation().toTranslation2d(), m_aprilRotation));
+    Transform2d testingBotToTag2d = new Transform2d(new Pose2d(), new Pose2d(botToTag.getTranslation().toTranslation2d(), m_aprilRotation.get()));
     Transform2d botToTag2d = new Transform2d(new Pose2d(), botToTag.toPose2d());
 
     Transform2d botToGoalPose = botToTag2d.plus(m_tagToGoal);
@@ -160,6 +160,10 @@ public class AprilAlignToTransformCommand extends Command {
     SmartDashboard.putNumber(m_drivetrain.getName() + "/AprilAlignCommand/Command/TbotToTag2d/X", testingBotToTag2d.getX());
     SmartDashboard.putNumber(m_drivetrain.getName() + "/AprilAlignCommand/Command/TbotToTag2d/Y", testingBotToTag2d.getY());
     SmartDashboard.putNumber(m_drivetrain.getName() + "/AprilAlignCommand/Command/TbotToTag2d/Rot", testingBotToTag2d.getRotation().getDegrees());
+    SmartDashboard.putNumber(m_drivetrain.getName() + "/AprilAlignCommand/Command/TbotToGoalPose/X", testingBotToGoalPose2d.getX());
+    SmartDashboard.putNumber(m_drivetrain.getName() + "/AprilAlignCommand/Command/TbotToGoalPose/Y", testingBotToGoalPose2d.getY());
+    SmartDashboard.putNumber(m_drivetrain.getName() + "/AprilAlignCommand/Command/TbotToGoalPose/Rot", testingBotToGoalPose2d.getRotation().getDegrees());
+    SmartDashboard.putNumber(m_drivetrain.getName() + "/AprilAlignCommand/Command/ATagRot", m_aprilRotation.get().getDegrees());
     SmartDashboard.putNumber(m_drivetrain.getName() + "/AprilAlignCommand/Command/goalPose/X", m_goalPose.getX());
     SmartDashboard.putNumber(m_drivetrain.getName() + "/AprilAlignCommand/Command/goalPose/Y", m_goalPose.getY());
     SmartDashboard.putNumber(m_drivetrain.getName() + "/AprilAlignCommand/Command/goalPose/Rot", m_goalPose.getRotation().getDegrees());
