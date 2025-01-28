@@ -17,7 +17,7 @@ public class SparkMaxEncoderStrategy {
     }
 
     public double getPosition(){
-        if(RobotBase.isReal()){
+        if(RobotBase.isSimulation()){
             if(Objects.isNull(encoderSim)){
                 this.encoderSim = new SparkRelativeEncoderSim(motor);
             }
