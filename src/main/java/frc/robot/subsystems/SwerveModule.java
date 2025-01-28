@@ -51,7 +51,7 @@ public class SwerveModule extends SubsystemBase {
 
   private SparkMaxConfig config;
 
-  private SparkMaxEncoderStrategy sparkMaxEncoderStrategy;
+  private final SparkMaxEncoderStrategy sparkMaxEncoderStrategy;
 
   public final DutyCycleEncoder m_turningEncoder;
 
@@ -264,7 +264,7 @@ public class SwerveModule extends SubsystemBase {
 
     builder.addDoubleProperty(
         "TurnMotor/Angle", () -> Units.radiansToDegrees(m_turningEncoder.get()), null);
-    builder.addDoubleProperty("DriveMotor/Pos", this.driverMotorEncoder::getPosition, null);
+    builder.addDoubleProperty("DriveMotor/Pos", this.sparkMaxEncoderStrategy::getPosition, null);
     builder.addDoubleProperty("DriveMotor/Vel", this.driverMotorEncoder::getVelocity, null);
 
     builder.addDoubleProperty(
