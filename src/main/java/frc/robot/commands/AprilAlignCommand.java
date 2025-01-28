@@ -27,7 +27,7 @@ public class AprilAlignCommand extends Command{
   private final ProfiledPIDController m_xController =
       new ProfiledPIDController(1, 0, 0.0, X_CONSTRAINTS);
   private final ProfiledPIDController m_yController =
-      new ProfiledPIDController(1, 0, 0.0, Y_CONSTRAINTS);
+      new ProfiledPIDController(1.25, 0, 0.0, Y_CONSTRAINTS);
   private final ProfiledPIDController m_omegaController =
       new ProfiledPIDController(2, 0, 0.0, OMEGA_CONSTRAINTS); 
       
@@ -77,7 +77,7 @@ public class AprilAlignCommand extends Command{
       return;
     }
 
-    m_xController.setGoal(.25);
+    m_xController.setGoal(.25); 
     m_yController.setGoal(0);
     m_omegaController.setGoal(0);
 

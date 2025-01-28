@@ -61,6 +61,7 @@ public class Limelight extends SubsystemBase {
    */
   public AprilTag getCurrentAprilTag() {
     NetworkTable table = NetworkTableInstance.getDefault().getTable(limelightName);
+    
     NetworkTableEntry tid = table.getEntry("tid");
     int aprilTagId = (int) tid.getInteger(-1);
     TimestampedDoubleArray poseArray = aprilTagPoseTopic.getAtomic(); // (x, y, z, rotx, roty, rotz)
