@@ -6,6 +6,7 @@ import com.revrobotics.spark.config.ClosedLoopConfig.FeedbackSensor;
 import com.revrobotics.spark.config.SparkBaseConfig.IdleMode;
 import com.revrobotics.spark.config.SparkMaxConfig;
 
+import edu.wpi.first.wpilibj.DigitalInput;
 import edu.wpi.first.wpilibj2.command.Command;
 import edu.wpi.first.wpilibj2.command.SubsystemBase;
 
@@ -15,11 +16,11 @@ public class AlgaeMechanism extends SubsystemBase{
 
     //A motor to rotate up and down
     SparkMax m_armMotor = new SparkMax(0, com.revrobotics.spark.SparkLowLevel.MotorType.kBrushless);
-    
+    SparkMax m_intakeMotor = new SparkMax(0, com.revrobotics.spark.SparkLowLevel.MotorType.kBrushless);
+
     SparkMaxConfig config = new SparkMaxConfig();
 
     RelativeEncoder m_algaeMotorEncoder = m_armMotor.getEncoder();
-
 
     public AlgaeMechanism(){
         config
@@ -29,7 +30,7 @@ public class AlgaeMechanism extends SubsystemBase{
             .positionConversionFactor(algaePositionConversionFactor)
             .velocityConversionFactor(algaeVelocityConversionFactor);
         config.closedLoop
-            .feedbackSensor(FeedbackSensor.kPrimaryEncoder)
+            .feedbackSensor(FeedbackSensor.kAbsoluteEncoder)
             .pid(1.0,0,0);
     }
 
@@ -41,8 +42,20 @@ public class AlgaeMechanism extends SubsystemBase{
         m_armMotor.set(-.85);
     }
 
-    public void algaeStop() {
+    public void moveAlgaeStop() {
         m_armMotor.set(0);
+    }
+
+    public void intakeForward() {
+        m_intakeMotor.set(.85);
+    }
+
+    public void intakeBackward() {
+        m_intakeMotor.set(-.85);
+    }
+
+    public void intakeStop() {
+        m_intakeMotor.set(0);
     }
 
     public Command algaeForwardCmd() {
@@ -51,5 +64,21 @@ public class AlgaeMechanism extends SubsystemBase{
 
     public Command algaeBackwardCmd() {
         return this.runOnce(this::moveAlgaeBackward);
+    }
+
+    public Command moveAlgaeStopCmd() {
+        return this.runOnce(this::moveAlgaeStop);
+    }
+
+    public Command algaeIntakeForwardCmd() {
+        return this.runOnce(this::intakeForward);
+    }
+
+    public Command algaeIntakeBackwardCmd() {
+        return this.runOnce(this::intakeBackward);
+    }
+
+    public Command algaeIntakeStopCmd() {
+        return this.runOnce(this::intakeStop);
     }
 }
