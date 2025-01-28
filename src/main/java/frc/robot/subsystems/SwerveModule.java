@@ -4,27 +4,27 @@
 
 package frc.robot.subsystems;
 
-import edu.wpi.first.math.controller.ProfiledPIDController;
-import edu.wpi.first.math.geometry.Rotation2d;
-import edu.wpi.first.math.kinematics.SwerveModuleState;
-import edu.wpi.first.math.kinematics.SwerveModulePosition;
-import edu.wpi.first.math.trajectory.TrapezoidProfile;
-import edu.wpi.first.math.util.Units;
-import edu.wpi.first.units.measure.Current;
-import edu.wpi.first.util.sendable.SendableBuilder;
-
-import com.revrobotics.spark.SparkMax;
-import com.revrobotics.spark.config.SparkMaxConfig;
-import com.revrobotics.spark.config.ClosedLoopConfig.FeedbackSensor;
-import com.revrobotics.spark.config.SparkBaseConfig.IdleMode;
+import com.revrobotics.RelativeEncoder;
+import com.revrobotics.sim.SparkRelativeEncoderSim;
 import com.revrobotics.spark.SparkBase.PersistMode;
 import com.revrobotics.spark.SparkBase.ResetMode;
-
-import com.revrobotics.RelativeEncoder;
+import com.revrobotics.spark.SparkMax;
+import com.revrobotics.spark.config.ClosedLoopConfig.FeedbackSensor;
+import com.revrobotics.spark.config.SparkBaseConfig.IdleMode;
+import com.revrobotics.spark.config.SparkMaxConfig;
+import edu.wpi.first.math.controller.ProfiledPIDController;
+import edu.wpi.first.math.geometry.Rotation2d;
+import edu.wpi.first.math.kinematics.SwerveModulePosition;
+import edu.wpi.first.math.kinematics.SwerveModuleState;
+import edu.wpi.first.math.trajectory.TrapezoidProfile;
+import edu.wpi.first.math.util.Units;
+import edu.wpi.first.util.sendable.SendableBuilder;
 import edu.wpi.first.wpilibj.DutyCycleEncoder;
+import edu.wpi.first.wpilibj.RobotBase;
 import edu.wpi.first.wpilibj.smartdashboard.SmartDashboard;
 import edu.wpi.first.wpilibj2.command.SubsystemBase;
 import frc.robot.Constants;
+import frc.robot.support.SparkMaxEncoderStrategy;
 
 /**
  * This is the code to run a single swerve module <br>
@@ -50,6 +50,8 @@ public class SwerveModule extends SubsystemBase {
   private final RelativeEncoder driverMotorEncoder;
 
   private SparkMaxConfig config;
+
+  private SparkMaxEncoderStrategy sparkMaxEncoderStrategy;
 
   public final DutyCycleEncoder m_turningEncoder;
 
@@ -79,6 +81,8 @@ public class SwerveModule extends SubsystemBase {
     m_driveMotor =
         new SparkMax(driveMotorChannel, com.revrobotics.spark.SparkLowLevel.MotorType.kBrushless);
     //m_driveMotor.restoreFactoryDefaults();
+
+    this.sparkMaxEncoderStrategy = new SparkMaxEncoderStrategy(m_driveMotor);
 
     this.driverMotorEncoder = m_driveMotor.getEncoder();
 
@@ -134,7 +138,6 @@ public class SwerveModule extends SubsystemBase {
   public SwerveModuleState getModuleState() {
     // the getVelocity() function normally returns RPM but is scaled in the
     // SwerveModule constructor to return actual wheel speed
-
     return new SwerveModuleState(
       m_driveMotor.getEncoder().getVelocity(), Rotation2d.fromRadians(m_turningEncoder.get()));
   }
@@ -147,7 +150,7 @@ public class SwerveModule extends SubsystemBase {
    */
   public SwerveModulePosition getModulePosition() {
     return new SwerveModulePosition(
-      m_driveMotor.getEncoder().getPosition(), Rotation2d.fromRadians(m_turningEncoder.get()));
+            this.sparkMaxEncoderStrategy.getPosition(), Rotation2d.fromRadians(m_turningEncoder.get()));
   }
 
   /**
