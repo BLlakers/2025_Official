@@ -15,7 +15,7 @@ public class SparkMaxEncoderStrategy {
     public SparkMaxEncoderStrategy(final SparkMax motor) {
         this.motor = motor;
     }
-    
+
     public double getPosition() {
         if (RobotBase.isSimulation()) {
             if (isNull(this.lazyEncoderSim)) {
