@@ -15,18 +15,7 @@ public class SparkMaxEncoderStrategy {
     public SparkMaxEncoderStrategy(final SparkMax motor) {
         this.motor = motor;
     }
-
-    public void advancePosition() {
-        if (RobotBase.isSimulation()) {
-            if (isNull(this.lazyEncoderSim)) {
-                this.lazyEncoderSim = new SparkRelativeEncoderSim(this.motor);
-            }
-            this.lazyEncoderSim.setPosition(this.lazyEncoderSim.getPosition() + 2.0);
-        } else {
-            this.motor.getEncoder().setPosition(this.motor.getEncoder().getPosition() + 2.0);
-        }
-    }
-
+    
     public double getPosition() {
         if (RobotBase.isSimulation()) {
             if (isNull(this.lazyEncoderSim)) {
@@ -40,7 +29,7 @@ public class SparkMaxEncoderStrategy {
 
     public double getVelocity() {
         if (RobotBase.isSimulation()) {
-            if (isNull(lazyEncoderSim)) {
+            if (isNull(this.lazyEncoderSim)) {
                 this.lazyEncoderSim = new SparkRelativeEncoderSim(this.motor);
             }
             return this.lazyEncoderSim.getVelocity();
