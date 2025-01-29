@@ -26,6 +26,8 @@ public class RobotContainer {
   // Creates our objects from our methods for our classes
   DriveTrain m_DriveTrain = new DriveTrain(Constants.defaultRobotVersion);
   Limelight m_Limelight = new Limelight();
+  LedStrand mLedStrand = new LedStrand();
+   
   AprilAlignToTransformCommand LimelightCode = new AprilAlignToTransformCommand(() -> m_Limelight.getCurrentAprilTag(),  m_Limelight.getAprilRotation2d(), m_DriveTrain, new Transform2d(0,-1, new Rotation2d()));
   // Shooter
 
