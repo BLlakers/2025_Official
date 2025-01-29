@@ -2,6 +2,7 @@ package frc.robot;
 
 import edu.wpi.first.cameraserver.CameraServer;
 import edu.wpi.first.wpilibj.PowerDistribution;
+import edu.wpi.first.wpilibj.RobotBase;
 import edu.wpi.first.wpilibj.TimedRobot;
 import edu.wpi.first.wpilibj.smartdashboard.SmartDashboard;
 import edu.wpi.first.wpilibj2.command.Command;
@@ -17,7 +18,7 @@ public class Robot extends TimedRobot {
     String codeVersion = "0.0";
     private PowerDistribution PDH = new PowerDistribution(20, PowerDistribution.ModuleType.kRev);
 
-    
+
 
     @Override
     public void close() {
@@ -35,12 +36,9 @@ public class Robot extends TimedRobot {
         m_robotContainer = new RobotContainer();
         m_robotContainer.m_DriveTrain.ZeroGyro().schedule();
         m_robotContainer.mLedStrand.changeLed(128, 0, 0);
-        try {
-            var cam = CameraServer.startAutomaticCapture();
+        try (var cam = CameraServer.startAutomaticCapture()) {
             cam.setResolution(100, 100);
             cam.setFPS(60);
-        } catch (Exception e) {
-            // TODO: handle exception
         }
 
         SmartDashboard.putString("Code Version", codeVersion);

@@ -10,26 +10,42 @@ public class SparkMaxEncoderStrategy {
 
     private final SparkMax motor;
 
-    private SparkRelativeEncoderSim encoderSim;
+    private SparkRelativeEncoderSim lazyEncoderSim;
 
     public SparkMaxEncoderStrategy(final SparkMax motor) {
         this.motor = motor;
     }
 
-    public double getPosition(){
-        if(RobotBase.isSimulation()){
-            if(isNull(encoderSim)){
-                this.encoderSim = new SparkRelativeEncoderSim(this.motor);
+    public void advancePosition() {
+        if (RobotBase.isSimulation()) {
+            if (isNull(this.lazyEncoderSim)) {
+                this.lazyEncoderSim = new SparkRelativeEncoderSim(this.motor);
             }
-            return encoderSim.getPosition();
-        }else{
-            return motor.getEncoder().getPosition();
+            this.lazyEncoderSim.setPosition(this.lazyEncoderSim.getPosition() + 2.0);
+        } else {
+            this.motor.getEncoder().setPosition(this.motor.getEncoder().getPosition() + 2.0);
         }
     }
 
-    public double getVelocity(){
-        // TODO: @avibot1 Implement getVelocity() in a similar way to the above getPosition()
-        // NOTE: returning temp value pending correct implementation
-        return 0.0;
+    public double getPosition() {
+        if (RobotBase.isSimulation()) {
+            if (isNull(this.lazyEncoderSim)) {
+                this.lazyEncoderSim = new SparkRelativeEncoderSim(this.motor);
+            }
+            return this.lazyEncoderSim.getPosition();
+        } else {
+            return this.motor.getEncoder().getPosition();
+        }
+    }
+
+    public double getVelocity() {
+        if (RobotBase.isSimulation()) {
+            if (isNull(lazyEncoderSim)) {
+                this.lazyEncoderSim = new SparkRelativeEncoderSim(this.motor);
+            }
+            return this.lazyEncoderSim.getVelocity();
+        } else {
+            return this.motor.getEncoder().getVelocity();
+        }
     }
 }

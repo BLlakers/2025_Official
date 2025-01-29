@@ -139,7 +139,7 @@ public class SwerveModule extends SubsystemBase {
     // the getVelocity() function normally returns RPM but is scaled in the
     // SwerveModule constructor to return actual wheel speed
     return new SwerveModuleState(
-      m_driveMotor.getEncoder().getVelocity(), Rotation2d.fromRadians(m_turningEncoder.get()));
+            this.sparkMaxEncoderStrategy.getVelocity(), Rotation2d.fromRadians(m_turningEncoder.get()));
   }
 
   /**
