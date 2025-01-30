@@ -25,13 +25,12 @@ import frc.robot.subsystems.*;
 public class RobotContainer {
   // Creates our objects from our methods for our classes
   DriveTrain m_DriveTrain = new DriveTrain(Constants.defaultRobotVersion);
-  Limelight m_LimelightFront = new Limelight();
-  Limelight m_LimelightBack = new Limelight("LimelightBack");
+  Limelight m_LimelightFront = new Limelight("limelight-front");
+  Limelight m_LimelightBack = new Limelight("limelight-back");
   Intake m_Intake = new Intake();
   Hanger m_Hanger = new Hanger();
-  AprilAlignToTransformCommand LimelightCode = new AprilAlignToTransformCommand(() -> m_LimelightFront.getCurrentAprilTag(), () ->  m_LimelightFront.getAprilRotation2d(), m_DriveTrain, new Transform2d(0,-1, new Rotation2d()));
-  AprilAlignCommand LimelightCodeFront = new AprilAlignCommand(() -> m_LimelightFront.getCurrentAprilTag(), () ->  m_LimelightFront.getAprilRotation2d(), m_DriveTrain, new Transform2d(0,1, new Rotation2d()));
-  AprilAlignCommand LimelightCodeBack = new AprilAlignCommand(() -> m_LimelightBack.getCurrentAprilTag(), () ->  m_LimelightBack.getAprilRotation2d(), m_DriveTrain, new Transform2d(0,1, new Rotation2d()));
+  AprilAlignCommand LimelightCodeFront = new AprilAlignCommand(() -> m_LimelightFront.getCurrentAprilTag(), () ->  m_LimelightFront.getAprilRotation2d(), m_DriveTrain, new Transform2d(0,1, new Rotation2d()), false);
+  AprilAlignCommand LimelightCodeBack = new AprilAlignCommand(() -> m_LimelightBack.getCurrentAprilTag(), () ->  m_LimelightBack.getAprilRotation2d(), m_DriveTrain, new Transform2d(0,1, new Rotation2d()), true);
   
   
   
@@ -168,7 +167,7 @@ public class RobotContainer {
     driverController.start().onTrue(m_DriveTrain.resetPose2d()); // RESETING OUR POSE 2d/ odometry
     driverController.rightStick().onTrue(m_DriveTrain.WheelLockCommand()); // lock wheels
     driverController.x().whileTrue(LimelightCodeFront); 
-    driverController.y().whileTrue(LimelightCodeFront);
+    driverController.y().whileTrue(LimelightCodeBack);
     // Manipulator Controller commands
     manipController
         .leftBumper() // Angle down the shooter

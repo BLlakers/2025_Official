@@ -40,14 +40,17 @@ public class AprilAlignCommand extends Command{
 
   //Rotation2d of AprilTag
   private Supplier<Rotation2d> m_aprilRotation;
+  
+  private Boolean m_isBackwards;
 
 
-  public AprilAlignCommand(Supplier<AprilTag> aprilTagSupplier, Supplier<Rotation2d> aprilTagRotation2d,DriveTrain drivetrainSubsystem, Transform2d
-  goalTransformRelativeToAprilTag){
+  public AprilAlignCommand(Supplier<AprilTag> aprilTagSupplier, Supplier<Rotation2d> aprilTagRotation2d, DriveTrain drivetrainSubsystem, Transform2d
+  goalTransformRelativeToAprilTag, boolean isBackwards){
     m_aprilTagProvider = aprilTagSupplier;
     m_drivetrain = drivetrainSubsystem;
     m_tagToGoal = goalTransformRelativeToAprilTag;
     m_aprilRotation = aprilTagRotation2d;
+    m_isBackwards = isBackwards;
 
     m_xController.setTolerance(0.05);
     m_yController.setTolerance(0.05);
@@ -70,6 +73,7 @@ public class AprilAlignCommand extends Command{
     Pose2d robotPose = m_drivetrain.getPose2d();
     AprilTag aprilTag = m_aprilTagProvider.get();
     double aprilTagSkewFixed;
+    double aprilSkew;
     if (aprilTag.ID
         <= 0) { // is valid if > 0: we update our current estimate of where the april tag is
       // relative to the robot
@@ -98,13 +102,23 @@ public class AprilAlignCommand extends Command{
       ySpeed = 0;
     }
 
-    double rotSpeed = m_omegaController.calculate(Math.toRadians(LimelightHelpers.getTX("limelight")));
+    if(m_isBackwards){
+      aprilSkew = Math.toRadians(LimelightHelpers.getTX("limelight-back"));
+    }else {
+      aprilSkew = Math.toRadians(LimelightHelpers.getTX("limelight-front"));
+    }
+    double rotSpeed = m_omegaController.calculate(aprilSkew);
     if (m_omegaController.atGoal()) {
       rotSpeed = 0;
     }
 
     m_drivetrain.m_FieldRelativeEnable = false; 
-    m_drivetrain.drive(-1*xSpeed, ySpeed, rotSpeed);
+
+    if(m_isBackwards){
+      m_drivetrain.drive(xSpeed,-1* ySpeed, rotSpeed);
+    }else {
+      m_drivetrain.drive(-1*xSpeed, ySpeed, rotSpeed);
+    }
 
     //m_drivetrain.driveChassisSpeeds(
     //    ChassisSpeeds.fromFieldRelativeSpeeds(-1*xSpeed, 0, rotSpeed, robotPose.getRotation()));

@@ -32,16 +32,18 @@ public class Robot extends TimedRobot {
     public void robotInit() {
         m_robotContainer = new RobotContainer();
         m_robotContainer.m_DriveTrain.ZeroGyro().schedule();
-        var cam = CameraServer.startAutomaticCapture();
-        cam.setResolution(100, 100);
-        cam.setFPS(60);
+        try {
+            var cam = CameraServer.startAutomaticCapture();
+            cam.setResolution(100, 100);
+            cam.setFPS(60);
+        } catch (Exception e) {
+            // TODO: handle exception
+        }
+
 
         SmartDashboard.putString("Code Version", codeVersion);
 
         // TODO: Evaluate port forwarding setup
-        LimelightUtil.startPortForwarding();
-
-        Telemetry.info("Robot initialized");
     }
 
     @Override

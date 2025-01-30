@@ -50,7 +50,7 @@ public class Limelight extends SubsystemBase {
     SmartDashboard.putNumber("AprilTag/pose/measureRotZ", currentAprilTag.pose.getRotation().getMeasureZ().magnitude());
     SmartDashboard.putNumber("AprilTag/pose/GetAngle", currentAprilTag.pose.getRotation().getAngle());
     SmartDashboard.putNumber("AprilTag/pose/GetAxis", currentAprilTag.pose.getRotation().getAxis().get(2));
-    SmartDashboard.putNumber("AprilTag/pose/RAWz", aprilTagPoseTopic.getAtomic().value[5]);
+    //SmartDashboard.putNumber("AprilTag/pose/RAWz", aprilTagPoseTopic.getAtomic().value[5]);
     SmartDashboard.putNumber("AprilTag/pose/RAWZFromMethod", getAprilRotation2d().getDegrees());
   }
 
@@ -61,7 +61,7 @@ public class Limelight extends SubsystemBase {
    */
   public AprilTag getCurrentAprilTag() {
     NetworkTable table = NetworkTableInstance.getDefault().getTable(limelightName);
-    
+
     NetworkTableEntry tid = table.getEntry("tid");
     int aprilTagId = (int) tid.getInteger(-1);
     TimestampedDoubleArray poseArray = aprilTagPoseTopic.getAtomic(); // (x, y, z, rotx, roty, rotz)
