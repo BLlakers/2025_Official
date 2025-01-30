@@ -137,7 +137,8 @@ public class RobotContainer {
     driverController.rightStick().onTrue(m_DriveTrain.WheelLockCommand()); // lock wheels
     driverController.x().whileTrue(LimelightCode);
     // Manipulator Controller commands
-   
+
+    debugController.x().onTrue(mLedStrand.changeLedCommand());
     debugController.povDown().whileTrue(DriveSide);
   }
 
