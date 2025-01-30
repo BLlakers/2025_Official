@@ -155,9 +155,6 @@ public class RobotContainer {
     SmartDashboard.putData(m_DriveTrain);
     SmartDashboard.putData(m_DriveTrain.getName() + "/Reset Pose 2D", m_DriveTrain.resetPose2d());
 
-    SmartDashboard.putData(m_Hanger);
-    SmartDashboard.putData(m_Intake);
-    SmartDashboard.putData(m_Intake.GetIntakeWheels());
     SmartDashboard.putData(m_LimelightFront);
   }
 
