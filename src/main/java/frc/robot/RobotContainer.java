@@ -138,8 +138,8 @@ public class RobotContainer {
     driverController.x().whileTrue(LimelightCode);
     // Manipulator Controller commands
 
-    debugController.x().onTrue(mLedStrand.changeLedCommand());
-    debugController.povDown().whileTrue(DriveSide);
+    driverController.y().onTrue(mLedStrand.changeLedCommand());
+    driverController.povDown().whileTrue(DriveSide);
   }
 
   private void configureShuffleboard() {
