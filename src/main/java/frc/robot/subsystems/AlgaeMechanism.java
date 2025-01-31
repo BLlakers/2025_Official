@@ -1,84 +1,115 @@
 package frc.robot.subsystems;
 
 import com.revrobotics.RelativeEncoder;
+import com.revrobotics.spark.SparkBase.PersistMode;
+import com.revrobotics.spark.SparkBase.ResetMode;
 import com.revrobotics.spark.SparkMax;
 import com.revrobotics.spark.config.ClosedLoopConfig.FeedbackSensor;
 import com.revrobotics.spark.config.SparkBaseConfig.IdleMode;
 import com.revrobotics.spark.config.SparkMaxConfig;
 
-import edu.wpi.first.wpilibj.DigitalInput;
+import edu.wpi.first.util.sendable.SendableBuilder;
 import edu.wpi.first.wpilibj2.command.Command;
 import edu.wpi.first.wpilibj2.command.SubsystemBase;
+import frc.robot.Constants;
 
 public class AlgaeMechanism extends SubsystemBase{
-    double algaePositionConversionFactor = 10.0;
-    double algaeVelocityConversionFactor = 10.0;
+   private double algaePositionConversionFactor = 1;
+   private double algaeVelocityConversionFactor = 1;
 
     //A motor to rotate up and down
-    SparkMax m_armMotor = new SparkMax(0, com.revrobotics.spark.SparkLowLevel.MotorType.kBrushless);
-    SparkMax m_intakeMotor = new SparkMax(0, com.revrobotics.spark.SparkLowLevel.MotorType.kBrushless);
-
-    SparkMaxConfig config = new SparkMaxConfig();
-
-    RelativeEncoder m_algaeMotorEncoder = m_armMotor.getEncoder();
+   private SparkMax m_AlgaeMotor = new SparkMax(Constants.Port.m_ArmMtrC, com.revrobotics.spark.SparkLowLevel.MotorType.kBrushless);
+   private SparkMax m_IntakeMotor = new SparkMax(Constants.Port.m_IntakeMtrC, com.revrobotics.spark.SparkLowLevel.MotorType.kBrushless);
+   private SparkMaxConfig m_AlgaeConfig = new SparkMaxConfig();
+   private SparkMaxConfig m_IntakeConfig = new SparkMaxConfig();
 
     public AlgaeMechanism(){
-        config
+        m_AlgaeConfig
             .inverted(true)
             .idleMode(IdleMode.kBrake);
-        config.encoder
+        m_AlgaeConfig.encoder
             .positionConversionFactor(algaePositionConversionFactor)
             .velocityConversionFactor(algaeVelocityConversionFactor);
-        config.closedLoop
-            .feedbackSensor(FeedbackSensor.kAbsoluteEncoder)
+        m_AlgaeConfig.closedLoop
+            .feedbackSensor(FeedbackSensor.kAlternateOrExternalEncoder)
             .pid(1.0,0,0);
+        
+        m_IntakeConfig
+            .inverted(true)
+            .idleMode(IdleMode.kBrake);
+        m_IntakeConfig.encoder
+            .positionConversionFactor(algaePositionConversionFactor)
+            .velocityConversionFactor(algaeVelocityConversionFactor);
+        m_IntakeConfig.closedLoop
+            .feedbackSensor(FeedbackSensor.kPrimaryEncoder)
+            .pid(1.0,0,0);
+
+            m_AlgaeMotor.configure(m_AlgaeConfig, ResetMode.kResetSafeParameters, PersistMode.kPersistParameters);
+            m_IntakeMotor.configure(m_IntakeConfig, ResetMode.kResetSafeParameters, PersistMode.kPersistParameters);
     }
 
-    public void moveAlgaeForward() {
-        m_armMotor.set(.85);
+    public void AlgaeForward() {
+        m_AlgaeMotor.set(.85);
     }
 
-    public void moveAlgaeBackward() {
-        m_armMotor.set(-.85);
+    public void AlgaeBackward() {
+        m_AlgaeMotor.set(-.85);
     }
 
-    public void moveAlgaeStop() {
-        m_armMotor.set(0);
+    public void AlgaeStop() {
+        m_AlgaeMotor.set(0);
     }
 
-    public void intakeForward() {
-        m_intakeMotor.set(.85);
+    public void IntakeForward() {
+        m_IntakeMotor.set(.85);
     }
 
-    public void intakeBackward() {
-        m_intakeMotor.set(-.85);
+    public void IntakeBackward() {
+        m_IntakeMotor.set(-.85);
     }
 
-    public void intakeStop() {
-        m_intakeMotor.set(0);
+    public void IntakeStop() {
+        m_IntakeMotor.set(0);
     }
 
-    public Command algaeForwardCmd() {
-        return this.runOnce(this::moveAlgaeForward);
+    public double getIntakeEncoderPos(){
+        return m_IntakeMotor.getAlternateEncoder().getPosition();
+    }
+    
+    public double getAlgaeEncoderPos(){
+        return m_AlgaeMotor.getAlternateEncoder().getPosition();
     }
 
-    public Command algaeBackwardCmd() {
-        return this.runOnce(this::moveAlgaeBackward);
+    public Command AlgaeForwardCmd() {
+        return this.runOnce(this::AlgaeForward);
     }
 
-    public Command moveAlgaeStopCmd() {
-        return this.runOnce(this::moveAlgaeStop);
+    public Command AlgaeBackwardCmd() {
+        return this.runOnce(this::AlgaeBackward);
     }
 
-    public Command algaeIntakeForwardCmd() {
-        return this.runOnce(this::intakeForward);
+    public Command AlgaeStopCmd() {
+        return this.runOnce(this::AlgaeStop);
     }
 
-    public Command algaeIntakeBackwardCmd() {
-        return this.runOnce(this::intakeBackward);
+    public Command IntakeForwardCmd() {
+        return this.runOnce(this::IntakeForward);
     }
 
-    public Command algaeIntakeStopCmd() {
-        return this.runOnce(this::intakeStop);
+    public Command IntakeBackwardCmd() {
+        return this.runOnce(this::IntakeBackward);
     }
+
+    public Command IntakeStopCmd() {
+        return this.runOnce(this::IntakeStop);
+    }
+
+    
+  @Override
+  public void initSendable(SendableBuilder builder) {
+    super.initSendable(builder);
+
+    builder.addDoubleProperty("Algae/Intake/Position", () -> getIntakeEncoderPos(), null);
+    builder.addDoubleProperty("Algae/Algae/Position", () -> getAlgaeEncoderPos(), null);
+  }
 }

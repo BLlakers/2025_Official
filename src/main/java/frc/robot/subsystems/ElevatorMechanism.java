@@ -4,60 +4,77 @@ import com.revrobotics.spark.SparkMax;
 import com.revrobotics.spark.config.ClosedLoopConfig.FeedbackSensor;
 import com.revrobotics.spark.config.SparkBaseConfig.IdleMode;
 
+import edu.wpi.first.math.util.Units;
+import edu.wpi.first.util.sendable.SendableBuilder;
 import edu.wpi.first.wpilibj.DigitalInput;
+import edu.wpi.first.wpilibj.smartdashboard.SmartDashboard;
 import edu.wpi.first.wpilibj2.command.Command;
 import edu.wpi.first.wpilibj2.command.SubsystemBase;
+import frc.robot.Constants;
 
 import com.revrobotics.spark.config.SparkMaxConfig;
 
 public class ElevatorMechanism extends SubsystemBase{
-    double elevatorPositionConversionFactor = 10.0;
-    double elevatorVelocityConversionFactor = 10.0;
+   private double elevatorPositionConversionFactor = 1;
+   private double elevatorVelocityConversionFactor = 1;
 
     //A motor to rotate up and down
-    SparkMax m_elevatorMotor = new SparkMax(0, com.revrobotics.spark.SparkLowLevel.MotorType.kBrushless);
+   private SparkMax m_ElevatorMotor = new SparkMax(Constants.Port.m_ElevatorMtrC, com.revrobotics.spark.SparkLowLevel.MotorType.kBrushless);
 
-    DigitalInput bottomLimitSwitch = new DigitalInput(0);
+   private DigitalInput m_ElevatorLimitSwitch = new DigitalInput(0);
     
-    SparkMaxConfig config = new SparkMaxConfig();
+   private SparkMaxConfig m_ElevatorConfig = new SparkMaxConfig();
 
     public ElevatorMechanism() {
-         config
+         m_ElevatorConfig
             .inverted(true)
             .idleMode(IdleMode.kBrake);
-        config.encoder
+        m_ElevatorConfig.encoder
             .positionConversionFactor(elevatorPositionConversionFactor)
             .velocityConversionFactor(elevatorVelocityConversionFactor);
-        config.closedLoop
+        m_ElevatorConfig.closedLoop
             .feedbackSensor(FeedbackSensor.kAbsoluteEncoder)
             .pid(1.0,0,0);
     }
 
-    public void elevatorMotorUp() {
-        m_elevatorMotor.set(.85);
+    public void ElevatorMotorUp() {
+        m_ElevatorMotor.set(.85);
     }
 
-    public void elevatorMotorDown() {
-        if (bottomLimitSwitch.get()) {
-            m_elevatorMotor.set(0);
+    public void ElevatorMotorDown() {
+        if (m_ElevatorLimitSwitch.get()) {
+            m_ElevatorMotor.set(0);
         } else {
-            m_elevatorMotor.set(-.85);
+            m_ElevatorMotor.set(-.85);
         }
     }
 
-    public void elevatorMotorStop() {
-        m_elevatorMotor.set(0);
+    public void ElevatorMotorStop() {
+        m_ElevatorMotor.set(0);
     }
 
-    public Command elevatorUpCmd() {
-        return this.runOnce(this::elevatorMotorUp);
+    public double getElevatorEncoderPos(){
+        return m_ElevatorMotor.getAlternateEncoder().getPosition();
     }
 
-    public Command elevatorDownCmd() {
-        return this.runOnce(this::elevatorMotorDown);
+    public Command ElevatorUpCmd() {
+        return this.runOnce(this::ElevatorMotorUp);
     }
 
-    public Command elevatorStopCmd() {
-        return this.runOnce(this::elevatorMotorStop);
+    public Command ElevatorDownCmd() {
+        return this.runOnce(this::ElevatorMotorDown);
     }
+
+    public Command ElevatorStopCmd() {
+        return this.runOnce(this::ElevatorMotorStop);
+    }
+
+
+    
+  @Override
+  public void initSendable(SendableBuilder builder) {
+    super.initSendable(builder);
+
+    builder.addDoubleProperty("Elevator/Position", () -> getElevatorEncoderPos(), null);
+  }
 }

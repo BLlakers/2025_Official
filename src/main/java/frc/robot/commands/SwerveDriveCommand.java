@@ -8,15 +8,13 @@ import edu.wpi.first.wpilibj.smartdashboard.SmartDashboard;
 import edu.wpi.first.wpilibj2.command.Command;
 import frc.robot.Constants;
 import frc.robot.subsystems.DriveTrain;
-import frc.robot.RobotContainer;
 
 public class SwerveDriveCommand extends Command {
-  DoubleSupplier m_leftY;
-  DoubleSupplier m_leftX;
-  DoubleSupplier m_rightX;
-  DoubleSupplier m_AccelerateRT;
-  DriveTrain m_DriveTrain;
-  RobotContainer m_RobotContainer;
+ private DoubleSupplier m_leftY;
+ private DoubleSupplier m_leftX;
+ private DoubleSupplier m_rightX;
+ private DoubleSupplier m_AccelerateRT;
+ private DriveTrain m_DriveTrain;
 
   private BooleanSupplier m_RunHalfSpeed;
 

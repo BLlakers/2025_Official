@@ -98,6 +98,11 @@ public final class Constants {
     public static final int frDriveMtrC = 6;
     public static final int brDriveMtrC = 7;
     public static final int brSteerMtrC = 8;
+    public static final int m_IntakeMtrC = 9;
+    public static final int m_ArmMtrC = 10;
+    public static final int m_ElevatorMtrC = 11;
+    public static final int m_ClimbMtrC = 12;
+    public static final int m_CoralMtrC = 13;
     public static final int blTurnEncoderDIOC = 0;
     public static final int flTurnEncoderDIOC = 1;
     public static final int frTurnEncoderDIOC = 2;

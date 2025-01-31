@@ -3,12 +3,10 @@ package frc.robot.commands;
 import java.util.function.Supplier;
 
 import edu.wpi.first.apriltag.AprilTag;
-import edu.wpi.first.math.controller.PIDController;
 import edu.wpi.first.math.controller.ProfiledPIDController;
 import edu.wpi.first.math.geometry.Pose2d;
 import edu.wpi.first.math.geometry.Rotation2d;
 import edu.wpi.first.math.geometry.Transform2d;
-import edu.wpi.first.math.kinematics.ChassisSpeeds;
 import edu.wpi.first.math.trajectory.TrapezoidProfile;
 import edu.wpi.first.math.util.Units;
 import edu.wpi.first.wpilibj.smartdashboard.SmartDashboard;
@@ -35,10 +33,6 @@ public class AprilAlignCommand extends Command{
   private DriveTrain m_drivetrain;
   private Supplier<AprilTag> m_aprilTagProvider;
 
-  // fields for tracking
-  private Pose2d m_goalPose;
-  private Transform2d m_tagToGoal;
-
   //Rotation2d of AprilTag
   private Supplier<Rotation2d> m_aprilRotation;
   
@@ -50,7 +44,6 @@ public class AprilAlignCommand extends Command{
   goalTransformRelativeToAprilTag, boolean isBackwards, LedStrand leds){
     m_aprilTagProvider = aprilTagSupplier;
     m_drivetrain = drivetrainSubsystem;
-    m_tagToGoal = goalTransformRelativeToAprilTag;
     m_aprilRotation = aprilTagRotation2d;
     m_isBackwards = isBackwards;
     mLedStrand = leds;
@@ -66,19 +59,12 @@ public class AprilAlignCommand extends Command{
 @Override
   public void initialize() {
     mLedStrand.changeLed(0, 255, 0);
-    m_goalPose = null;
-    var robotPose = m_drivetrain.getPose2d();
-    // m_omegaController.reset(robotPose.getRotation().getRadians());
-    // m_xController.reset(robotPose.getX());
-    // m_yController.reset(0);
   }
 
   @Override
   public void execute() {
     
-    Pose2d robotPose = m_drivetrain.getPose2d();
     AprilTag aprilTag = m_aprilTagProvider.get();
-    double aprilTagSkewFixed;
     double aprilSkew;
     if (aprilTag.ID
         <= 0) { // is valid if > 0: we update our current estimate of where the april tag is
@@ -96,13 +82,6 @@ public class AprilAlignCommand extends Command{
     if (m_xController.atGoal()) {
       xSpeed = 0;
     }
-
-    // if(m_aprilRotation.get().getRadians() < 0.0){
-    //   aprilTagSkewFixed = -1*m_aprilRotation.get().getRadians();
-    // } else{
-    //   aprilTagSkewFixed = m_aprilRotation.get().getRadians();
-    // }
-
     double ySpeed = m_yController.calculate(m_aprilRotation.get().getRadians());
     if (m_yController.atGoal()) {
       ySpeed = 0;
@@ -117,19 +96,13 @@ public class AprilAlignCommand extends Command{
     if (m_omegaController.atGoal()) {
       rotSpeed = 0;
     }
-
     m_drivetrain.m_FieldRelativeEnable = false; 
-
     if(m_isBackwards){
       m_drivetrain.drive(xSpeed,-1* ySpeed, rotSpeed);
     }else {
       m_drivetrain.drive(-1*xSpeed, ySpeed, rotSpeed);
     }
 
-    //m_drivetrain.driveChassisSpeeds(
-    //    ChassisSpeeds.fromFieldRelativeSpeeds(-1*xSpeed, 0, rotSpeed, robotPose.getRotation()));
- 
-     
     SmartDashboard.putNumber(m_drivetrain.getName() + "/AprilAlignCommandV2/Command/CalcVelX", xSpeed);
     SmartDashboard.putNumber(m_drivetrain.getName() + "/AprilAlignCommandV2/Command/CalcVelY", ySpeed);
     SmartDashboard.putNumber(m_drivetrain.getName() + "/AprilAlignCommandV2/Command/CalcVelRot", rotSpeed);
