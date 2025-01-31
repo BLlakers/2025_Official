@@ -17,6 +17,8 @@ public class Robot extends TimedRobot {
     String codeVersion = "0.0";
     private PowerDistribution PDH = new PowerDistribution(20, PowerDistribution.ModuleType.kRev);
 
+    
+
     @Override
     public void close() {
         super.close();
@@ -32,6 +34,7 @@ public class Robot extends TimedRobot {
     public void robotInit() {
         m_robotContainer = new RobotContainer();
         m_robotContainer.m_DriveTrain.ZeroGyro().schedule();
+        m_robotContainer.mLedStrand.changeLed(128, 0, 0);
         try {
             var cam = CameraServer.startAutomaticCapture();
             cam.setResolution(100, 100);
@@ -39,7 +42,6 @@ public class Robot extends TimedRobot {
         } catch (Exception e) {
             // TODO: handle exception
         }
-
 
         SmartDashboard.putString("Code Version", codeVersion);
 

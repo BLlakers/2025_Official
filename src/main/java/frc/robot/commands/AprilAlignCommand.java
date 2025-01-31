@@ -14,6 +14,7 @@ import edu.wpi.first.math.util.Units;
 import edu.wpi.first.wpilibj.smartdashboard.SmartDashboard;
 import edu.wpi.first.wpilibj2.command.Command;
 import frc.robot.subsystems.DriveTrain;
+import frc.robot.subsystems.LedStrand;
 import frc.robot.support.limelight.LimelightHelpers;
 
 public class AprilAlignCommand extends Command{
@@ -42,25 +43,29 @@ public class AprilAlignCommand extends Command{
   private Supplier<Rotation2d> m_aprilRotation;
   
   private Boolean m_isBackwards;
+  private LedStrand mLedStrand;
 
 
   public AprilAlignCommand(Supplier<AprilTag> aprilTagSupplier, Supplier<Rotation2d> aprilTagRotation2d, DriveTrain drivetrainSubsystem, Transform2d
-  goalTransformRelativeToAprilTag, boolean isBackwards){
+  goalTransformRelativeToAprilTag, boolean isBackwards, LedStrand leds){
     m_aprilTagProvider = aprilTagSupplier;
     m_drivetrain = drivetrainSubsystem;
     m_tagToGoal = goalTransformRelativeToAprilTag;
     m_aprilRotation = aprilTagRotation2d;
     m_isBackwards = isBackwards;
+    mLedStrand = leds;
+
 
     m_xController.setTolerance(0.05);
     m_yController.setTolerance(0.05);
     m_omegaController.setTolerance(Units.degreesToRadians(3));
     m_omegaController.enableContinuousInput(-Math.PI, Math.PI);
-
     addRequirements(drivetrainSubsystem);
+    addRequirements(leds);
 }
 @Override
   public void initialize() {
+    mLedStrand.changeLed(0, 255, 0);
     m_goalPose = null;
     var robotPose = m_drivetrain.getPose2d();
     // m_omegaController.reset(robotPose.getRotation().getRadians());
@@ -70,6 +75,7 @@ public class AprilAlignCommand extends Command{
 
   @Override
   public void execute() {
+    
     Pose2d robotPose = m_drivetrain.getPose2d();
     AprilTag aprilTag = m_aprilTagProvider.get();
     double aprilTagSkewFixed;
@@ -147,6 +153,8 @@ public class AprilAlignCommand extends Command{
   public void end(boolean interrupted) {
     m_drivetrain.stopModules();
     m_drivetrain.m_FieldRelativeEnable = true;
+
+    mLedStrand.changeLed(128,0,0);
   }
 
   @Override

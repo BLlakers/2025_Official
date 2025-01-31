@@ -29,8 +29,8 @@ public class RobotContainer {
   Limelight m_LimelightBack = new Limelight("limelight-back");
   LedStrand mLedStrand = new LedStrand();
    
-  AprilAlignCommand LimelightCodeFront = new AprilAlignCommand(() -> m_LimelightFront.getCurrentAprilTag(), () ->  m_LimelightFront.getAprilRotation2d(), m_DriveTrain, new Transform2d(0,1, new Rotation2d()), false);
-  AprilAlignCommand LimelightCodeBack = new AprilAlignCommand(() -> m_LimelightBack.getCurrentAprilTag(), () ->  m_LimelightBack.getAprilRotation2d(), m_DriveTrain, new Transform2d(0,1, new Rotation2d()), true);
+  AprilAlignCommand LimelightCodeFront = new AprilAlignCommand(() -> m_LimelightFront.getCurrentAprilTag(), () ->  m_LimelightFront.getAprilRotation2d(), m_DriveTrain, new Transform2d(0,1, new Rotation2d()), false, mLedStrand);
+  AprilAlignCommand LimelightCodeBack = new AprilAlignCommand(() -> m_LimelightBack.getCurrentAprilTag(), () ->  m_LimelightBack.getAprilRotation2d(), m_DriveTrain, new Transform2d(0,1, new Rotation2d()), true,mLedStrand);
   
   
   
@@ -144,7 +144,8 @@ public class RobotContainer {
     driverController.y().whileTrue(LimelightCodeBack);
     // Manipulator Controller commands
 
-    driverController.y().onTrue(mLedStrand.changeLedCommand());
+    //manipController.y().onTrue(mLedStrand.changeLedCommand());
+    manipController.y().onTrue(mLedStrand.changeLedCommand());
     driverController.povDown().whileTrue(DriveSide);
   }
 

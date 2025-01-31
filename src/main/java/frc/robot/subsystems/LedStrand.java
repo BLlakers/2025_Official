@@ -32,7 +32,8 @@ public class LedStrand extends SubsystemBase {
     }
 
     public void changeLed(int r, int g, int b) {
-        sendSerialCommand("R"+r+"G"+r+"B"+b);
+        System.out.println("Here");
+        sendSerialCommand("R"+r+"G"+g+"B"+b);
     }
 
     public Command changeLedCommand() {
@@ -42,7 +43,7 @@ public class LedStrand extends SubsystemBase {
     private void sendSerialCommand(String command) {
         long currentTime = System.currentTimeMillis();
 
-        if (currentTime - lastUpdateTime >= 100) {  // Only update every second
+        if (currentTime - lastUpdateTime >= 10) {  // Only update every second
             lastUpdateTime = currentTime;
 
             if (arduinoSerial != null) {
