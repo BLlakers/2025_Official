@@ -41,6 +41,8 @@ public class RobotContainer {
     .onlyWhile(() -> !mElevatorMechanism.ElevatorLimitSwitch())
     .andThen(mElevatorMechanism::ElevatorStopCmd, mElevatorMechanism);
 
+    final Command runCoral = mCoralMechanism.CoralForwardCmd().onlyWhile(()->!mCoralMechanism.IsCoralLoaded());
+
   //  final Command AutoElevator = runElevatorUp.andThen(Commands.parallel(onlyIf(()->!mCoralMechanism.IsCoralLoaded()).andThen()))
   // Shooter
 
@@ -160,6 +162,7 @@ public class RobotContainer {
     manipController.y().onTrue(mLedStrand.changeLedCommand());
     manipController.a().whileTrue(runElevatorUp);
     manipController.b().whileTrue(runElevatorDown);
+    manipController.povDown().whileTrue(runCoral);
     //manipController.x().whileTrue(mElevatorMechanism.ElevatorUpCmd());
   }
 

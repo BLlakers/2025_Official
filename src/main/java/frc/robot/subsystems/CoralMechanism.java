@@ -71,7 +71,7 @@ public class CoralMechanism extends SubsystemBase{
        return IR.getValue();
     }
     public boolean IsCoralLoaded(){
-        return IrReading() > 200;
+        return IrReading() > 2000;
     }
 
     public void periodic(){
