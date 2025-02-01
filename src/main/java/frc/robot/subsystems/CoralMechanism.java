@@ -8,6 +8,7 @@ import com.revrobotics.spark.config.ClosedLoopConfig.FeedbackSensor;
 import com.revrobotics.spark.config.SparkBaseConfig.IdleMode;
 import com.revrobotics.spark.config.SparkMaxConfig;
 import edu.wpi.first.util.sendable.SendableBuilder;
+import edu.wpi.first.wpilibj.AnalogInput;
 import edu.wpi.first.wpilibj2.command.Command;
 import edu.wpi.first.wpilibj2.command.SubsystemBase;
 import frc.robot.Constants;
@@ -18,20 +19,20 @@ public class CoralMechanism extends SubsystemBase{
     //A motor to rotate up and down
     SparkMax m_CoralMotor = new SparkMax(Constants.Port.m_CoralMtrC, com.revrobotics.spark.SparkLowLevel.MotorType.kBrushless);
     SparkMaxConfig m_CoralConfig = new SparkMaxConfig();
-
-    RelativeEncoder m_CoralMotorEncoder = m_CoralMotor.getEncoder();
+    AnalogInput IR = new AnalogInput(0);
+    RelativeEncoder m_CoralMotorEncoder = m_CoralMotor.getAlternateEncoder();
 
     public CoralMechanism(){
         m_CoralConfig
             .inverted(true)
             .idleMode(IdleMode.kBrake);
-        m_CoralConfig.encoder
+        m_CoralConfig.alternateEncoder
             .positionConversionFactor(CoralPositionConversionFactor)
             .velocityConversionFactor(CoralVelocityConversionFactor);
         m_CoralConfig.closedLoop
             .feedbackSensor(FeedbackSensor.kAlternateOrExternalEncoder)
             .pid(1.0,0,0);
-
+        
             m_CoralMotor.configure(m_CoralConfig, ResetMode.kResetSafeParameters, PersistMode.kPersistParameters);
     }
 
@@ -49,22 +50,31 @@ public class CoralMechanism extends SubsystemBase{
 
 
     public Command CoralForwardCmd() {
-        return this.runOnce(this::CoralForward);
+        return this.runEnd(this::CoralForward, this::CoralStop);
     }
 
     public Command CoralBackwardCmd() {
-        return this.runOnce(this::CoralBackward);
+        return this.runEnd(this::CoralBackward, this::CoralStop);
     }
 
     public Command CoralStopCmd() {
         return this.runOnce(this::CoralStop);
     }
     public double getCoralEncoderPos(){
-        return m_CoralMotor.getAlternateEncoder().getPosition();
+        return m_CoralMotorEncoder.getPosition();
     }
 
-    
-  @Override
+    public int IrReading(){
+       return IR.getValue();
+    }
+    public boolean IsCoralLoaded(){
+        return IrReading() > 200;
+    }
+
+    public void periodic(){
+        System.out.println(getCoralEncoderPos());
+    }
+@Override
   public void initSendable(SendableBuilder builder) {
     super.initSendable(builder);
 

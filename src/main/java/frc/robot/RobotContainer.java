@@ -3,13 +3,12 @@ package frc.robot;
 import edu.wpi.first.wpilibj2.command.Command;
 import edu.wpi.first.wpilibj2.command.CommandScheduler;
 import edu.wpi.first.wpilibj2.command.Commands;
+
 import java.util.ArrayList;
 import java.util.List;
 
 import com.pathplanner.lib.auto.AutoBuilder;
 import com.pathplanner.lib.util.PathPlannerLogging;
-import com.pathplanner.lib.auto.NamedCommands;
-
 import edu.wpi.first.math.geometry.Pose2d;
 import edu.wpi.first.math.geometry.Rotation2d;
 import edu.wpi.first.math.geometry.Transform2d;
@@ -28,12 +27,21 @@ public class RobotContainer {
   Limelight m_LimelightFront = new Limelight("limelight-front");
   Limelight m_LimelightBack = new Limelight("limelight-back");
   LedStrand mLedStrand = new LedStrand();
-   
+  CoralMechanism mCoralMechanism = new CoralMechanism();
+  ElevatorMechanism mElevatorMechanism = new ElevatorMechanism();
   AprilAlignCommand LimelightCodeFront = new AprilAlignCommand(() -> m_LimelightFront.getCurrentAprilTag(), () ->  m_LimelightFront.getAprilRotation2d(), m_DriveTrain, new Transform2d(0,1, new Rotation2d()), false, mLedStrand);
   AprilAlignCommand LimelightCodeBack = new AprilAlignCommand(() -> m_LimelightBack.getCurrentAprilTag(), () ->  m_LimelightBack.getAprilRotation2d(), m_DriveTrain, new Transform2d(0,1, new Rotation2d()), true,mLedStrand);
   
   
+   final Command runElevatorUp = mElevatorMechanism.ElevatorUpCmd()
+    .onlyWhile(() -> mElevatorMechanism.ElevatorAtPos())
+    .andThen(mElevatorMechanism::ElevatorStopCmd, mElevatorMechanism);
   
+    final Command runElevatorDown = mElevatorMechanism.ElevatorDownCmd()
+    .onlyWhile(() -> mElevatorMechanism.ElevatorAtPos())
+    .andThen(mElevatorMechanism::ElevatorStopCmd, mElevatorMechanism);
+
+  //  final Command AutoElevator = runElevatorUp.andThen(Commands.parallel(onlyIf(()->!mCoralMechanism.IsCoralLoaded()).andThen()))
   // Shooter
 
   /**
@@ -142,11 +150,12 @@ public class RobotContainer {
     driverController.rightStick().onTrue(m_DriveTrain.WheelLockCommand()); // lock wheels
     driverController.x().whileTrue(LimelightCodeFront); 
     driverController.y().whileTrue(LimelightCodeBack);
+    driverController.povUp().whileTrue(mCoralMechanism.CoralForwardCmd());//mCoralMechanism.CoralForwardCmd());
+    driverController.povDown().whileTrue(mCoralMechanism.CoralBackwardCmd());
     // Manipulator Controller commands
 
     //manipController.y().onTrue(mLedStrand.changeLedCommand());
     manipController.y().onTrue(mLedStrand.changeLedCommand());
-    driverController.povDown().whileTrue(DriveSide);
   }
 
   private void configureShuffleboard() {

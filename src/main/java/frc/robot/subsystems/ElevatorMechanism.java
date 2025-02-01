@@ -15,7 +15,7 @@ import frc.robot.Constants;
 import com.revrobotics.spark.config.SparkMaxConfig;
 
 public class ElevatorMechanism extends SubsystemBase{
-   private double elevatorPositionConversionFactor = 1;
+   private double elevatorPositionConversionFactor = 1/625;
    private double elevatorVelocityConversionFactor = 1;
 
     //A motor to rotate up and down
@@ -33,7 +33,7 @@ public class ElevatorMechanism extends SubsystemBase{
             .positionConversionFactor(elevatorPositionConversionFactor)
             .velocityConversionFactor(elevatorVelocityConversionFactor);
         m_ElevatorConfig.closedLoop
-            .feedbackSensor(FeedbackSensor.kAbsoluteEncoder)
+            .feedbackSensor(FeedbackSensor.kAlternateOrExternalEncoder)
             .pid(1.0,0,0);
     }
 
@@ -55,6 +55,10 @@ public class ElevatorMechanism extends SubsystemBase{
 
     public double getElevatorEncoderPos(){
         return m_ElevatorMotor.getAlternateEncoder().getPosition();
+    }
+
+    public boolean ElevatorAtPos(){
+        return getElevatorEncoderPos() > 100;
     }
 
     public Command ElevatorUpCmd() {

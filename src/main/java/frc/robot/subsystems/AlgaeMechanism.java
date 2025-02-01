@@ -105,11 +105,11 @@ public class AlgaeMechanism extends SubsystemBase{
     }
 
     
-  @Override
+ /*@Override
   public void initSendable(SendableBuilder builder) {
     super.initSendable(builder);
 
     builder.addDoubleProperty("Algae/Intake/Position", () -> getIntakeEncoderPos(), null);
     builder.addDoubleProperty("Algae/Algae/Position", () -> getAlgaeEncoderPos(), null);
-  }
+  }*/
 }

@@ -61,10 +61,10 @@ public class ClimbMechanism extends SubsystemBase{
         return m_ClimbMotor.getAlternateEncoder().getPosition();
     }
     
-  @Override
-  public void initSendable(SendableBuilder builder) {
+  /*@Override
+    public void initSendable(SendableBuilder builder) {
     super.initSendable(builder);
 
     builder.addDoubleProperty("Climb/Position", () -> getClimbEncoderPos(), null);
-  }
+  }*/
 }
