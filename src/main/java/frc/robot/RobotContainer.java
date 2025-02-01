@@ -28,18 +28,18 @@ public class RobotContainer {
   Limelight m_LimelightBack = new Limelight("limelight-back");
   LedStrand mLedStrand = new LedStrand();
   CoralMechanism mCoralMechanism = new CoralMechanism();
-  //ElevatorMechanism mElevatorMechanism = new ElevatorMechanism();
+  ElevatorMechanism mElevatorMechanism = new ElevatorMechanism();
   AprilAlignCommand LimelightCodeFront = new AprilAlignCommand(() -> m_LimelightFront.getCurrentAprilTag(), () ->  m_LimelightFront.getAprilRotation2d(), m_DriveTrain, new Transform2d(0,1, new Rotation2d()), false, mLedStrand);
   AprilAlignCommand LimelightCodeBack = new AprilAlignCommand(() -> m_LimelightBack.getCurrentAprilTag(), () ->  m_LimelightBack.getAprilRotation2d(), m_DriveTrain, new Transform2d(0,1, new Rotation2d()), true,mLedStrand);
   
   
- /*  final Command runElevatorUp = mElevatorMechanism.ElevatorUpCmd()
-    .onlyWhile(() -> mElevatorMechanism.ElevatorAtPos())
-    .andThen(mElevatorMechanism::ElevatorStopCmd, mElevatorMechanism);
+ final Command runElevatorUp = Commands.sequence(mElevatorMechanism.ElevatorUpCmd()
+    .onlyWhile(() -> !mElevatorMechanism.ElevatorAtPos())
+    .andThen(mElevatorMechanism::ElevatorStopCmd, mElevatorMechanism));
   
-    final Command runElevatorDown = mElevatorMechanism.ElevatorDownCmd()
-    .onlyWhile(() -> mElevatorMechanism.ElevatorAtPos())
-    .andThen(mElevatorMechanism::ElevatorStopCmd, mElevatorMechanism);*/
+    final Command runElevatorDown  = mElevatorMechanism.ElevatorDownCmd()
+    .onlyWhile(() -> !mElevatorMechanism.ElevatorLimitSwitch())
+    .andThen(mElevatorMechanism::ElevatorStopCmd, mElevatorMechanism);
 
   //  final Command AutoElevator = runElevatorUp.andThen(Commands.parallel(onlyIf(()->!mCoralMechanism.IsCoralLoaded()).andThen()))
   // Shooter
@@ -71,8 +71,10 @@ public class RobotContainer {
   List<Pose2d> currentPath = new ArrayList<Pose2d>();
 
   public RobotContainer() {
+   mElevatorMechanism.setName("ElevatorMechanism");
     m_DriveTrain.setName("DriveTrain");
-
+    mCoralMechanism.setName("CoralMechnaism");
+    
     configureShuffleboard();
     configureBindings();
     // Build an auto chooser. This will use Commands.none() as the default option.
@@ -150,21 +152,24 @@ public class RobotContainer {
     driverController.rightStick().onTrue(m_DriveTrain.WheelLockCommand()); // lock wheels
     driverController.x().whileTrue(LimelightCodeFront); 
     driverController.y().whileTrue(LimelightCodeBack);
-    driverController.povUp().whileTrue(mCoralMechanism.CoralForwardCmd());//mCoralMechanism.CoralForwardCmd());
+    driverController.povRight().onTrue(mCoralMechanism.CoralForwardCmd());//mCoralMechanism.CoralForwardCmd());
     driverController.povDown().whileTrue(mCoralMechanism.CoralBackwardCmd());
     // Manipulator Controller commands
-
+    driverController.povUp().onTrue(mCoralMechanism.Test());
     //manipController.y().onTrue(mLedStrand.changeLedCommand());
     manipController.y().onTrue(mLedStrand.changeLedCommand());
+    manipController.a().whileTrue(runElevatorUp);
+    manipController.b().whileTrue(runElevatorDown);
+    //manipController.x().whileTrue(mElevatorMechanism.ElevatorUpCmd());
   }
 
   private void configureShuffleboard() {
     SmartDashboard.putData("Command Scheduler", CommandScheduler.getInstance());
-
+    SmartDashboard.putData(mElevatorMechanism);
     // Add subsystems
     SmartDashboard.putData(m_DriveTrain);
     SmartDashboard.putData(m_DriveTrain.getName() + "/Reset Pose 2D", m_DriveTrain.resetPose2d());
-
+    SmartDashboard.putData(mCoralMechanism);  
     SmartDashboard.putData(m_LimelightFront);
   }
 

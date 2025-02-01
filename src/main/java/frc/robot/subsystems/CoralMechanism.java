@@ -9,6 +9,7 @@ import com.revrobotics.spark.config.SparkBaseConfig.IdleMode;
 import com.revrobotics.spark.config.SparkMaxConfig;
 import edu.wpi.first.util.sendable.SendableBuilder;
 import edu.wpi.first.wpilibj.AnalogInput;
+import edu.wpi.first.wpilibj.smartdashboard.SmartDashboard;
 import edu.wpi.first.wpilibj2.command.Command;
 import edu.wpi.first.wpilibj2.command.SubsystemBase;
 import frc.robot.Constants;
@@ -47,10 +48,12 @@ public class CoralMechanism extends SubsystemBase{
     public void CoralStop() {
         m_CoralMotor.set(0);
     }
-
+    public Command Test(){
+        return this.runOnce(() -> System.out.println("jared"));
+    }
 
     public Command CoralForwardCmd() {
-        return this.runEnd(this::CoralForward, this::CoralStop);
+        return this.run(this::CoralForward);
     }
 
     public Command CoralBackwardCmd() {
@@ -72,12 +75,12 @@ public class CoralMechanism extends SubsystemBase{
     }
 
     public void periodic(){
-        System.out.println(getCoralEncoderPos());
+        
     }
 @Override
   public void initSendable(SendableBuilder builder) {
     super.initSendable(builder);
-
     builder.addDoubleProperty("Coral/Position", () -> getCoralEncoderPos(), null);
+    builder.addDoubleProperty("Coral/IR", ()-> IrReading(), null);
   }
 }

@@ -21,7 +21,7 @@ public class ElevatorMechanism extends SubsystemBase{
     //A motor to rotate up and down
    private SparkMax m_ElevatorMotor = new SparkMax(Constants.Port.m_ElevatorMtrC, com.revrobotics.spark.SparkLowLevel.MotorType.kBrushless);
 
-   private DigitalInput m_ElevatorLimitSwitch = new DigitalInput(0);
+   private DigitalInput m_ElevatorLimitSwitch = new DigitalInput(6);
     
    private SparkMaxConfig m_ElevatorConfig = new SparkMaxConfig();
 
@@ -42,11 +42,10 @@ public class ElevatorMechanism extends SubsystemBase{
     }
 
     public void ElevatorMotorDown() {
-        if (m_ElevatorLimitSwitch.get()) {
-            m_ElevatorMotor.set(0);
-        } else {
             m_ElevatorMotor.set(-.85);
         }
+    public boolean ElevatorLimitSwitch(){
+        return m_ElevatorLimitSwitch.get();
     }
 
     public void ElevatorMotorStop() {
@@ -62,11 +61,11 @@ public class ElevatorMechanism extends SubsystemBase{
     }
 
     public Command ElevatorUpCmd() {
-        return this.runOnce(this::ElevatorMotorUp);
+        return this.runEnd(this::ElevatorMotorUp, this::ElevatorMotorStop);
     }
 
     public Command ElevatorDownCmd() {
-        return this.runOnce(this::ElevatorMotorDown);
+        return this.runEnd(this::ElevatorMotorDown, this::ElevatorMotorStop);
     }
 
     public Command ElevatorStopCmd() {
@@ -74,11 +73,15 @@ public class ElevatorMechanism extends SubsystemBase{
     }
 
 
-    
+public void periodic(){
+    System.out.println(ElevatorLimitSwitch());
+}
   @Override
   public void initSendable(SendableBuilder builder) {
     super.initSendable(builder);
-
+    ElevatorUpCmd().setName("ElevatorUpCmd");
     builder.addDoubleProperty("Elevator/Position", () -> getElevatorEncoderPos(), null);
+    builder.addBooleanProperty("Elevator/LimitSwitch", this::ElevatorLimitSwitch, null);
+    builder.addBooleanProperty("Elevator/AtPos", this::ElevatorAtPos, null);
   }
 }
