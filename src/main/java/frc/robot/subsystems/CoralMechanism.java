@@ -14,7 +14,7 @@ import edu.wpi.first.wpilibj2.command.Command;
 import edu.wpi.first.wpilibj2.command.SubsystemBase;
 import frc.robot.Constants;
 public class CoralMechanism extends SubsystemBase{
-   private double CoralPositionConversionFactor = 1;
+   private double CoralPositionConversionFactor = 2;
    private double CoralVelocityConversionFactor = 1;
 
     //A motor to rotate up and down
@@ -38,22 +38,19 @@ public class CoralMechanism extends SubsystemBase{
     }
 
     public void CoralForward() {
-        m_CoralMotor.set(.85);
+        m_CoralMotor.set(.8);
     }
 
+
     public void CoralBackward() {
-        m_CoralMotor.set(-.85);
+        m_CoralMotor.set(-.5);
     }
 
     public void CoralStop() {
         m_CoralMotor.set(0);
     }
-    public Command Test(){
-        return this.runOnce(() -> System.out.println("jared"));
-    }
-
     public Command CoralForwardCmd() {
-        return this.run(this::CoralForward);
+        return this.runEnd(this::CoralForward, this::CoralStop);
     }
 
     public Command CoralBackwardCmd() {
@@ -70,12 +67,13 @@ public class CoralMechanism extends SubsystemBase{
     public int IrReading(){
        return IR.getValue();
     }
+
     public boolean IsCoralLoaded(){
         return IrReading() > 2000;
     }
 
     public void periodic(){
-        
+    
     }
 @Override
   public void initSendable(SendableBuilder builder) {

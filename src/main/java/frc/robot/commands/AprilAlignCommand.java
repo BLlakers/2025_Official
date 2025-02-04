@@ -28,7 +28,7 @@ public class AprilAlignCommand extends Command{
   private final ProfiledPIDController m_yController =
       new ProfiledPIDController(1.25, 0, 0.0, Y_CONSTRAINTS);
   private final ProfiledPIDController m_omegaController =
-      new ProfiledPIDController(2, 0, 0.0, OMEGA_CONSTRAINTS); 
+      new ProfiledPIDController(2, 0, 0.0, OMEGA_CONSTRAINTS);
       
   private DriveTrain m_drivetrain;
   private Supplier<AprilTag> m_aprilTagProvider;

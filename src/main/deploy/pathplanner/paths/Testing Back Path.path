@@ -3,29 +3,29 @@
   "waypoints": [
     {
       "anchor": {
-        "x": 0.7615130614871499,
-        "y": 4.46972509329181
+        "x": 6.149692622950819,
+        "y": 4.078944672131147
       },
       "prevControl": null,
       "nextControl": {
-        "x": 2.084014709183047,
-        "y": 4.46972509329181
+        "x": 7.361507435710123,
+        "y": 4.927466538939401
       },
       "isLocked": false,
-      "linkedName": "Blue - RightSquareStartingPose"
+      "linkedName": "Testing Waypoint 2"
     },
     {
       "anchor": {
-        "x": 2.6,
-        "y": 7.0
+        "x": 8.547233606557377,
+        "y": 5.949026639344262
       },
       "prevControl": {
-        "x": 1.6,
-        "y": 7.0
+        "x": 7.456533524343579,
+        "y": 5.18531021985221
       },
       "nextControl": null,
       "isLocked": false,
-      "linkedName": "Blue - RightSquare - LeftNotePickup"
+      "linkedName": "Testing Waypoint"
     }
   ],
   "rotationTargets": [],
@@ -45,7 +45,7 @@
     "rotation": 0.0
   },
   "reversed": false,
-  "folder": null,
+  "folder": "new styf",
   "idealStartingState": {
     "velocity": 0,
     "rotation": 0.0

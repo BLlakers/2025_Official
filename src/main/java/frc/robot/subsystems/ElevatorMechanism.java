@@ -15,8 +15,9 @@ import frc.robot.Constants;
 import com.revrobotics.spark.config.SparkMaxConfig;
 
 public class ElevatorMechanism extends SubsystemBase{
-   private double elevatorPositionConversionFactor = 1/625;
-   private double elevatorVelocityConversionFactor = 1;
+
+   private double elevatorPositionConversionFactor = 1; //1.6 * Math.PI; 1.6 * Math.PI Distance per rotation
+   private double elevatorVelocityConversionFactor = 1; 
 
     //A motor to rotate up and down
    private SparkMax m_ElevatorMotor = new SparkMax(Constants.Port.m_ElevatorMtrC, com.revrobotics.spark.SparkLowLevel.MotorType.kBrushless);
@@ -51,7 +52,9 @@ public class ElevatorMechanism extends SubsystemBase{
     public void ElevatorMotorStop() {
         m_ElevatorMotor.set(0);
     }
-
+    public void CoralMove(double d){
+        m_ElevatorMotor.set(d);
+    }
     public double getElevatorEncoderPos(){
         return m_ElevatorMotor.getAlternateEncoder().getPosition();
     }

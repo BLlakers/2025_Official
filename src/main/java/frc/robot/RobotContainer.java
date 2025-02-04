@@ -35,13 +35,17 @@ public class RobotContainer {
   
  final Command runElevatorUp = Commands.sequence(mElevatorMechanism.ElevatorUpCmd()
     .onlyWhile(() -> !mElevatorMechanism.ElevatorAtPos())
-    .andThen(mElevatorMechanism::ElevatorStopCmd, mElevatorMechanism));
+    .andThen(mElevatorMechanism::ElevatorStopCmd, mElevatorMechanism))
+    .withName("ElevatorUp");
   
     final Command runElevatorDown  = mElevatorMechanism.ElevatorDownCmd()
     .onlyWhile(() -> !mElevatorMechanism.ElevatorLimitSwitch())
-    .andThen(mElevatorMechanism::ElevatorStopCmd, mElevatorMechanism);
+    .andThen(mElevatorMechanism::ElevatorStopCmd, mElevatorMechanism)
+    .withName("ElevatorDown"); 
 
-    final Command runCoral = mCoralMechanism.CoralForwardCmd().onlyWhile(()->!mCoralMechanism.IsCoralLoaded());
+    
+    final Command runCoral = mCoralMechanism.CoralForwardCmd().onlyWhile(()->!mCoralMechanism.IsCoralLoaded()).withName("RunCoral");
+    
 
   //  final Command AutoElevator = runElevatorUp.andThen(Commands.parallel(onlyIf(()->!mCoralMechanism.IsCoralLoaded()).andThen()))
   // Shooter
@@ -154,10 +158,9 @@ public class RobotContainer {
     driverController.rightStick().onTrue(m_DriveTrain.WheelLockCommand()); // lock wheels
     driverController.x().whileTrue(LimelightCodeFront); 
     driverController.y().whileTrue(LimelightCodeBack);
-    driverController.povRight().onTrue(mCoralMechanism.CoralForwardCmd());//mCoralMechanism.CoralForwardCmd());
+    driverController.povUp().whileTrue(mCoralMechanism.CoralForwardCmd());//mCoralMechanism.CoralForwardCmd());
     driverController.povDown().whileTrue(mCoralMechanism.CoralBackwardCmd());
     // Manipulator Controller commands
-    driverController.povUp().onTrue(mCoralMechanism.Test());
     //manipController.y().onTrue(mLedStrand.changeLedCommand());
     manipController.y().onTrue(mLedStrand.changeLedCommand());
     manipController.a().whileTrue(runElevatorUp);

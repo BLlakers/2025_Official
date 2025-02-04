@@ -1,0 +1,43 @@
+{
+  "version": "2025.0",
+  "command": {
+    "type": "sequential",
+    "data": {
+      "commands": [
+        {
+          "type": "path",
+          "data": {
+            "pathName": "Testing Foward Path"
+          }
+        },
+        {
+          "type": "named",
+          "data": {
+            "name": "ElevatorUp"
+          }
+        },
+        {
+          "type": "named",
+          "data": {
+            "name": "RunAlgae"
+          }
+        },
+        {
+          "type": "named",
+          "data": {
+            "name": "RunCoral"
+          }
+        },
+        {
+          "type": "named",
+          "data": {
+            "name": "ElevatorDown"
+          }
+        }
+      ]
+    }
+  },
+  "resetOdom": true,
+  "folder": "new styf",
+  "choreoAuto": false
+}
