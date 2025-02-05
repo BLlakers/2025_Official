@@ -52,8 +52,8 @@ public class ElevatorMechanism extends SubsystemBase{
     public void ElevatorMotorStop() {
         m_ElevatorMotor.set(0);
     }
-    public void CoralMove(double d){
-        m_ElevatorMotor.set(d);
+    public void ElevatorMove(double d){
+        m_ElevatorMotor.set(-d);
     }
     public double getElevatorEncoderPos(){
         return m_ElevatorMotor.getAlternateEncoder().getPosition();
@@ -77,7 +77,7 @@ public class ElevatorMechanism extends SubsystemBase{
 
 
 public void periodic(){
-    System.out.println(ElevatorLimitSwitch());
+    System.out.println(getElevatorEncoderPos());
 }
   @Override
   public void initSendable(SendableBuilder builder) {

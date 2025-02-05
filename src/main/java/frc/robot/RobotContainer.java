@@ -28,29 +28,24 @@ public class RobotContainer {
   Limelight m_LimelightBack = new Limelight("limelight-back");
   LedStrand mLedStrand = new LedStrand();
   CoralMechanism mCoralMechanism = new CoralMechanism();
+  
   ElevatorMechanism mElevatorMechanism = new ElevatorMechanism();
+  ElevatorPID elevatorPID = new ElevatorPID(mElevatorMechanism, 1);
   AprilAlignCommand LimelightCodeFront = new AprilAlignCommand(() -> m_LimelightFront.getCurrentAprilTag(), () ->  m_LimelightFront.getAprilRotation2d(), m_DriveTrain, new Transform2d(0,1, new Rotation2d()), false, mLedStrand);
   AprilAlignCommand LimelightCodeBack = new AprilAlignCommand(() -> m_LimelightBack.getCurrentAprilTag(), () ->  m_LimelightBack.getAprilRotation2d(), m_DriveTrain, new Transform2d(0,1, new Rotation2d()), true,mLedStrand);
   
-  
- final Command runElevatorUp = Commands.sequence(mElevatorMechanism.ElevatorUpCmd()
+final Command runElevatorUp = Commands.sequence(mElevatorMechanism.ElevatorUpCmd()
     .onlyWhile(() -> !mElevatorMechanism.ElevatorAtPos())
     .andThen(mElevatorMechanism::ElevatorStopCmd, mElevatorMechanism))
     .withName("ElevatorUp");
   
-    final Command runElevatorDown  = mElevatorMechanism.ElevatorDownCmd()
+final Command runElevatorDown  = mElevatorMechanism.ElevatorDownCmd()
     .onlyWhile(() -> !mElevatorMechanism.ElevatorLimitSwitch())
     .andThen(mElevatorMechanism::ElevatorStopCmd, mElevatorMechanism)
-    .withName("ElevatorDown"); 
-
+    .withName("ElevatorDown");
     
-    final Command runCoral = mCoralMechanism.CoralForwardCmd().onlyWhile(()->!mCoralMechanism.IsCoralLoaded()).withName("RunCoral");
-    
-
-  //  final Command AutoElevator = runElevatorUp.andThen(Commands.parallel(onlyIf(()->!mCoralMechanism.IsCoralLoaded()).andThen()))
-  // Shooter
-
-  /**
+final Command runCoral = mCoralMechanism.CoralForwardCmd().onlyWhile(()->!mCoralMechanism.IsCoralLoaded()).withName("RunCoral");
+  /** 
    * Creates buttons and controller for: - the driver controller (port 0) - the manipulator
    * controller (port 1) - the debug controller (port 2)
    */
@@ -149,7 +144,7 @@ public class RobotContainer {
             () -> driverController.getRightTriggerAxis(),
             m_DriveTrain,
             () -> driverController.getLeftTriggerAxis() >= 0.5));
-
+    
     // Driver Controller commands
     // - DriveTrain commands (outside of actual driving)
     driverController.a().onTrue(m_DriveTrain.toggleFieldRelativeEnable());
@@ -162,6 +157,7 @@ public class RobotContainer {
     driverController.povDown().whileTrue(mCoralMechanism.CoralBackwardCmd());
     // Manipulator Controller commands
     //manipController.y().onTrue(mLedStrand.changeLedCommand());
+    manipController.povUp().whileTrue(elevatorPID);
     manipController.y().onTrue(mLedStrand.changeLedCommand());
     manipController.a().whileTrue(runElevatorUp);
     manipController.b().whileTrue(runElevatorDown);

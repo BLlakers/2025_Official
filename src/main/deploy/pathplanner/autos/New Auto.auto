@@ -38,6 +38,6 @@
     }
   },
   "resetOdom": true,
-  "folder": "new styf",
+  "folder": null,
   "choreoAuto": false
 }

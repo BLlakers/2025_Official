@@ -43,7 +43,7 @@ private static final TrapezoidProfile.Constraints ELEVATOR_CONSTRAINTS = new Tra
     if (pid.atGoal()) {
       m_elevatorSpeed = 0;
     } 
-      elevator.CoralMove(m_elevatorSpeed);
+      elevator.ElevatorMove(m_elevatorSpeed);
     
    
   }
