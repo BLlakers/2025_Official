@@ -18,7 +18,7 @@ public class ElevatorMechanism extends SubsystemBase{
 
    private double elevatorPositionConversionFactor = 1; //1.6 * Math.PI; 1.6 * Math.PI Distance per rotation
    private double elevatorVelocityConversionFactor = 1; 
-
+   private double desiredPos = 0;
     //A motor to rotate up and down
    private SparkMax m_ElevatorMotor = new SparkMax(Constants.Port.m_ElevatorMtrC, com.revrobotics.spark.SparkLowLevel.MotorType.kBrushless);
 
@@ -59,6 +59,10 @@ public class ElevatorMechanism extends SubsystemBase{
         return m_ElevatorMotor.getAlternateEncoder().getPosition();
     }
 
+    public double desiredPosGet(){
+        return desiredPos;
+    }
+
     public boolean ElevatorAtPos(){
         return getElevatorEncoderPos() > 100;
     }
@@ -77,7 +81,6 @@ public class ElevatorMechanism extends SubsystemBase{
 
 
 public void periodic(){
-    System.out.println(getElevatorEncoderPos());
 }
   @Override
   public void initSendable(SendableBuilder builder) {

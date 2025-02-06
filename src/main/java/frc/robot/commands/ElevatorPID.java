@@ -10,20 +10,21 @@ import edu.wpi.first.math.controller.ProfiledPIDController;
 import edu.wpi.first.math.trajectory.TrapezoidProfile;
 import edu.wpi.first.math.trajectory.ExponentialProfile.State;
 import edu.wpi.first.math.util.Units;
+import edu.wpi.first.util.sendable.SendableBuilder;
 import frc.robot.Constants;
 import frc.robot.subsystems.DriveTrain;
 import frc.robot.subsystems.ElevatorMechanism;
 
 public class ElevatorPID extends Command {
  private double position;
-private ElevatorMechanism elevator;
-private ProfiledPIDController pid = new ProfiledPIDController(1, 0, 0, ELEVATOR_CONSTRAINTS);
-private static final TrapezoidProfile.Constraints ELEVATOR_CONSTRAINTS = new TrapezoidProfile.Constraints(1, 1);
+  private ElevatorMechanism elevator;
+  private ProfiledPIDController pid = new ProfiledPIDController(.3 , 0, 0, ELEVATOR_CONSTRAINTS);
+  private static final TrapezoidProfile.Constraints ELEVATOR_CONSTRAINTS = new TrapezoidProfile.Constraints( .5, .1);
 
 
   public ElevatorPID(ElevatorMechanism e, double p) {
-  elevator = e;
-  position = p;
+    elevator = e;
+    position = p;
     addRequirements(elevator);
   }
 
@@ -38,16 +39,20 @@ private static final TrapezoidProfile.Constraints ELEVATOR_CONSTRAINTS = new Tra
   public void execute() {
 
     pid.setGoal(position);
-  
     double m_elevatorSpeed = pid.calculate(elevator.getElevatorEncoderPos());
     if (pid.atGoal()) {
       m_elevatorSpeed = 0;
     } 
-      elevator.ElevatorMove(m_elevatorSpeed);
+      SmartDashboard.putNumber(elevator.getName() + "ElevatorCommand/Command/elevatorPID", m_elevatorSpeed);
+      SmartDashboard.putNumber(elevator.getName() + "ElevatorCommand/Command/elevatorPos", elevator.getElevatorEncoderPos());
+      elevator.ElevatorMove(m_elevatorSpeed*.5);
     
    
   }
-
+public void initSendable(SendableBuilder builder) {
+    super.initSendable(builder);
+    pid.initSendable(builder);
+ }
   // Called once the command ends or is interrupted.
   @Override
   public void end(boolean interrupted) {
