@@ -19,7 +19,6 @@ public class Robot extends TimedRobot {
     private PowerDistribution PDH = new PowerDistribution(20, PowerDistribution.ModuleType.kRev);
 
 
-
     @Override
     public void close() {
         super.close();
@@ -36,9 +35,11 @@ public class Robot extends TimedRobot {
         m_robotContainer = new RobotContainer();
         m_robotContainer.m_DriveTrain.ZeroGyro().schedule();
         m_robotContainer.mLedStrand.changeLed(128, 0, 0);
-        try (var cam = CameraServer.startAutomaticCapture()) {
-            cam.setResolution(100, 100);
-            cam.setFPS(60);
+        if (RobotBase.isReal()) {
+            try (var cam = CameraServer.startAutomaticCapture()) {
+                cam.setResolution(100, 100);
+                cam.setFPS(60);
+            }
         }
 
         SmartDashboard.putString("Code Version", codeVersion);
