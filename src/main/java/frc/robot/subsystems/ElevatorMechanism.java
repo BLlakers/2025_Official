@@ -96,7 +96,9 @@ public class ElevatorMechanism extends SubsystemBase{
 
 
 public void periodic(){
+    System.out.println(getElevatorEncoderPos());
 }
+  @Override
   public void initSendable(SendableBuilder builder) {
     super.initSendable(builder);
     ElevatorUpCmd().setName("ElevatorUpCmd");

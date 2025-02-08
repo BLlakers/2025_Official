@@ -35,6 +35,8 @@ public class RobotContainer {
   AprilAlignCommand LimelightCodeBack = new AprilAlignCommand(() -> m_LimelightBack.getCurrentAprilTag(), () ->  m_LimelightBack.getAprilRotation2d(), m_DriveTrain, new Transform2d(0,1, new Rotation2d()), true,mLedStrand);
 
 final Command runCoral = mCoralMechanism.CoralForwardCmd().onlyWhile(()->!mCoralMechanism.IsCoralLoaded()).withName("RunCoral");
+//final Command MoveElevatorUp = Commands.sequence(mElevatorMechanism.SetPosUp().alongWith(elevatorPID));
+//final Command MoveElevatorDown = Commands.sequence(mElevatorMechanism.SetPosDown().andThen(this::elevatorPID, mElevatorMechanism));
   /** 
    * Creates buttons and controller for: - the driver controller (port 0) - the manipulator
    * controller (port 1) - the debug controller (port 2)
@@ -150,12 +152,12 @@ final Command runCoral = mCoralMechanism.CoralForwardCmd().onlyWhile(()->!mCoral
     manipController.povUp().onTrue(mElevatorMechanism.SetPosUp());
     manipController.povDown().onTrue(mElevatorMechanism.SetPosDown());
     manipController.a().whileTrue(elevatorPID);
-    //manipController.x().whileTrue(mElevatorMechanism.ElevatorUpCmd());
   }
 
   private void configureShuffleboard() {
     SmartDashboard.putData("Command Scheduler", CommandScheduler.getInstance());
     SmartDashboard.putData(mElevatorMechanism);
+    SmartDashboard.putData(elevatorPID);
     SmartDashboard.putData(elevatorPID);
     // Add subsystems
     SmartDashboard.putData(m_DriveTrain);
