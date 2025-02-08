@@ -18,8 +18,8 @@ import frc.robot.subsystems.ElevatorMechanism;
 public class ElevatorPID extends Command {
  private DoubleSupplier position;
   private ElevatorMechanism elevator;
-  private ProfiledPIDController pid = new ProfiledPIDController(.3 , 0, 0, ELEVATOR_CONSTRAINTS);
-  private static final TrapezoidProfile.Constraints ELEVATOR_CONSTRAINTS = new TrapezoidProfile.Constraints( 9, 2);
+  private ProfiledPIDController pid = new ProfiledPIDController(.5 , 0, 0, ELEVATOR_CONSTRAINTS);
+  private static final TrapezoidProfile.Constraints ELEVATOR_CONSTRAINTS = new TrapezoidProfile.Constraints(3, .5);
 
 
   public ElevatorPID(ElevatorMechanism e, DoubleSupplier p) {
@@ -34,7 +34,7 @@ public class ElevatorPID extends Command {
   // Called when the command is initially scheduled.
   @Override
   public void initialize() {
-    
+   pid.reset(elevator.getElevatorEncoderPos()); 
   }
   // Called every time the scheduler runs while the command is scheduled.
   @Override

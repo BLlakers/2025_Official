@@ -102,7 +102,8 @@ public final class Constants {
     public static final int m_ArmMtrC = 10;
     public static final int m_ElevatorMtrC = 11;
     public static final int m_ClimbMtrC = 12;
-    public static final int m_CoralMtrC = 13;
+    public static final int m_CoralMtrRC = 13;
+    public static final int m_CoralMtrLC = 14;
     public static final int blTurnEncoderDIOC = 0;
     public static final int flTurnEncoderDIOC = 1;
     public static final int frTurnEncoderDIOC = 2;

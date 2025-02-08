@@ -5,13 +5,14 @@ import edu.wpi.first.util.sendable.SendableBuilder;
 import edu.wpi.first.wpilibj.AnalogInput;
 import edu.wpi.first.wpilibj2.command.Command;
 import edu.wpi.first.wpilibj2.command.SubsystemBase;
+import frc.robot.Constants;
 
 import com.ctre.phoenix.motorcontrol.ControlMode;
 import com.ctre.phoenix.motorcontrol.can.TalonSRX;
 public class CoralMechanism extends SubsystemBase{
 
-    TalonSRX m_coralMotor1 = new TalonSRX(11);
-    TalonSRX m_coralMotor2 = new TalonSRX(12);
+    TalonSRX m_coralMotor1 = new TalonSRX(Constants.Port.m_CoralMtrRC);
+    TalonSRX m_coralMotor2 = new TalonSRX(Constants.Port.m_CoralMtrLC);
     SparkMaxConfig m_CoralConfig = new SparkMaxConfig();
     AnalogInput IR = new AnalogInput(0);
   
