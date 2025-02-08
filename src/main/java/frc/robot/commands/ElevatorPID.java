@@ -10,20 +10,22 @@ import edu.wpi.first.math.controller.ProfiledPIDController;
 import edu.wpi.first.math.trajectory.TrapezoidProfile;
 import edu.wpi.first.math.trajectory.ExponentialProfile.State;
 import edu.wpi.first.math.util.Units;
+import edu.wpi.first.util.sendable.SendableBuilder;
 import frc.robot.Constants;
 import frc.robot.subsystems.DriveTrain;
 import frc.robot.subsystems.ElevatorMechanism;
 
 public class ElevatorPID extends Command {
- private double position;
-private ElevatorMechanism elevator;
-private ProfiledPIDController pid = new ProfiledPIDController(1, 0, 0, ELEVATOR_CONSTRAINTS);
-private static final TrapezoidProfile.Constraints ELEVATOR_CONSTRAINTS = new TrapezoidProfile.Constraints(1, 1);
+ private DoubleSupplier position;
+  private ElevatorMechanism elevator;
+  private ProfiledPIDController pid = new ProfiledPIDController(.3 , 0, 0, ELEVATOR_CONSTRAINTS);
+  private static final TrapezoidProfile.Constraints ELEVATOR_CONSTRAINTS = new TrapezoidProfile.Constraints( 9, 2);
 
 
-  public ElevatorPID(ElevatorMechanism e, double p) {
-  elevator = e;
-  position = p;
+  public ElevatorPID(ElevatorMechanism e, DoubleSupplier p) {
+
+    elevator = e;
+    position = p;
     addRequirements(elevator);
   }
 
@@ -31,23 +33,29 @@ private static final TrapezoidProfile.Constraints ELEVATOR_CONSTRAINTS = new Tra
 
   // Called when the command is initially scheduled.
   @Override
-  public void initialize() {}
-
+  public void initialize() {
+    
+  }
   // Called every time the scheduler runs while the command is scheduled.
   @Override
   public void execute() {
 
-    pid.setGoal(position);
-  
+    pid.setGoal(elevator.desiredPosGet());
     double m_elevatorSpeed = pid.calculate(elevator.getElevatorEncoderPos());
     if (pid.atGoal()) {
       m_elevatorSpeed = 0;
     } 
+      SmartDashboard.putNumber(elevator.getName() + "ElevatorCommand/Command/elevatorPID", m_elevatorSpeed);
+      SmartDashboard.putNumber(elevator.getName() + "ElevatorCommand/Command/elevatorPos", elevator.getElevatorEncoderPos());
       elevator.ElevatorMove(m_elevatorSpeed);
     
    
   }
-
+public void initSendable(SendableBuilder builder) {
+    super.initSendable(builder);
+    pid.initSendable(builder);
+    builder.addDoubleProperty(this.getName() + "/position", position, null);
+ }
   // Called once the command ends or is interrupted.
   @Override
   public void end(boolean interrupted) {
