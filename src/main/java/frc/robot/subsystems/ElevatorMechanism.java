@@ -1,5 +1,7 @@
 package frc.robot.subsystems;
 
+import java.util.function.DoubleConsumer;
+
 import com.revrobotics.spark.SparkMax;
 import com.revrobotics.spark.config.ClosedLoopConfig.FeedbackSensor;
 import com.revrobotics.spark.config.SparkBaseConfig.IdleMode;
@@ -18,7 +20,7 @@ public class ElevatorMechanism extends SubsystemBase{
 
    private double elevatorPositionConversionFactor = 1; //1.6 * Math.PI; 1.6 * Math.PI Distance per rotation
    private double elevatorVelocityConversionFactor = 1; 
-   private double desiredPos = 0;
+   private double desiredPos;
     //A motor to rotate up and down
    private SparkMax m_ElevatorMotor = new SparkMax(Constants.Port.m_ElevatorMtrC, com.revrobotics.spark.SparkLowLevel.MotorType.kBrushless);
 
@@ -59,9 +61,6 @@ public class ElevatorMechanism extends SubsystemBase{
         return m_ElevatorMotor.getAlternateEncoder().getPosition();
     }
 
-    public double desiredPosGet(){
-        return desiredPos;
-    }
 
     public boolean ElevatorAtPos(){
         return getElevatorEncoderPos() > 100;
@@ -78,16 +77,31 @@ public class ElevatorMechanism extends SubsystemBase{
     public Command ElevatorStopCmd() {
         return this.runOnce(this::ElevatorMotorStop);
     }
+    public double desiredPosGet(){
+        System.out.println(desiredPos);
+        return desiredPos;
+    }
+    public void desiredPosSet(double s){
+        desiredPos = s;
+    }
+
+    public Command SetPosUp(){
+        return runOnce(()-> desiredPosSet(100));
+    }
+
+    public Command SetPosDown(){
+        return runOnce(()-> desiredPosSet(0));
+    }
 
 
 public void periodic(){
 }
-  @Override
   public void initSendable(SendableBuilder builder) {
     super.initSendable(builder);
     ElevatorUpCmd().setName("ElevatorUpCmd");
     builder.addDoubleProperty("Elevator/Position", () -> getElevatorEncoderPos(), null);
     builder.addBooleanProperty("Elevator/LimitSwitch", this::ElevatorLimitSwitch, null);
     builder.addBooleanProperty("Elevator/AtPos", this::ElevatorAtPos, null);
+    builder.addDoubleProperty("Elevator/desiredPos", this::desiredPosGet, this::desiredPosSet);
   }
 }

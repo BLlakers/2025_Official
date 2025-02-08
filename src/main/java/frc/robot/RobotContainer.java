@@ -28,23 +28,15 @@ public class RobotContainer {
   Limelight m_LimelightBack = new Limelight("limelight-back");
   LedStrand mLedStrand = new LedStrand();
   CoralMechanism mCoralMechanism = new CoralMechanism();
-  
+  ClimbMechanism mClimbMechanism = new ClimbMechanism();
   ElevatorMechanism mElevatorMechanism = new ElevatorMechanism();
-  ElevatorPID elevatorPIDDown = new ElevatorPID(mElevatorMechanism, mElevatorMechanism.desiredPosGet());
+  ElevatorPID elevatorPID = new ElevatorPID(mElevatorMechanism);
   AprilAlignCommand LimelightCodeFront = new AprilAlignCommand(() -> m_LimelightFront.getCurrentAprilTag(), () ->  m_LimelightFront.getAprilRotation2d(), m_DriveTrain, new Transform2d(0,1, new Rotation2d()), false, mLedStrand);
   AprilAlignCommand LimelightCodeBack = new AprilAlignCommand(() -> m_LimelightBack.getCurrentAprilTag(), () ->  m_LimelightBack.getAprilRotation2d(), m_DriveTrain, new Transform2d(0,1, new Rotation2d()), true,mLedStrand);
-  
-final Command runElevatorUp = Commands.sequence(mElevatorMechanism.ElevatorUpCmd()
-    .onlyWhile(() -> !mElevatorMechanism.ElevatorAtPos())
-    .andThen(mElevatorMechanism::ElevatorStopCmd, mElevatorMechanism))
-    .withName("ElevatorUp");
-  
-final Command runElevatorDown  = mElevatorMechanism.ElevatorDownCmd()
-    .onlyWhile(() -> !mElevatorMechanism.ElevatorLimitSwitch())
-    .andThen(mElevatorMechanism::ElevatorStopCmd, mElevatorMechanism)
-    .withName("ElevatorDown");
-    
+
 final Command runCoral = mCoralMechanism.CoralForwardCmd().onlyWhile(()->!mCoralMechanism.IsCoralLoaded()).withName("RunCoral");
+//final Command MoveElevatorUp = Commands.sequence(mElevatorMechanism.SetPosUp().alongWith(elevatorPID));
+//final Command MoveElevatorDown = Commands.sequence(mElevatorMechanism.SetPosDown().andThen(this::elevatorPID, mElevatorMechanism));
   /** 
    * Creates buttons and controller for: - the driver controller (port 0) - the manipulator
    * controller (port 1) - the debug controller (port 2)
@@ -75,8 +67,7 @@ final Command runCoral = mCoralMechanism.CoralForwardCmd().onlyWhile(()->!mCoral
    mElevatorMechanism.setName("ElevatorMechanism");
     m_DriveTrain.setName("DriveTrain");
     mCoralMechanism.setName("CoralMechnaism");
-    elevatorPIDDown.setName("ElevatorPIDCommandDown");
-    elevatorPIDUp.setName("ElevatorPIDCommandUp");
+    elevatorPID.setName("ElevatorPIDCommandDown");
     configureShuffleboard();
     configureBindings();
     // Build an auto chooser. This will use Commands.none() as the default option.
@@ -158,11 +149,9 @@ final Command runCoral = mCoralMechanism.CoralForwardCmd().onlyWhile(()->!mCoral
     driverController.povDown().whileTrue(mCoralMechanism.CoralBackwardCmd());
     // Manipulator Controller commands
     //manipController.y().onTrue(mLedStrand.changeLedCommand());
-    manipController.povDown().whileTrue(elevatorPIDDown);
-    manipController.y().onTrue(mLedStrand.changeLedCommand());
-    manipController.a().whileTrue(runElevatorUp);
-    manipController.b().whileTrue(runElevatorDown);
-    manipController.povUp().whileTrue(elevatorPIDUp);
+   // manipController.povDown().whileTrue(MoveElevatorDown);
+   // manipController.povUp().whileTrue(MoveElevatorUp);
+    manipController.y().onTrue(mLedStrand.changeLedCommand()); 
     //manipController.povDown().whileTrue(runCoral);
     //manipController.x().whileTrue(mElevatorMechanism.ElevatorUpCmd());
   }
@@ -170,8 +159,7 @@ final Command runCoral = mCoralMechanism.CoralForwardCmd().onlyWhile(()->!mCoral
   private void configureShuffleboard() {
     SmartDashboard.putData("Command Scheduler", CommandScheduler.getInstance());
     SmartDashboard.putData(mElevatorMechanism);
-    SmartDashboard.putData(elevatorPIDDown);
-    SmartDashboard.putData(elevatorPIDUp);
+    SmartDashboard.putData(elevatorPID);
     // Add subsystems
     SmartDashboard.putData(m_DriveTrain);
     SmartDashboard.putData(m_DriveTrain.getName() + "/Reset Pose 2D", m_DriveTrain.resetPose2d());
