@@ -12,14 +12,14 @@ import edu.wpi.first.math.trajectory.ExponentialProfile.State;
 import edu.wpi.first.math.util.Units;
 import edu.wpi.first.util.sendable.SendableBuilder;
 import frc.robot.Constants;
-import frc.robot.subsystems.DriveTrain;
+import frc.robot.subsystems.DriveTrain; 
 import frc.robot.subsystems.ElevatorMechanism;
 
 public class ElevatorPID extends Command {
  private DoubleSupplier position;
   private ElevatorMechanism elevator;
-  private ProfiledPIDController pid = new ProfiledPIDController(.5 , 0, 0, ELEVATOR_CONSTRAINTS);
-  private static final TrapezoidProfile.Constraints ELEVATOR_CONSTRAINTS = new TrapezoidProfile.Constraints(3, .5);
+  private ProfiledPIDController pid = new ProfiledPIDController(.14 , 0, 0, ELEVATOR_CONSTRAINTS);
+  private static final TrapezoidProfile.Constraints ELEVATOR_CONSTRAINTS = new TrapezoidProfile.Constraints(100 , 2);
 
 
   public ElevatorPID(ElevatorMechanism e, DoubleSupplier p) {
@@ -47,7 +47,7 @@ public class ElevatorPID extends Command {
     } 
       SmartDashboard.putNumber(elevator.getName() + "ElevatorCommand/Command/elevatorPID", m_elevatorSpeed);
       SmartDashboard.putNumber(elevator.getName() + "ElevatorCommand/Command/elevatorPos", elevator.getElevatorEncoderPos());
-      elevator.ElevatorMove(m_elevatorSpeed);
+      elevator.ElevatorMove(m_elevatorSpeed*3);
     
    
   }

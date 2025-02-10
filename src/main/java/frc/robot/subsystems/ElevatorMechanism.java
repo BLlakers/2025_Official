@@ -18,7 +18,7 @@ import com.revrobotics.spark.config.SparkMaxConfig;
 
 public class ElevatorMechanism extends SubsystemBase{
 
-   private double elevatorPositionConversionFactor = 3; //1.6 * Math.PI; 1.6 * Math.PI Distance per rotation
+   private double elevatorPositionConversionFactor = 1.6*Math.PI; //1.6 * Math.PI; 1.6 * Math.PI Distance per rotation
    private double elevatorVelocityConversionFactor = 1; 
    private double desiredPos;
     //A motor to rotate up and down
