@@ -149,8 +149,8 @@ final Command runCoral = mCoralMechanism.CoralForwardCmd().onlyWhile(()->!mCoral
     driverController.povDown().whileTrue(mCoralMechanism.CoralBackwardCmd());
     // Manipulator Controller commands
     manipController.y().onTrue(mLedStrand.changeLedCommand()); 
-    manipController.povUp().onTrue(mElevatorMechanism.SetPosUp());
-    manipController.povDown().onTrue(mElevatorMechanism.SetPosDown());
+    manipController.povUp().onTrue(mElevatorMechanism.MovePosUp());
+    manipController.povDown().onTrue(mElevatorMechanism.MovePosDown());
     manipController.a().whileTrue(elevatorPID);
   }
 

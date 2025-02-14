@@ -16,11 +16,22 @@ import frc.robot.Constants;
 
 import com.revrobotics.spark.config.SparkMaxConfig;
 
+enum elevatorState {
+    Down,
+    Troph,
+    L2,
+    L3,
+    L4
+}
+
 public class ElevatorMechanism extends SubsystemBase{
 
+   private double marginOfError = 1;
    private double elevatorPositionConversionFactor = 1.6*Math.PI; //1.6 * Math.PI; 1.6 * Math.PI Distance per rotation
    private double elevatorVelocityConversionFactor = 1; 
    private double desiredPos;
+   private elevatorState Estate =elevatorState.Down;
+   
     //A motor to rotate up and down
    private SparkMax m_ElevatorMotor = new SparkMax(Constants.Port.m_ElevatorMtrC, com.revrobotics.spark.SparkLowLevel.MotorType.kBrushless);
 
@@ -64,7 +75,7 @@ public class ElevatorMechanism extends SubsystemBase{
 
 
     public boolean ElevatorAtPos(){
-        return getElevatorEncoderPos() > 100;
+        return getElevatorEncoderPos() < desiredPosGet() + marginOfError && getElevatorEncoderPos() > desiredPosGet() - marginOfError;
     }
 
     public Command ElevatorUpCmd() {
@@ -82,12 +93,60 @@ public class ElevatorMechanism extends SubsystemBase{
         desiredPos = s;
     }
 
-    public Command SetPosUp(){
-        return runOnce(()-> desiredPosSet(100));
+    public void MoveDesiredPosUp(){
+        if (Estate == elevatorState.Down) {
+            Estate = elevatorState.Troph;
+        } else if (Estate == elevatorState.Troph){
+        Estate = elevatorState.L2;
+        } else if (Estate == elevatorState.L2) {
+        Estate = elevatorState.L3;
+        } else if (Estate == elevatorState.L3) {
+        Estate = elevatorState.L4;
+        } else if (Estate == elevatorState.L4) {
+        Estate = elevatorState.L4;
+        }
+
+    }
+    
+    public void MoveDesiredPosDown(){
+        if (Estate == elevatorState.L4){
+            Estate = elevatorState.L3;
+        } else if (Estate == elevatorState.L3) {
+            Estate = elevatorState.L2;
+        } else if (Estate == elevatorState.L2) {
+            Estate = elevatorState.Troph;
+        } else if (Estate == elevatorState.Troph) {
+            Estate = elevatorState.Down;
+        } else if (Estate == elevatorState.Down) {
+            Estate = elevatorState.Down;
+        } 
     }
 
-    public Command SetPosDown(){
-        return runOnce(()-> desiredPosSet(0));
+    public void ChangeDesiredPos(){
+        if (Estate == elevatorState.L4){
+            desiredPos = 400;
+        } else if (Estate == elevatorState.L3) {
+            desiredPos = 300;
+        } else if (Estate == elevatorState.L2) {
+            desiredPos = 200;
+        } else if (Estate == elevatorState.Troph) {
+            desiredPos =  100;
+        } else if (Estate == elevatorState.Down) {
+            desiredPos = 0;
+        } 
+    }
+
+   
+
+
+    public Command MovePosUp(){
+       
+        return runOnce(()-> MoveDesiredPosUp()).andThen(() -> ChangeDesiredPos());
+    }
+
+    public Command MovePosDown(){
+     
+        return runOnce(()-> MoveDesiredPosDown()).andThen(() -> ChangeDesiredPos());
     }
     public double desiredPosGet(){
         return desiredPos;
@@ -96,7 +155,7 @@ public class ElevatorMechanism extends SubsystemBase{
 
 
 public void periodic(){
-    System.out.println(getElevatorEncoderPos());
+   System.out.println(Estate);
 }
   @Override
   public void initSendable(SendableBuilder builder) {
@@ -106,5 +165,6 @@ public void periodic(){
     builder.addBooleanProperty("Elevator/LimitSwitch", this::ElevatorLimitSwitch, null);
     builder.addBooleanProperty("Elevator/AtPos", this::ElevatorAtPos, null);
     builder.addDoubleProperty("Elevator/desiredPos", this::desiredPosGet, this::desiredPosSet);
+    builder.addStringProperty("Elevator/DesiredLevel", () -> this.Estate.toString(), null);
   }
 }
