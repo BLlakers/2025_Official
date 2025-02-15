@@ -1,6 +1,7 @@
 package frc.robot;
 
 import edu.wpi.first.cameraserver.CameraServer;
+import edu.wpi.first.wpilibj.PWM;
 import edu.wpi.first.wpilibj.PowerDistribution;
 import edu.wpi.first.wpilibj.TimedRobot;
 import edu.wpi.first.wpilibj.smartdashboard.SmartDashboard;
@@ -16,8 +17,6 @@ public class Robot extends TimedRobot {
     private RobotContainer m_robotContainer;
     String codeVersion = "0.0";
     private PowerDistribution PDH = new PowerDistribution(20, PowerDistribution.ModuleType.kRev);
-
-    
 
     @Override
     public void close() {
@@ -76,16 +75,16 @@ public class Robot extends TimedRobot {
     }
 
     @Override
-    public void teleopInit() {
+    public void teleopInit() {  
         m_robotContainer.m_DriveTrain.m_FieldRelativeEnable = true;
         if (m_autonomousCommand != null) {
             m_autonomousCommand.cancel();
         }
-
     }
 
     @Override
     public void teleopPeriodic() {
+
     }
 
     @Override

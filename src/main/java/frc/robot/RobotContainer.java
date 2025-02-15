@@ -152,6 +152,8 @@ final Command runCoral = mCoralMechanism.CoralForwardCmd().onlyWhile(()->!mCoral
     manipController.povUp().onTrue(mElevatorMechanism.MovePosUp());
     manipController.povDown().onTrue(mElevatorMechanism.MovePosDown());
     manipController.a().whileTrue(elevatorPID);
+    manipController.rightBumper().whileTrue(mCoralMechanism.ServoForwardCommand());
+    manipController.leftBumper().whileTrue(mCoralMechanism.ServoBackwardCommand());
   }
 
   private void configureShuffleboard() {
