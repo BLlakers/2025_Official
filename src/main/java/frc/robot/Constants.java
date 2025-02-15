@@ -98,8 +98,6 @@ public final class Constants {
     public static final int frDriveMtrC = 6;
     public static final int brDriveMtrC = 7;
     public static final int brSteerMtrC = 8;
-    public static final int m_IntakeMtrC = 9;
-    public static final int m_ArmMtrC = 10;
     public static final int m_ElevatorMtrC = 11;
     public static final int m_ClimbMtrC = 12;
     public static final int m_CoralMtrRC = 13;
@@ -113,10 +111,9 @@ public final class Constants {
     public static final int PHChannel = 30; // REV Pneumatic Hub
     public static final int PDHChannel = 20; // REV Power Distribution Hub
   }
-
-  public static class Intake {
-    public static final int AngleMtrC = 15;
-    public static final int WheelMtrC = 14;
+  public static class Algae {
+    public static final int m_IntakeMtrC = 9;
+    public static final int m_AlgaeMtrC = 10;
   }
 
   // SHOOTER
