@@ -7,13 +7,13 @@
         {
           "type": "path",
           "data": {
-            "pathName": "Testing Foward Path"
+            "pathName": "StartingBargeMiddleToMiddle"
           }
         },
         {
           "type": "named",
           "data": {
-            "name": "ElevatorUp"
+            "name": "ElevatorToAlgae"
           }
         },
         {
@@ -25,13 +25,25 @@
         {
           "type": "named",
           "data": {
-            "name": "RunCoral"
+            "name": "RunAlgaeWheel"
+          }
+        },
+        {
+          "type": "path",
+          "data": {
+            "pathName": "MiddleToMiddleLeft"
           }
         },
         {
           "type": "named",
           "data": {
-            "name": "ElevatorDown"
+            "name": "ElevatorToL2"
+          }
+        },
+        {
+          "type": "named",
+          "data": {
+            "name": "RunCoral"
           }
         }
       ]
