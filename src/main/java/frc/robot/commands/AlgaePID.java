@@ -18,13 +18,13 @@ import frc.robot.subsystems.DriveTrain;
 import frc.robot.subsystems.ElevatorMechanism;
 
 public class AlgaePID extends Command {
- private Rotation2d position;
+ private DoubleSupplier position;
   private AlgaeMechanism algae;
   private ProfiledPIDController pid = new ProfiledPIDController(.1 , 0, 0, ELEVATOR_CONSTRAINTS);
-  private static final TrapezoidProfile.Constraints ELEVATOR_CONSTRAINTS = new TrapezoidProfile.Constraints(Units.feetToMeters(2),Units.feetToMeters(.5));
+  private static final TrapezoidProfile.Constraints ELEVATOR_CONSTRAINTS = new TrapezoidProfile.Constraints(Units.feetToMeters(5),Units.feetToMeters(2.5));
 
 
-  public AlgaePID(AlgaeMechanism e, Rotation2d d) {
+  public AlgaePID(AlgaeMechanism e, DoubleSupplier d) {
 
     algae = e;
     position = d;
@@ -36,28 +36,27 @@ public class AlgaePID extends Command {
   // Called when the command is initially scheduled.
   @Override
   public void initialize() {
-   pid.reset(position.getRadians()); 
+   pid.reset(algae.getAlgaeEncoderPos()); 
   }
   // Called every time the scheduler runs while the command is scheduled.
   @Override
   public void execute() {
 
-    pid.setGoal(algae.desiredPosGet().getDegrees());
+    pid.setGoal(position.getAsDouble());
     double m_AlgaeSpeed = pid.calculate(algae.getAlgaePos().getRadians());
     if (pid.atGoal()) {
       m_AlgaeSpeed = 0;
     } 
-      SmartDashboard.putNumber(algae.getName() + "AlgaeCommand/Command/AlgaePID", m_AlgaeSpeed);
-      SmartDashboard.putNumber(algae.getName() + "AlgaeCommand/Command/AlgaePos", algae.getAlgaePos().getRadians());
-      algae.AlgaeMove(m_AlgaeSpeed);
+      SmartDashboard.putNumber(this.getName() + "AlgaeCommand/Command/AlgaeSpeed", m_AlgaeSpeed);
+      SmartDashboard.putNumber(this.getName() + "AlgaeCommand/Command/AlgaePos", algae.getAlgaePos().getRadians());
+      algae.AlgaeMove(m_AlgaeSpeed); // gear ratio is 4
 
 
   }
 public void initSendable(SendableBuilder builder) {
     super.initSendable(builder);
     pid.initSendable(builder);
-    builder.addDoubleProperty(this.getName() + "/position", ()->  position.getRotations(), null);
-
+    builder.addDoubleProperty(this.getName() + "/position", ()->  position.getAsDouble(), null);
  }
   // Called once the command ends or is interrupted.
   @Override

@@ -2,6 +2,8 @@ package frc.robot.subsystems;
 
 import java.util.function.DoubleConsumer;
 
+import com.revrobotics.spark.SparkBase.PersistMode;
+import com.revrobotics.spark.SparkBase.ResetMode;
 import com.revrobotics.spark.SparkMax;
 import com.revrobotics.spark.config.ClosedLoopConfig.FeedbackSensor;
 import com.revrobotics.spark.config.SparkBaseConfig.IdleMode;
@@ -25,9 +27,9 @@ enum elevatorState {
 }
 
 public class ElevatorMechanism extends SubsystemBase{
-
+   public static double ElevatorGearRatio = 3;
    private double marginOfError = 1;
-   private double elevatorPositionConversionFactor = 1.6*Math.PI; //1.6 * Math.PI; 1.6 * Math.PI Distance per rotation
+   private double elevatorPositionConversionFactor = 1.6*Math.PI ; // 1.6 * Math.PI = Distance per rotation
    private double elevatorVelocityConversionFactor = 1; 
    private double desiredPos;
    private elevatorState Estate =elevatorState.Down;
@@ -40,17 +42,18 @@ public class ElevatorMechanism extends SubsystemBase{
    private SparkMaxConfig m_ElevatorConfig = new SparkMaxConfig();
 
     public ElevatorMechanism() {
+        m_ElevatorConfig.closedLoop
+        .feedbackSensor(FeedbackSensor.kAlternateOrExternalEncoder)
+        .pid(1.0,0,0);
          m_ElevatorConfig
             .inverted(true)
             .idleMode(IdleMode.kBrake);
-        m_ElevatorConfig.encoder
+        m_ElevatorConfig.alternateEncoder //TODO MAKE SURE TO USE RIGHT TYPE OF ENCODER WHEN DOING CONFIGS!
             .positionConversionFactor(elevatorPositionConversionFactor)
             .velocityConversionFactor(elevatorVelocityConversionFactor)
             .countsPerRevolution(8192);
-        m_ElevatorConfig.closedLoop
-            .feedbackSensor(FeedbackSensor.kAlternateOrExternalEncoder)
-            .pid(1.0,0,0);
-    }
+             m_ElevatorMotor.configure(m_ElevatorConfig, ResetMode.kNoResetSafeParameters, PersistMode.kPersistParameters);
+             }
 
     public void ElevatorMotorUp() {
         m_ElevatorMotor.set(.85);

@@ -29,6 +29,8 @@ public class RobotContainer {
   LedStrand mLedStrand = new LedStrand();
   CoralMechanism mCoralMechanism = new CoralMechanism();
   ClimbMechanism mClimbMechanism = new ClimbMechanism();
+  AlgaeMechanism mAlgaeMechanism = new AlgaeMechanism();
+  AlgaePID algaePID = new AlgaePID(mAlgaeMechanism, ()-> mAlgaeMechanism.desiredPosGet().getDegrees());
   ElevatorMechanism mElevatorMechanism = new ElevatorMechanism();
   ElevatorPID elevatorPID = new ElevatorPID(mElevatorMechanism, ()-> mElevatorMechanism.desiredPosGet());
   AprilAlignCommand LimelightCodeFront = new AprilAlignCommand(() -> m_LimelightFront.getCurrentAprilTag(), () ->  m_LimelightFront.getAprilRotation2d(), m_DriveTrain, new Transform2d(0,1, new Rotation2d()), false, mLedStrand);
@@ -68,6 +70,8 @@ final Command runCoral = mCoralMechanism.CoralForwardCmd().onlyWhile(()->!mCoral
     m_DriveTrain.setName("DriveTrain");
     mCoralMechanism.setName("CoralMechnaism");
     elevatorPID.setName("ElevatorPIDCommand");
+    algaePID.setName("AlgaePIDCommand");
+    mAlgaeMechanism.setName("AlgaeMechanism");
     configureShuffleboard();
     configureBindings();
     // Build an auto chooser. This will use Commands.none() as the default option.
@@ -154,18 +158,23 @@ final Command runCoral = mCoralMechanism.CoralForwardCmd().onlyWhile(()->!mCoral
     manipController.a().whileTrue(elevatorPID);
     manipController.rightBumper().whileTrue(mCoralMechanism.ServoForwardCommand());
     manipController.leftBumper().whileTrue(mCoralMechanism.ServoBackwardCommand());
+    manipController.x().whileTrue(algaePID);
+    manipController.povLeft().onTrue(mAlgaeMechanism.MovePosUp());
+    manipController.povRight().onTrue(mAlgaeMechanism.MovePosDown());
   }
 
   private void configureShuffleboard() {
     SmartDashboard.putData("Command Scheduler", CommandScheduler.getInstance());
     SmartDashboard.putData(mElevatorMechanism);
     SmartDashboard.putData(elevatorPID);
-    SmartDashboard.putData(elevatorPID);
+    SmartDashboard.putData(algaePID);
+    
     // Add subsystems
     SmartDashboard.putData(m_DriveTrain);
     SmartDashboard.putData(m_DriveTrain.getName() + "/Reset Pose 2D", m_DriveTrain.resetPose2d());
     SmartDashboard.putData(mCoralMechanism);  
     SmartDashboard.putData(m_LimelightFront);
+    SmartDashboard.putData(mAlgaeMechanism);
   }
 
   public Command getAutonomousCommand() {

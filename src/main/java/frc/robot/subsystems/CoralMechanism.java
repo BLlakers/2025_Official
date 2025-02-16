@@ -14,7 +14,6 @@ public class CoralMechanism extends SubsystemBase{
 
     TalonSRX m_coralMotor1 = new TalonSRX(Constants.Port.m_CoralMtrRC);
     TalonSRX m_coralMotor2 = new TalonSRX(Constants.Port.m_CoralMtrLC);
-    SparkMaxConfig m_CoralConfig = new SparkMaxConfig();
     AnalogInput IR = new AnalogInput(0);
 
     PWM servo = new PWM(9);
