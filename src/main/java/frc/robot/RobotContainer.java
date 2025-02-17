@@ -21,6 +21,7 @@ import edu.wpi.first.wpilibj.smartdashboard.Field2d;
 import frc.robot.commands.*;
 import frc.robot.subsystems.*;
 
+
 public class RobotContainer {
   // Creates our objects from our methods for our classes
   DriveTrain m_DriveTrain = new DriveTrain(Constants.defaultRobotVersion);
@@ -30,7 +31,7 @@ public class RobotContainer {
   CoralMechanism mCoralMechanism = new CoralMechanism();
   ClimbMechanism mClimbMechanism = new ClimbMechanism();
   AlgaeMechanism mAlgaeMechanism = new AlgaeMechanism();
-  AlgaePID algaePID = new AlgaePID(mAlgaeMechanism, ()-> mAlgaeMechanism.desiredPosGet().getDegrees());
+
   ElevatorMechanism mElevatorMechanism = new ElevatorMechanism();
   ElevatorPID elevatorPID = new ElevatorPID(mElevatorMechanism, ()-> mElevatorMechanism.desiredPosGet());
   AprilAlignCommand LimelightCodeFront = new AprilAlignCommand(() -> m_LimelightFront.getCurrentAprilTag(), () ->  m_LimelightFront.getAprilRotation2d(), m_DriveTrain, new Transform2d(0,1, new Rotation2d()), false, mLedStrand);
@@ -70,7 +71,7 @@ final Command runCoral = mCoralMechanism.CoralForwardCmd().onlyWhile(()->!mCoral
     m_DriveTrain.setName("DriveTrain");
     mCoralMechanism.setName("CoralMechnaism");
     elevatorPID.setName("ElevatorPIDCommand");
-    algaePID.setName("AlgaePIDCommand");
+    
     mAlgaeMechanism.setName("AlgaeMechanism");
     configureShuffleboard();
     configureBindings();
@@ -140,6 +141,8 @@ final Command runCoral = mCoralMechanism.CoralForwardCmd().onlyWhile(()->!mCoral
             () -> driverController.getRightTriggerAxis(),
             m_DriveTrain,
             () -> driverController.getLeftTriggerAxis() >= 0.5));
+
+    
     
     // Driver Controller commands
     // - DriveTrain commands (outside of actual driving)
@@ -158,16 +161,16 @@ final Command runCoral = mCoralMechanism.CoralForwardCmd().onlyWhile(()->!mCoral
     manipController.a().whileTrue(elevatorPID);
     manipController.rightBumper().whileTrue(mCoralMechanism.ServoForwardCommand());
     manipController.leftBumper().whileTrue(mCoralMechanism.ServoBackwardCommand());
-    manipController.x().whileTrue(algaePID);
-    manipController.povLeft().onTrue(mAlgaeMechanism.MovePosUp());
-    manipController.povRight().onTrue(mAlgaeMechanism.MovePosDown());
+    
+    manipController.povLeft().whileTrue(mAlgaeMechanism.AlgaePIDDown());
+    manipController.povRight().whileTrue(mAlgaeMechanism.AlgaePIDUp());
   }
 
   private void configureShuffleboard() {
     SmartDashboard.putData("Command Scheduler", CommandScheduler.getInstance());
     SmartDashboard.putData(mElevatorMechanism);
     SmartDashboard.putData(elevatorPID);
-    SmartDashboard.putData(algaePID);
+   
     
     // Add subsystems
     SmartDashboard.putData(m_DriveTrain);
