@@ -37,7 +37,9 @@ public class RobotContainer {
   AprilAlignCommand LimelightCodeFront = new AprilAlignCommand(() -> m_LimelightFront.getCurrentAprilTag(), () ->  m_LimelightFront.getAprilRotation2d(), m_DriveTrain, new Transform2d(0,1, new Rotation2d()), false, mLedStrand);
   AprilAlignCommand LimelightCodeBack = new AprilAlignCommand(() -> m_LimelightBack.getCurrentAprilTag(), () ->  m_LimelightBack.getAprilRotation2d(), m_DriveTrain, new Transform2d(0,1, new Rotation2d()), true,mLedStrand);
 
-final Command runCoral = mCoralMechanism.CoralForwardCmd().onlyWhile(()->!mCoralMechanism.IsCoralLoaded()).withName("RunCoral");
+final Command runCoralFoward = mCoralMechanism.CoralForwardCmd().onlyWhile(()->!mCoralMechanism.IsCoralLoaded()).withName("RunCoral");
+
+final Command algaeCommand = mAlgaeMechanism.AlgaePIDDown().alongWith(mAlgaeMechanism.AlgaeIntakeGet().RunIntake()).andThen(mAlgaeMechanism.AlgaePIDUp());
 //final Command MoveElevatorUp = Commands.sequence(mElevatorMechanism.SetPosUp().alongWith(elevatorPID));
 //final Command MoveElevatorDown = Commands.sequence(mElevatorMechanism.SetPosDown().andThen(this::elevatorPID, mElevatorMechanism));
   /** 
@@ -152,7 +154,7 @@ final Command runCoral = mCoralMechanism.CoralForwardCmd().onlyWhile(()->!mCoral
     driverController.rightStick().onTrue(m_DriveTrain.WheelLockCommand()); // lock wheels
     driverController.x().whileTrue(LimelightCodeFront); 
     driverController.y().whileTrue(LimelightCodeBack);
-    driverController.povUp().whileTrue(mCoralMechanism.CoralForwardCmd());//mCoralMechanism.CoralForwardCmd());
+    driverController.povUp().whileTrue(runCoralFoward);//mCoralMechanism.CoralForwardCmd());
     driverController.povDown().whileTrue(mCoralMechanism.CoralBackwardCmd());
     // Manipulator Controller commands
     manipController.y().onTrue(mLedStrand.changeLedCommand()); 
@@ -162,8 +164,8 @@ final Command runCoral = mCoralMechanism.CoralForwardCmd().onlyWhile(()->!mCoral
     manipController.rightBumper().whileTrue(mCoralMechanism.ServoForwardCommand());
     manipController.leftBumper().whileTrue(mCoralMechanism.ServoBackwardCommand());
     
-    manipController.povLeft().whileTrue(mAlgaeMechanism.AlgaePIDDown());
-    manipController.povRight().whileTrue(mAlgaeMechanism.AlgaePIDUp());
+    manipController.povLeft().whileTrue(mAlgaeMechanism.AlgaePIDUp());
+    manipController.povRight().whileTrue(algaeCommand);
   }
 
   private void configureShuffleboard() {

@@ -37,7 +37,8 @@ public class ElevatorMechanism extends SubsystemBase{
     //A motor to rotate up and down
    private SparkMax m_ElevatorMotor = new SparkMax(Constants.Port.m_ElevatorMtrC, com.revrobotics.spark.SparkLowLevel.MotorType.kBrushless);
 
-   private DigitalInput m_ElevatorLimitSwitch = new DigitalInput(6);
+   private DigitalInput m_ElevatorLimitSwitchTop = new DigitalInput(6);
+   private DigitalInput m_ElevatorLimitSwitchBottom = new DigitalInput(7);
     
    private SparkMaxConfig m_ElevatorConfig = new SparkMaxConfig();
 
@@ -63,7 +64,7 @@ public class ElevatorMechanism extends SubsystemBase{
             m_ElevatorMotor.set(-.85);
         }
     public boolean ElevatorLimitSwitch(){
-        return m_ElevatorLimitSwitch.get();
+        return m_ElevatorLimitSwitchTop.get();
     }
 
     public void ElevatorMotorStop() {
