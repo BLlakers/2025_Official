@@ -71,6 +71,7 @@ final Command runCoral = mCoralMechanism.CoralForwardCmd().onlyWhile(()->!mCoral
     elevatorPID.setName("ElevatorPIDCommand");
     configureShuffleboard();
     configureBindings();
+    NamedCommands.registerCommand("Limelight",LimelightCodeFront);
     // Build an auto chooser. This will use Commands.none() as the default option.
 
     autoChooser = AutoBuilder.buildAutoChooser();
@@ -84,7 +85,7 @@ final Command runCoral = mCoralMechanism.CoralForwardCmd().onlyWhile(()->!mCoral
 
     SmartDashboard.putData("Field", field);
 
-    NamedCommands.registerCommand("Limelight",LimelightCodeFront);
+   
     // Logging callback for current robot pose
     PathPlannerLogging.setLogCurrentPoseCallback(
         (pose) -> {
