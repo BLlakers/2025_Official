@@ -165,7 +165,8 @@ final Command algaeCommand = mAlgaeMechanism.AlgaePIDDown().alongWith(mAlgaeMech
     manipController.leftBumper().whileTrue(mCoralMechanism.ServoBackwardCommand());
     
     manipController.povLeft().whileTrue(mAlgaeMechanism.AlgaePIDUp());
-    manipController.povRight().whileTrue(algaeCommand);
+    manipController.b().whileTrue(algaeCommand);
+    manipController.y().whileTrue(runCoralFoward);
   }
 
   private void configureShuffleboard() {

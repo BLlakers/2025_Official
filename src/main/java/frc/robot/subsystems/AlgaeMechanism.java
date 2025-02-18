@@ -28,7 +28,7 @@ public class AlgaeMechanism extends SubsystemBase{
   private ProfiledPIDController pid = new ProfiledPIDController(.1 , 0, 0, ALGAE_CONSTRAINTS);
   private static final TrapezoidProfile.Constraints ALGAE_CONSTRAINTS = new TrapezoidProfile.Constraints(Units.feetToMeters(10),Units.feetToMeters(2.5));
 
-  double m_AlgaeSpeed;
+  private double m_AlgaeSpeed;
     public static double posDown = 0;
     public static double posUp = 30; 
 
