@@ -8,6 +8,7 @@ import java.util.ArrayList;
 import java.util.List;
 
 import com.pathplanner.lib.auto.AutoBuilder;
+import com.pathplanner.lib.auto.NamedCommands;
 import com.pathplanner.lib.util.PathPlannerLogging;
 import edu.wpi.first.math.geometry.Pose2d;
 import edu.wpi.first.math.geometry.Rotation2d;
@@ -92,6 +93,7 @@ final Command IntakeAndRaise = mAlgaeMechanism.AlgaePIDUp().alongWith(mAlgaeMech
 
     SmartDashboard.putData("Field", field);
 
+    NamedCommands.registerCommand("Limelight",LimelightCodeFront);
     // Logging callback for current robot pose
     PathPlannerLogging.setLogCurrentPoseCallback(
         (pose) -> {
