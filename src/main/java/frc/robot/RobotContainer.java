@@ -80,6 +80,7 @@ final Command IntakeAndRaise = mAlgaeMechanism.AlgaePIDUp().alongWith(mAlgaeMech
     mAlgaeMechanism.setName("AlgaeMechanism");
     configureShuffleboard();
     configureBindings();
+    NamedCommands.registerCommand("Limelight",LimelightCodeFront);
     // Build an auto chooser. This will use Commands.none() as the default option.
 
     autoChooser = AutoBuilder.buildAutoChooser();
@@ -93,7 +94,7 @@ final Command IntakeAndRaise = mAlgaeMechanism.AlgaePIDUp().alongWith(mAlgaeMech
 
     SmartDashboard.putData("Field", field);
 
-    NamedCommands.registerCommand("Limelight",LimelightCodeFront);
+   
     // Logging callback for current robot pose
     PathPlannerLogging.setLogCurrentPoseCallback(
         (pose) -> {
