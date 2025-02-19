@@ -63,8 +63,12 @@ public class ElevatorMechanism extends SubsystemBase{
     public void ElevatorMotorDown() {
             m_ElevatorMotor.set(-.85);
         }
-    public boolean ElevatorLimitSwitch(){
+    public boolean ElevatorLimitSwitchTop(){
         return m_ElevatorLimitSwitchTop.get();
+    }
+
+    public boolean ElevatorLimitSwitchBottom(){
+        return m_ElevatorLimitSwitchBottom.get();
     }
 
     public void ElevatorMotorStop() {
@@ -156,17 +160,19 @@ public class ElevatorMechanism extends SubsystemBase{
         return desiredPos;
     }
    
-
+    public void ResetElevatorEnc(){
+        
+    }
 
 public void periodic(){
-   System.out.println(Estate);
+   
 }
   @Override
   public void initSendable(SendableBuilder builder) {
     super.initSendable(builder);
     ElevatorUpCmd().setName("ElevatorUpCmd");
     builder.addDoubleProperty("Elevator/Position", () -> getElevatorEncoderPos(), null);
-    builder.addBooleanProperty("Elevator/LimitSwitch", this::ElevatorLimitSwitch, null);
+    builder.addBooleanProperty("Elevator/LimitSwitch", this::ElevatorLimitSwitchTop, null);
     builder.addBooleanProperty("Elevator/AtPos", this::ElevatorAtPos, null);
     builder.addDoubleProperty("Elevator/desiredPos", this::desiredPosGet, this::desiredPosSet);
     builder.addStringProperty("Elevator/DesiredLevel", () -> this.Estate.toString(), null);

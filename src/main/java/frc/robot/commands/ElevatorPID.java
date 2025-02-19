@@ -12,6 +12,7 @@ import edu.wpi.first.math.trajectory.ExponentialProfile.State;
 import edu.wpi.first.math.util.Units;
 import edu.wpi.first.util.sendable.SendableBuilder;
 import frc.robot.Constants;
+import frc.robot.Constants.Algae;
 import frc.robot.subsystems.DriveTrain; 
 import frc.robot.subsystems.ElevatorMechanism;
 
@@ -44,7 +45,9 @@ public class ElevatorPID extends Command {
     double m_elevatorSpeed = pid.calculate(elevator.getElevatorEncoderPos());
     if (pid.atGoal()) {
       m_elevatorSpeed = 0;
-    } 
+    }
+    
+    if (elevator.ElevatorLimitSwitchTop())
       SmartDashboard.putNumber(elevator.getName() + "ElevatorCommand/Command/elevatorSpeed", m_elevatorSpeed * ElevatorMechanism.ElevatorGearRatio);
       SmartDashboard.putNumber(elevator.getName() + "ElevatorCommand/Command/elevatorPos", elevator.getElevatorEncoderPos());
       elevator.ElevatorMove(m_elevatorSpeed * (1/ElevatorMechanism.ElevatorGearRatio)); 

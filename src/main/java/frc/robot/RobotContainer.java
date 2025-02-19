@@ -176,6 +176,9 @@ final Command IntakeAndRaise = mAlgaeMechanism.AlgaePIDUp().alongWith(mAlgaeMech
     debugController.povUp().whileTrue(mAlgaeMechanism.AlgaeIntakeGet().IntakeBackwardCmd());
     debugController.a().whileTrue(IntakeAndRaise);
     debugController.b().onTrue(mAlgaeMechanism.ResetAlgaeCMD());
+    debugController.y().whileTrue(mCoralMechanism.CoralForwardCmd());
+    debugController.leftBumper().whileTrue(mClimbMechanism.WindBackwardCmd());
+    debugController.rightBumper().whileTrue(mClimbMechanism.WindForwardCmd());
   }
 
   private void configureShuffleboard() {
