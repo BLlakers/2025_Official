@@ -39,7 +39,9 @@ public class RobotContainer {
 
 final Command runCoralFoward = mCoralMechanism.CoralForwardCmd().onlyWhile(()->!mCoralMechanism.IsCoralLoaded()).withName("RunCoral");
 
-final Command algaeCommand = mAlgaeMechanism.AlgaePIDDown().alongWith(mAlgaeMechanism.AlgaeIntakeGet().RunIntake()).andThen(mAlgaeMechanism.AlgaePIDUp());
+final Command algaeCommand = mAlgaeMechanism.AlgaePIDDown().alongWith(mAlgaeMechanism.AlgaeIntakeGet().RunIntake()).andThen(mAlgaeMechanism.AlgaePIDUp().alongWith(mAlgaeMechanism.AlgaeIntakeGet().RunIntake()));
+final Command IntakeAndRaise = mAlgaeMechanism.AlgaePIDUp().alongWith(mAlgaeMechanism.AlgaeIntakeGet().RunIntake());
+
 //final Command MoveElevatorUp = Commands.sequence(mElevatorMechanism.SetPosUp().alongWith(elevatorPID));
 //final Command MoveElevatorDown = Commands.sequence(mElevatorMechanism.SetPosDown().andThen(this::elevatorPID, mElevatorMechanism));
   /** 
@@ -73,7 +75,7 @@ final Command algaeCommand = mAlgaeMechanism.AlgaePIDDown().alongWith(mAlgaeMech
     m_DriveTrain.setName("DriveTrain");
     mCoralMechanism.setName("CoralMechnaism");
     elevatorPID.setName("ElevatorPIDCommand");
-    
+    mAlgaeMechanism.AlgaeIntakeGet().setName("AlgaeIntake");
     mAlgaeMechanism.setName("AlgaeMechanism");
     configureShuffleboard();
     configureBindings();
@@ -165,8 +167,15 @@ final Command algaeCommand = mAlgaeMechanism.AlgaePIDDown().alongWith(mAlgaeMech
     manipController.leftBumper().whileTrue(mCoralMechanism.ServoBackwardCommand());
     
     manipController.povLeft().whileTrue(mAlgaeMechanism.AlgaePIDUp());
+    manipController.povRight().whileTrue(mAlgaeMechanism.AlgaePIDDown());
     manipController.b().whileTrue(algaeCommand);
     manipController.y().whileTrue(runCoralFoward);
+
+    debugController.povLeft().whileTrue(mAlgaeMechanism.AlgaeForwardCmd());
+    debugController.povRight().whileTrue(mAlgaeMechanism.AlgaeBackwardCmd());
+    debugController.povUp().whileTrue(mAlgaeMechanism.AlgaeIntakeGet().IntakeBackwardCmd());
+    debugController.a().whileTrue(IntakeAndRaise);
+    debugController.b().onTrue(mAlgaeMechanism.ResetAlgaeCMD());
   }
 
   private void configureShuffleboard() {
@@ -181,6 +190,7 @@ final Command algaeCommand = mAlgaeMechanism.AlgaePIDDown().alongWith(mAlgaeMech
     SmartDashboard.putData(mCoralMechanism);  
     SmartDashboard.putData(m_LimelightFront);
     SmartDashboard.putData(mAlgaeMechanism);
+    SmartDashboard.putData(mAlgaeMechanism.AlgaeIntakeGet());
   }
 
   public Command getAutonomousCommand() {

@@ -25,14 +25,14 @@ import frc.robot.Constants;
 
 public class AlgaeMechanism extends SubsystemBase{
     
-  private ProfiledPIDController pid = new ProfiledPIDController(.1 , 0, 0, ALGAE_CONSTRAINTS);
-  private static final TrapezoidProfile.Constraints ALGAE_CONSTRAINTS = new TrapezoidProfile.Constraints(Units.feetToMeters(10),Units.feetToMeters(2.5));
+  private ProfiledPIDController pid = new ProfiledPIDController(.2 , 0, 0, ALGAE_CONSTRAINTS);
+  private static final TrapezoidProfile.Constraints ALGAE_CONSTRAINTS = new TrapezoidProfile.Constraints(Units.feetToMeters(10),Units.feetToMeters(8));
 
   private double m_AlgaeSpeed;
-    public static double posDown = 0;
-    public static double posUp = 30; 
+    public static double posUp = 0;
+    public static double posDown = 1.3; 
 
-    public static double GEAR_RATIO = 1;
+    public static double GEAR_RATIO = 75;
    double algaePositionConversionFactor =
    2 * Math.PI / AlgaeMechanism.GEAR_RATIO; // revolutions -> radians
 private double algaeVelocityConversionFactor = 1;
@@ -44,17 +44,17 @@ private DigitalInput m_AlgaeLimitSwitchBottom = new DigitalInput(8);
 private AlgaeIntake algaeIntake = new AlgaeIntake();
     public AlgaeMechanism(){
         m_AlgaeConfig.closedLoop
-        .feedbackSensor(FeedbackSensor.kAlternateOrExternalEncoder)
+        .feedbackSensor(FeedbackSensor.kPrimaryEncoder)
         .pid(1.0,0,0);
         m_AlgaeConfig
             .inverted(false)
             .idleMode(IdleMode.kBrake);
-        m_AlgaeConfig.alternateEncoder
+        m_AlgaeConfig.encoder
             .positionConversionFactor(algaePositionConversionFactor)
-            .velocityConversionFactor(algaeVelocityConversionFactor)
-            .countsPerRevolution(8192);
+            .velocityConversionFactor(algaeVelocityConversionFactor);
+           
        
-        pid.setTolerance(.1);
+        pid.setTolerance(.15);
        
 
             m_AlgaeMotor.configure(m_AlgaeConfig, ResetMode.kNoResetSafeParameters, PersistMode.kPersistParameters);
@@ -65,29 +65,38 @@ private AlgaeIntake algaeIntake = new AlgaeIntake();
             return algaeIntake;
         }
     public void AlgaeForward() {
-        m_AlgaeMotor.set(.85);
+        m_AlgaeMotor.set(.1);
     }
 
     public void AlgaeBackward() {
-        m_AlgaeMotor.set(-.85);
+        m_AlgaeMotor.set(-.1);
     }
 
     public void AlgaeStop() {
         m_AlgaeMotor.set(0);
     }
-
+    public void AlgaeReset(){
+        m_AlgaeMotor.getEncoder().setPosition(0);
+    }
    
+    public void AlgaeResetAlternate(){
+        m_AlgaeMotor.getAlternateEncoder().setPosition(0);
+    }
     
+public Command ResetAlgaeCMD(){
+    return runOnce(this::AlgaeReset);
+}
+
     public double getAlgaeEncoderPos(){
-        return m_AlgaeMotor.getAlternateEncoder().getPosition();
+        return m_AlgaeMotor.getEncoder().getPosition();
     }
 
     public Command AlgaeForwardCmd() {
-        return this.runOnce(this::AlgaeForward);
+        return this.runEnd(this::AlgaeForward, this::AlgaeStop);
     }
 
     public Command AlgaeBackwardCmd() {
-        return this.runOnce(this::AlgaeBackward);
+        return this.runEnd(this::AlgaeBackward, this::AlgaeStop);
     }
 
     public Command AlgaeStopCmd() {
@@ -97,13 +106,13 @@ private AlgaeIntake algaeIntake = new AlgaeIntake();
    
     public void ResetAlgaeEnc() {
        if (m_AlgaeLimitSwitchBottom.get() == true){ 
-        m_AlgaeMotor.getAlternateEncoder().setPosition(0);
+        m_AlgaeMotor.getEncoder().setPosition(0);
         }
     }
 
     
   public Rotation2d getAlgaePos() {
-        return Rotation2d.fromRadians(m_AlgaeMotor.getAlternateEncoder().getPosition());
+        return Rotation2d.fromRadians(m_AlgaeMotor.getEncoder().getPosition());
     }
    
 
@@ -130,11 +139,11 @@ public void resetAlgaePid(){
 
 
     public Command AlgaePIDUp(){
-        return resetAlgaePIDCmd().andThen(runEnd(() -> AlgaePID(0), this::AlgaeStop).onlyWhile(() -> !CheckAlgaePID()));
+        return resetAlgaePIDCmd().andThen(runEnd(() -> AlgaePID(posUp), this::AlgaeStop).onlyWhile(() -> !CheckAlgaePID()));
     }
 
     public Command AlgaePIDDown(){
-        return resetAlgaePIDCmd().andThen(runEnd(() -> AlgaePID(30), this::AlgaeStop).onlyWhile(() ->!CheckAlgaePID()));
+        return resetAlgaePIDCmd().andThen(runEnd(() -> AlgaePID(posDown), this::AlgaeStop).onlyWhile(() ->!CheckAlgaePID()));
     }
     public boolean CheckAlgaePID(){
             return pid.atGoal();

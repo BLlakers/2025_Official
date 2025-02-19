@@ -75,11 +75,11 @@ public class CoralMechanism extends SubsystemBase{
     }
 
     public int IrReadingb(){
-        return IRf.getValue();
+        return IRb.getValue();
     }
 
     public boolean IsCoralLoaded(){
-        return (IrReadingf() > 2000 && IrReadingb() > 2000);
+        return (IrReadingf() > 1300 && IrReadingb() > 1300);
     }
 
     public void periodic(){
@@ -89,5 +89,6 @@ public class CoralMechanism extends SubsystemBase{
   public void initSendable(SendableBuilder builder) {
     super.initSendable(builder);
     builder.addDoubleProperty("Coral/IRf", ()-> IrReadingf(), null);
+    builder.addDoubleProperty("Coral/IRb", ()-> IrReadingb(), null);
   }
 }
