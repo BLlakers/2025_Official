@@ -47,10 +47,12 @@ public class ElevatorPID extends Command {
       m_elevatorSpeed = 0;
     }
     
-    if (elevator.ElevatorLimitSwitchTop())
+    if (elevator.ElevatorLimitSwitchTop()) {
+      m_elevatorSpeed = 0;
+    }
       SmartDashboard.putNumber(elevator.getName() + "ElevatorCommand/Command/elevatorSpeed", m_elevatorSpeed * ElevatorMechanism.ElevatorGearRatio);
       SmartDashboard.putNumber(elevator.getName() + "ElevatorCommand/Command/elevatorPos", elevator.getElevatorEncoderPos());
-      elevator.ElevatorMove(m_elevatorSpeed * (1/ElevatorMechanism.ElevatorGearRatio)); 
+      elevator.ElevatorMove(m_elevatorSpeed * (ElevatorMechanism.ElevatorGearRatio)); 
     
    
   }

@@ -27,7 +27,7 @@ enum elevatorState {
 }
 
 public class ElevatorMechanism extends SubsystemBase{
-   public static double ElevatorGearRatio = 3;
+   public static double ElevatorGearRatio = 375;
    private double marginOfError = 1;
    private double elevatorPositionConversionFactor = 1.6*Math.PI ; // 1.6 * Math.PI = Distance per rotation
    private double elevatorVelocityConversionFactor = 1; 
