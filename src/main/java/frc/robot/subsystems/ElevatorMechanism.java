@@ -161,9 +161,13 @@ public class ElevatorMechanism extends SubsystemBase{
     }
    
     public void ResetElevatorEnc(){
-        
+        if (ElevatorLimitSwitchBottom() == true){
+            m_ElevatorMotor.getAlternateEncoder().setPosition(0);
+        }
     }
-
+public elevatorState getEstate(){
+    return this.Estate;
+}
 public void periodic(){
    
 }

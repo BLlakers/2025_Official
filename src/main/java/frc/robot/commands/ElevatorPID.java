@@ -41,7 +41,7 @@ public class ElevatorPID extends Command {
   @Override
   public void execute() {
 
-    pid.setGoal(elevator.desiredPosGet());
+    pid.setGoal(position.getAsDouble());
     double m_elevatorSpeed = pid.calculate(elevator.getElevatorEncoderPos());
     if (pid.atGoal()) {
       m_elevatorSpeed = 0;

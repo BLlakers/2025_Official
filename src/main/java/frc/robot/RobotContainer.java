@@ -35,6 +35,7 @@ public class RobotContainer {
 
   ElevatorMechanism mElevatorMechanism = new ElevatorMechanism();
   ElevatorPID elevatorPID = new ElevatorPID(mElevatorMechanism, ()-> mElevatorMechanism.desiredPosGet());
+  ElevatorPID elevatorPIDTEST = new ElevatorPID(mElevatorMechanism, ()-> 100);
   AprilAlignCommand LimelightCodeFront = new AprilAlignCommand(() -> m_LimelightFront.getCurrentAprilTag(), () ->  m_LimelightFront.getAprilRotation2d(), m_DriveTrain, new Transform2d(0,1, new Rotation2d()), false, mLedStrand);
   AprilAlignCommand LimelightCodeBack = new AprilAlignCommand(() -> m_LimelightBack.getCurrentAprilTag(), () ->  m_LimelightBack.getAprilRotation2d(), m_DriveTrain, new Transform2d(0,1, new Rotation2d()), true,mLedStrand);
 
@@ -182,6 +183,7 @@ final Command IntakeAndRaise = mAlgaeMechanism.AlgaePIDUp().alongWith(mAlgaeMech
     debugController.y().whileTrue(mCoralMechanism.CoralForwardCmd());
     debugController.leftBumper().whileTrue(mClimbMechanism.WindBackwardCmd());
     debugController.rightBumper().whileTrue(mClimbMechanism.WindForwardCmd());
+    debugController.x().whileTrue(elevatorPIDTEST);
   }
 
   private void configureShuffleboard() {
