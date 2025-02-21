@@ -39,7 +39,7 @@ public class ElevatorMechanism extends SubsystemBase{
 
    private DigitalInput m_ElevatorLimitSwitchTop = new DigitalInput(6);
    private DigitalInput m_ElevatorLimitSwitchBottom = new DigitalInput(7);
-    
+public Boolean AtBottom = true;
    private SparkMaxConfig m_ElevatorConfig = new SparkMaxConfig();
 
     public ElevatorMechanism() {
@@ -47,7 +47,7 @@ public class ElevatorMechanism extends SubsystemBase{
         .feedbackSensor(FeedbackSensor.kAlternateOrExternalEncoder)
         .pid(1.0,0,0);
          m_ElevatorConfig
-            .inverted(true)
+            .inverted(false)
             .idleMode(IdleMode.kBrake);
         m_ElevatorConfig.alternateEncoder //TODO MAKE SURE TO USE RIGHT TYPE OF ENCODER WHEN DOING CONFIGS!
             .positionConversionFactor(elevatorPositionConversionFactor)
@@ -57,11 +57,11 @@ public class ElevatorMechanism extends SubsystemBase{
              }
 
     public void ElevatorMotorUp() {
-        m_ElevatorMotor.set(.85);
+        m_ElevatorMotor.set(.25);
     }
 
     public void ElevatorMotorDown() {
-            m_ElevatorMotor.set(-.85);
+            m_ElevatorMotor.set(-.25);
         }
     public boolean ElevatorLimitSwitchTop(){
         return m_ElevatorLimitSwitchTop.get();
@@ -88,6 +88,22 @@ public class ElevatorMechanism extends SubsystemBase{
 
     public Command ElevatorUpCmd() {
         return this.runEnd(this::ElevatorMotorUp, this::ElevatorMotorStop);
+    }
+
+    public Command ElevatorUpLimitCommand(){
+        if (ElevatorLimitSwitchBottom() == false){
+            return ElevatorUpCmd();
+        } else {
+            return ElevatorStopCmd();
+        }
+    }
+
+    public Command ElevatorDownLimitCommand(){
+        if (ElevatorLimitSwitchBottom() == false){
+            return ElevatorDownCmd();
+        } else {
+            return ElevatorStopCmd();
+        }
     }
 
     public Command ElevatorDownCmd() {
@@ -163,6 +179,9 @@ public class ElevatorMechanism extends SubsystemBase{
     public void ResetElevatorEnc(){
         if (ElevatorLimitSwitchBottom() == true){
             m_ElevatorMotor.getAlternateEncoder().setPosition(0);
+            AtBottom = true;
+        } else {
+            AtBottom = false; 
         }
     }
 public elevatorState getEstate(){

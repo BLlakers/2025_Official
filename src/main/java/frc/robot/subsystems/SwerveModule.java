@@ -266,6 +266,9 @@ public class SwerveModule extends SubsystemBase {
 
     builder.addDoubleProperty(
         "TurnMotor/Encoder/AbsolutePosition", this.m_turningEncoder::get, null);
+    builder.addDoubleProperty(
+        "TurnMotor/Encoder/TurningEncoderPosition", this.m_turningMotor.getEncoder()::getPosition, null);
+  
 
     builder.setSafeState(this::stop);
   }

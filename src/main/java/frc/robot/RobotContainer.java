@@ -167,8 +167,8 @@ final Command IntakeAndRaise = mAlgaeMechanism.AlgaePIDUp().alongWith(mAlgaeMech
     manipController.povUp().onTrue(mElevatorMechanism.MovePosUp());
     manipController.povDown().onTrue(mElevatorMechanism.MovePosDown());
     manipController.a().whileTrue(elevatorPID);
-    manipController.rightBumper().whileTrue(mCoralMechanism.ServoForwardCommand());
-    manipController.leftBumper().whileTrue(mCoralMechanism.ServoBackwardCommand());
+    manipController.rightBumper().whileTrue(mElevatorMechanism.ElevatorDownLimitCommand());
+    manipController.leftBumper().whileTrue(mElevatorMechanism.ElevatorUpLimitCommand());
     
     manipController.povLeft().whileTrue(mAlgaeMechanism.AlgaePIDUp());
     manipController.povRight().whileTrue(mAlgaeMechanism.AlgaePIDDown());

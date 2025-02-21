@@ -3,6 +3,8 @@ package frc.robot;
 import static edu.wpi.first.units.Units.Inches;
 import static edu.wpi.first.units.Units.Meters;
 
+import org.opencv.core.Mat;
+
 import edu.wpi.first.math.geometry.Pose2d;
 import edu.wpi.first.math.geometry.Rotation3d;
 import edu.wpi.first.math.geometry.Transform3d;
@@ -139,11 +141,11 @@ public final class Constants {
     public static final double brTurnEncoderOffset = 0;
   }
 
-  public class RobotVersion2024 extends RobotVersionConstants {
-    public static final double flTurnEncoderOffset = 0.7 + (Math.PI-4.66);
-    public static final double frTurnEncoderOffset = 0;
-    public static final double blTurnEncoderOffset = 0;
-    public static final double brTurnEncoderOffset = 0;
+  public class RobotVersion2025 extends RobotVersionConstants {
+    public static final double flTurnEncoderOffset = 3.84;
+    public static final double frTurnEncoderOffset = 1.7 + Math.PI;
+    public static final double blTurnEncoderOffset = 3.284;
+    public static final double brTurnEncoderOffset = 4.49;
   }
 
   public class RobotVersion2023 extends RobotVersionConstants {
@@ -153,5 +155,5 @@ public final class Constants {
     public static final double brTurnEncoderOffset = 2.736-.06098;
   }
 
-  public static final RobotVersion defaultRobotVersion = RobotVersion.v2023;
+  public static final RobotVersion defaultRobotVersion = RobotVersion.v2025;
 }

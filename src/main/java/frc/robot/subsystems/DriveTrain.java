@@ -115,11 +115,11 @@ public class DriveTrain extends SubsystemBase {
       frTurnOffset = Constants.RobotVersion2023.frTurnEncoderOffset;
       blTurnOffset = Constants.RobotVersion2023.blTurnEncoderOffset;
       brTurnOffset = Constants.RobotVersion2023.brTurnEncoderOffset;
-    } else if (Constants.defaultRobotVersion == RobotVersion.v2024) {
-      flTurnOffset = Constants.RobotVersion2024.flTurnEncoderOffset;
-      frTurnOffset = Constants.RobotVersion2024.frTurnEncoderOffset;
-      blTurnOffset = Constants.RobotVersion2024.blTurnEncoderOffset;
-      brTurnOffset = Constants.RobotVersion2024.brTurnEncoderOffset;
+    } else if (Constants.defaultRobotVersion == RobotVersion.v2025) {
+      flTurnOffset = Constants.RobotVersion2025.flTurnEncoderOffset;
+      frTurnOffset = Constants.RobotVersion2025.frTurnEncoderOffset;
+      blTurnOffset = Constants.RobotVersion2025.blTurnEncoderOffset;
+      brTurnOffset = Constants.RobotVersion2025.brTurnEncoderOffset;
     }
 
     m_frontRight =
