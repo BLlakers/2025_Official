@@ -93,7 +93,7 @@ public class SwerveDriveCommand extends Command {
       ySpeed /= 2;
       rotSpeed /= 2;
     }
-
+    
     SmartDashboard.putNumber("DriveTrain/Controller/Command/X Speed", xSpeed);
     SmartDashboard.putNumber("DriveTrain/Controller/Command/Y Speed", ySpeed);
 

@@ -30,7 +30,7 @@ public class AlgaeMechanism extends SubsystemBase{
 
   private double m_AlgaeSpeed;
     public static double posUp = 0;
-    public static double posDown = 1.3; 
+    public static double posDown = 7; 
 
     public static double GEAR_RATIO = 75;
    double algaePositionConversionFactor =

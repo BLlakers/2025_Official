@@ -42,7 +42,7 @@ public boolean IntakeFowardIR(){
         m_IntakeMotor.set(ControlMode.PercentOutput, 0);
     }
  public Command IntakeForwardCmd() {
-        return this.runOnce(this::IntakeForward);
+        return this.runEnd(this::IntakeForward, this::IntakeStop);
     }
 
     public Command IntakeBackwardCmd() {
@@ -53,7 +53,7 @@ public boolean IntakeFowardIR(){
     }
 
     public Command RunIntake(){
-        return this.runEnd(this::IntakeForward, this::IntakeStop).onlyWhile(()-> IntakeFowardIR() == false);
+        return this.runEnd(this::IntakeForward, this::IntakeStop);/* .onlyWhile(()-> IntakeFowardIR() == false)*/
     }
 @Override
 public void initSendable(SendableBuilder builder) {

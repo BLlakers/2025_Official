@@ -27,9 +27,18 @@ enum elevatorState {
 }
 
 public class ElevatorMechanism extends SubsystemBase{
+
+   public static double Down = 0;
+   public static double Troph = -2.5;
+   public static double L2 = -5.8;
+   public static double AlgaeL3 = -10.2;
+   public static double L3 = -13.7;
+   public static double AlgaeL4 = -17;
+   public static double L4 = -24.2;
+   
    public static double ElevatorGearRatio = 375;
    private double marginOfError = 1;
-   private double elevatorPositionConversionFactor = 1.6*Math.PI ; // 1.6 * Math.PI = Distance per rotation
+   private double elevatorPositionConversionFactor = 1.6*Math.PI; // 1.6 * Math.PI = Distance per rotation
    private double elevatorVelocityConversionFactor = 1; 
    private double desiredPos;
    private elevatorState Estate =elevatorState.Down;
@@ -54,14 +63,20 @@ public Boolean AtBottom = true;
             .velocityConversionFactor(elevatorVelocityConversionFactor)
             .countsPerRevolution(8192);
              m_ElevatorMotor.configure(m_ElevatorConfig, ResetMode.kNoResetSafeParameters, PersistMode.kPersistParameters);
+
+             ResetPosition();
              }
 
     public void ElevatorMotorUp() {
-        m_ElevatorMotor.set(.25);
+        m_ElevatorMotor.set(.85);
+    }
+
+    public void ResetPosition() {
+        m_ElevatorMotor.getAlternateEncoder().setPosition(0);
     }
 
     public void ElevatorMotorDown() {
-            m_ElevatorMotor.set(-.25);
+            m_ElevatorMotor.set(-.85);
         }
     public boolean ElevatorLimitSwitchTop(){
         return m_ElevatorLimitSwitchTop.get();
@@ -86,29 +101,23 @@ public Boolean AtBottom = true;
         return getElevatorEncoderPos() < desiredPosGet() + marginOfError && getElevatorEncoderPos() > desiredPosGet() - marginOfError;
     }
 
+    public Command ElevatorUpLimitCmd() {
+        return this.runEnd(this::ElevatorMotorUp, this::ElevatorMotorStop).until(() -> ElevatorLimitSwitchTop());
+    }
+
+    public Command ElevatorDownLimitCmd() {
+        return this.runEnd(this::ElevatorMotorDown, this::ElevatorMotorStop).until(() -> ElevatorLimitSwitchBottom());
+    }
+
     public Command ElevatorUpCmd() {
         return this.runEnd(this::ElevatorMotorUp, this::ElevatorMotorStop);
-    }
-
-    public Command ElevatorUpLimitCommand(){
-        if (ElevatorLimitSwitchBottom() == false){
-            return ElevatorUpCmd();
-        } else {
-            return ElevatorStopCmd();
-        }
-    }
-
-    public Command ElevatorDownLimitCommand(){
-        if (ElevatorLimitSwitchBottom() == false){
-            return ElevatorDownCmd();
-        } else {
-            return ElevatorStopCmd();
-        }
     }
 
     public Command ElevatorDownCmd() {
         return this.runEnd(this::ElevatorMotorDown, this::ElevatorMotorStop);
     }
+
+    
 
     public Command ElevatorStopCmd() {
         return this.runOnce(this::ElevatorMotorStop);
@@ -148,15 +157,15 @@ public Boolean AtBottom = true;
 
     public void ChangeDesiredPos(){
         if (Estate == elevatorState.L4){
-            desiredPos = 400;
+            desiredPos = L4;
         } else if (Estate == elevatorState.L3) {
-            desiredPos = 300;
+            desiredPos = L3;
         } else if (Estate == elevatorState.L2) {
-            desiredPos = 200;
+            desiredPos = L2;
         } else if (Estate == elevatorState.Troph) {
-            desiredPos =  100;
+            desiredPos =  Troph;
         } else if (Estate == elevatorState.Down) {
-            desiredPos = 0;
+            desiredPos = Down;
         } 
     }
 
@@ -193,9 +202,9 @@ public void periodic(){
   @Override
   public void initSendable(SendableBuilder builder) {
     super.initSendable(builder);
-    ElevatorUpCmd().setName("ElevatorUpCmd");
     builder.addDoubleProperty("Elevator/Position", () -> getElevatorEncoderPos(), null);
-    builder.addBooleanProperty("Elevator/LimitSwitch", this::ElevatorLimitSwitchTop, null);
+    builder.addBooleanProperty("Elevator/LimitSwitchTop", this::ElevatorLimitSwitchTop, null);
+    builder.addBooleanProperty("Elevator/LimitSwitchBottom", this::ElevatorLimitSwitchBottom, null);
     builder.addBooleanProperty("Elevator/AtPos", this::ElevatorAtPos, null);
     builder.addDoubleProperty("Elevator/desiredPos", this::desiredPosGet, this::desiredPosSet);
     builder.addStringProperty("Elevator/DesiredLevel", () -> this.Estate.toString(), null);

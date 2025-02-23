@@ -19,8 +19,8 @@ import frc.robot.subsystems.ElevatorMechanism;
 public class ElevatorPID extends Command {
  private DoubleSupplier position;
   private ElevatorMechanism elevator;
-  private ProfiledPIDController pid = new ProfiledPIDController(.1, 0, 0, ELEVATOR_CONSTRAINTS);
-  private static final TrapezoidProfile.Constraints ELEVATOR_CONSTRAINTS = new TrapezoidProfile.Constraints(Units.feetToMeters(5),Units.feetToMeters(5));
+  private ProfiledPIDController pid = new ProfiledPIDController(.005, 0, 0, ELEVATOR_CONSTRAINTS);
+  private static final TrapezoidProfile.Constraints ELEVATOR_CONSTRAINTS = new TrapezoidProfile.Constraints(Units.feetToMeters(11),Units.feetToMeters(5));
 
 
   public ElevatorPID(ElevatorMechanism e, DoubleSupplier p) {
@@ -52,7 +52,7 @@ public class ElevatorPID extends Command {
     }
       SmartDashboard.putNumber(elevator.getName() + "ElevatorCommand/Command/elevatorSpeed", m_elevatorSpeed * ElevatorMechanism.ElevatorGearRatio);
       SmartDashboard.putNumber(elevator.getName() + "ElevatorCommand/Command/elevatorPos", elevator.getElevatorEncoderPos());
-      elevator.ElevatorMove(m_elevatorSpeed * (ElevatorMechanism.ElevatorGearRatio)); 
+      elevator.ElevatorMove(m_elevatorSpeed*ElevatorMechanism.ElevatorGearRatio); 
     
    
   }

@@ -11,8 +11,11 @@ import edu.wpi.first.wpilibj.DriverStation;
 import edu.wpi.first.wpilibj.smartdashboard.SmartDashboard;
 
 import com.pathplanner.lib.auto.AutoBuilder;
+import com.pathplanner.lib.config.PIDConstants;
 import com.pathplanner.lib.config.RobotConfig;
+import com.pathplanner.lib.controllers.PPHolonomicDriveController;
 import com.pathplanner.lib.controllers.PPLTVController;
+import com.pathplanner.lib.controllers.PathFollowingController;
 import com.studica.frc.AHRS;
 import frc.robot.Constants;
 import frc.robot.support.RobotVersion;
@@ -30,7 +33,8 @@ public class DriveTrain extends SubsystemBase {
           Constants.Drive.SMFrontRightLocation,
           Constants.Drive.SMBackLeftLocation,
           Constants.Drive.SMBackRightLocation);
-
+  public PIDConstants Translation = new PIDConstants(0);
+  public PIDConstants Rotation = new PIDConstants(0);
   public boolean m_WheelLock = false;
   public boolean m_FieldRelativeEnable = true;
   public static final double kMaxSpeed =
@@ -93,8 +97,8 @@ public class DriveTrain extends SubsystemBase {
       this::getChassisSpeeds, 
       this::driveChassisSpeeds, // ChassisSpeeds supplier. MUST BE ROBOT RELATIVE
        // Method that will drive the robot given ROBOT RELATIVE ChassisSpeeds. Also optionally outputs individual module feedforwards
-      new PPLTVController(0.02), // PPLTVController is the built in path following controller for differential drive trains
-    config,// The robot configuration
+      new PPLTVController(.2), //PPHolonomicDriveController(Translation, Rotation, .2), 
+          config,// The robot configuration
       () -> {
         // Boolean supplier that controls when the path will be mirrored for the red alliance
         // This will flip the path being followed to the red side of the field.
