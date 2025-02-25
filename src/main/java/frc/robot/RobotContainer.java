@@ -41,9 +41,9 @@ public class RobotContainer {
 
 final Command runCoralFoward = mCoralMechanism.CoralForwardCmd().onlyWhile(()->!mCoralMechanism.IsCoralLoaded()).withName("RunCoral");
 
-final Command algaeCommand = mAlgaeMechanism.AlgaePIDDown().alongWith(mAlgaeMechanism.AlgaeIntakeGet().RunIntake()).andThen(mAlgaeMechanism.AlgaePIDUp().alongWith(mAlgaeMechanism.AlgaeIntakeGet().RunIntake()));
-final Command IntakeAndRaise = mAlgaeMechanism.AlgaePIDUp().alongWith(mAlgaeMechanism.AlgaeIntakeGet().RunIntake());
-
+final Command IntakeAndMoveDown = mAlgaeMechanism.AlgaePIDDown().alongWith(mAlgaeMechanism.AlgaeIntakeGet().RunIntake().withTimeout(15));
+final Command IntakeAndRaise = mAlgaeMechanism.AlgaePIDMiddle().alongWith(mAlgaeMechanism.AlgaeIntakeGet().RunIntake().withTimeout(4.5));
+final Command algaeCommand = IntakeAndMoveDown.finallyDo(IntakeAndRaise::schedule);
 //final Command MoveElevatorUp = Commands.sequence(mElevatorMechanism.SetPosUp().alongWith(elevatorPID));
 //final Command MoveElevatorDown = Commands.sequence(mElevatorMechanism.SetPosDown().andThen(this::elevatorPID, mElevatorMechanism));
   /** 
@@ -58,7 +58,7 @@ final Command IntakeAndRaise = mAlgaeMechanism.AlgaePIDUp().alongWith(mAlgaeMech
   CommandXboxController debugController =
       new CommandXboxController(Constants.Controller.DebugControllerChannel);
   final Command DriveForward =
-      new SwerveDriveCommand(() -> 1, () -> 0, () -> 0, () -> .3, m_DriveTrain);
+      new SwerveDriveCommand(() -> .1, () -> 0, () -> 0, () -> .3, m_DriveTrain);
   final Command DriveSide =
       new SwerveDriveCommand(() -> 0, () -> 1, () -> 0, () -> .3, m_DriveTrain);
   final Command Rotate = new SwerveDriveCommand(() -> 0, () -> 0, () -> .3, () -> 0, m_DriveTrain);
@@ -172,13 +172,12 @@ final Command IntakeAndRaise = mAlgaeMechanism.AlgaePIDUp().alongWith(mAlgaeMech
     manipController.a().whileTrue(elevatorPID);
     manipController.x().whileTrue(elevatorPIDTEST);
     // mElevatorMechanism.setDefaultCommand(elevatorPID);
-    manipController.povLeft().whileTrue(mAlgaeMechanism.AlgaePIDUp());
-    manipController.povRight().whileTrue(mAlgaeMechanism.AlgaePIDDown());
     manipController.b().whileTrue(algaeCommand);
     manipController.y().whileTrue(runCoralFoward);
+    manipController.povUp().whileTrue(DriveForward);
     
-    debugController.rightBumper().whileTrue(mElevatorMechanism.ElevatorDownLimitCmd());
-    debugController.leftBumper().whileTrue(mElevatorMechanism.ElevatorUpLimitCmd());
+   debugController.rightBumper().whileTrue(mElevatorMechanism.ElevatorDownLimitCmd());
+   debugController.leftBumper().whileTrue(mElevatorMechanism.ElevatorUpLimitCmd());
     debugController.povLeft().whileTrue(mAlgaeMechanism.AlgaeForwardCmd());
     debugController.povRight().whileTrue(mAlgaeMechanism.AlgaeBackwardCmd());
     debugController.povUp().whileTrue(mAlgaeMechanism.AlgaeIntakeGet().IntakeBackwardCmd());
@@ -186,7 +185,7 @@ final Command IntakeAndRaise = mAlgaeMechanism.AlgaePIDUp().alongWith(mAlgaeMech
     debugController.b().onTrue(mAlgaeMechanism.ResetAlgaeCMD());
     debugController.y().whileTrue(mCoralMechanism.CoralForwardCmd());
     // debugController.leftBumper().whileTrue(mClimbMechanism.WindBackwardCmd());
-    // debugController.rightBumper().whileTrue(mClimbMechanism.WindForwardCmd());
+    //  debugController.rightBumper().whileTrue(mClimbMechanism.WindForwardCmd());
     debugController.x().whileTrue(elevatorPIDTEST);
   }
 

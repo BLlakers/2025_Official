@@ -30,7 +30,8 @@ public class AlgaeMechanism extends SubsystemBase{
 
   private double m_AlgaeSpeed;
     public static double posUp = 0;
-    public static double posDown = 7; 
+    public static double posMiddle = 4.5;
+    public static double posDown = 9; 
 
     public static double GEAR_RATIO = 75;
    double algaePositionConversionFactor =
@@ -144,6 +145,9 @@ public void resetAlgaePid(){
 
     public Command AlgaePIDDown(){
         return resetAlgaePIDCmd().andThen(runEnd(() -> AlgaePID(posDown), this::AlgaeStop).onlyWhile(() ->!CheckAlgaePID()));
+    }
+    public Command AlgaePIDMiddle(){
+        return resetAlgaePIDCmd().andThen(runEnd(() -> AlgaePID(posMiddle), this::AlgaeStop).onlyWhile(() ->!CheckAlgaePID()));
     }
     public boolean CheckAlgaePID(){
             return pid.atGoal();
