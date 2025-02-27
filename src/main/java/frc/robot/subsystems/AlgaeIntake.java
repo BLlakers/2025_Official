@@ -18,7 +18,6 @@ public class AlgaeIntake extends SubsystemBase{
     private final I2C.Port i2cPort = I2C.Port.kOnboard;
   private final ColorSensorV3 m_colorSensorV3 = new ColorSensorV3(i2cPort);
 public static double IRVALUE = 50;
-private DigitalInput TEST = new DigitalInput(9);
  public AlgaeIntake(){}
 
 

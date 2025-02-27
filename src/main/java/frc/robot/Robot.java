@@ -64,6 +64,7 @@ public class Robot extends TimedRobot {
     @Override
     public void autonomousInit() {
         m_robotContainer.m_DriveTrain.m_FieldRelativeEnable = false;
+        System.out.println(m_robotContainer.m_DriveTrain.m_FieldRelativeEnable);
         m_autonomousCommand = m_robotContainer.getAutonomousCommand();
         if (m_autonomousCommand != null) {
             m_autonomousCommand.schedule();

@@ -37,7 +37,6 @@ public class AlgaeMechanism extends SubsystemBase{
    double algaePositionConversionFactor =
    2 * Math.PI / AlgaeMechanism.GEAR_RATIO; // revolutions -> radians
 private double algaeVelocityConversionFactor = 1;
-private DigitalInput m_AlgaeLimitSwitchBottom = new DigitalInput(8);
  //private DigitalInput m_AlgaeLimitSwitchTop = new DigitalInput(7);
     //A motor to rotate up and down
    private SparkMax m_AlgaeMotor = new SparkMax(Constants.Algae.m_AlgaeMtrC, com.revrobotics.spark.SparkLowLevel.MotorType.kBrushless);
@@ -105,11 +104,7 @@ public Command ResetAlgaeCMD(){
     }
 
    
-    public void ResetAlgaeEnc() {
-       if (m_AlgaeLimitSwitchBottom.get() == true){ 
-        m_AlgaeMotor.getEncoder().setPosition(0);
-        }
-    }
+  
 
     
   public Rotation2d getAlgaePos() {

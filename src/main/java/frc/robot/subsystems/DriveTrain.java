@@ -33,12 +33,12 @@ public class DriveTrain extends SubsystemBase {
           Constants.Drive.SMFrontRightLocation,
           Constants.Drive.SMBackLeftLocation,
           Constants.Drive.SMBackRightLocation);
-  public PIDConstants Translation = new PIDConstants(0);
-  public PIDConstants Rotation = new PIDConstants(0);
+  public PIDConstants LeftToRight = new PIDConstants(3);
+  public PIDConstants Rotation = new PIDConstants(3);
   public boolean m_WheelLock = false;
   public boolean m_FieldRelativeEnable = true;
   public static final double kMaxSpeed =
-      Units.feetToMeters(12.5); // WP this seemed to work don't know why // 3.68
+      Units.feetToMeters(12.1); // WP this seemed to work don't know why // 3.68
   // meters per second or 12.1
   // ft/s (max speed of SDS Mk3 with Neo motor) // TODO KMaxSpeed needs to go with
   // enum
@@ -95,9 +95,10 @@ public class DriveTrain extends SubsystemBase {
       this::getPose2d, // Robot pose supplier
       this::resetPose, // Method to reset odometry (will be called if your auto has a starting pose)
       this::getChassisSpeeds, 
-      this::driveChassisSpeeds, // ChassisSpeeds supplier. MUST BE ROBOT RELATIVE
+      (speeds) -> driveRobotRelative(speeds), // ChassisSpeeds supplier. MUST BE ROBOT RELATIVE
        // Method that will drive the robot given ROBOT RELATIVE ChassisSpeeds. Also optionally outputs individual module feedforwards
-      new PPLTVController(.2), //PPHolonomicDriveController(Translation, Rotation, .2), 
+      new PPHolonomicDriveController(LeftToRight,Rotation),
+       //new PPHolonomicDriveController(Translation,Rotation), //PPHolonomicDriveController(Translation, Rotation, .2), 
           config,// The robot configuration
       () -> {
         // Boolean supplier that controls when the path will be mirrored for the red alliance
@@ -303,6 +304,17 @@ public class DriveTrain extends SubsystemBase {
         chassisSpeed.vyMetersPerSecond,
         chassisSpeed.omegaRadiansPerSecond);
   }
+
+  public void driveFieldRelative(ChassisSpeeds fieldRelativeSpeeds) {
+    driveRobotRelative(ChassisSpeeds.fromFieldRelativeSpeeds(fieldRelativeSpeeds, getPose2d().getRotation()));
+  }
+
+  public void driveRobotRelative(ChassisSpeeds robotRelativeSpeeds) {
+    ChassisSpeeds targetSpeeds = ChassisSpeeds.discretize(robotRelativeSpeeds, 0.02);
+    SwerveModuleState[] targetStates = m_kinematics.toSwerveModuleStates(targetSpeeds);
+    setModuleStates(targetStates);
+  }
+
 
   /**
    * Resets the Position of the Odometer, given our Current position.

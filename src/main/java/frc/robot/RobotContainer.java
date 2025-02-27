@@ -34,8 +34,11 @@ public class RobotContainer {
   AlgaeMechanism mAlgaeMechanism = new AlgaeMechanism();
 
   ElevatorMechanism mElevatorMechanism = new ElevatorMechanism();
-  ElevatorPID elevatorPID = new ElevatorPID(mElevatorMechanism, ()-> mElevatorMechanism.desiredPosGet());
-  ElevatorPID elevatorPIDTEST = new ElevatorPID(mElevatorMechanism, ()-> -10.2);
+  ElevatorPID elevatorPIDDown = new ElevatorPID(mElevatorMechanism, ()-> ElevatorMechanism.Down);
+  ElevatorPID elevatorPIDL2 = new ElevatorPID(mElevatorMechanism, ()-> ElevatorMechanism.L2);
+  ElevatorPID elevatorPIDL3 = new ElevatorPID(mElevatorMechanism, ()-> ElevatorMechanism.L3);
+  ElevatorPID elevatorPIDL4 = new ElevatorPID(mElevatorMechanism, ()-> ElevatorMechanism.L4);
+
   AprilAlignCommand LimelightCodeFront = new AprilAlignCommand(() -> m_LimelightFront.getCurrentAprilTag(), () ->  m_LimelightFront.getAprilRotation2d(), m_DriveTrain, new Transform2d(0,1, new Rotation2d()), false, mLedStrand);
   AprilAlignCommand LimelightCodeBack = new AprilAlignCommand(() -> m_LimelightBack.getCurrentAprilTag(), () ->  m_LimelightBack.getAprilRotation2d(), m_DriveTrain, new Transform2d(0,1, new Rotation2d()), true,mLedStrand);
 
@@ -76,13 +79,14 @@ final Command algaeCommand = IntakeAndMoveDown.finallyDo(IntakeAndRaise::schedul
    mElevatorMechanism.setName("ElevatorMechanism");
     m_DriveTrain.setName("DriveTrain");
     mCoralMechanism.setName("CoralMechnaism");
-    elevatorPID.setName("ElevatorPIDCommand");
+    
     mAlgaeMechanism.AlgaeIntakeGet().setName("AlgaeIntake");
-    elevatorPIDTEST.setName("ElevatorPIDTEST");
+
     mAlgaeMechanism.setName("AlgaeMechanism");
     configureShuffleboard();
     configureBindings();
     NamedCommands.registerCommand("Limelight",LimelightCodeFront);
+    NamedCommands.registerCommand("ToggleFieldRelativel", m_DriveTrain.toggleFieldRelativeEnable());
     // Build an auto chooser. This will use Commands.none() as the default option.
 
     autoChooser = AutoBuilder.buildAutoChooser();
@@ -165,16 +169,17 @@ final Command algaeCommand = IntakeAndMoveDown.finallyDo(IntakeAndRaise::schedul
     driverController.povDown().whileTrue(mCoralMechanism.CoralBackwardCmd());
     // Manipulator Controller commands
     // manipController.y().onTrue(mLedStrand.changeLedCommand()); 
-    manipController.povUp().onTrue(mElevatorMechanism.MovePosUp());
-    manipController.povDown().onTrue(mElevatorMechanism.MovePosDown());
+    // manipController.povUp().onTrue(mElevatorMechanism.MovePosUp());
+    // manipController.povDown().onTrue(mElevatorMechanism.MovePosDown());
     
     
-    manipController.a().whileTrue(elevatorPID);
-    manipController.x().whileTrue(elevatorPIDTEST);
+    manipController.a().whileTrue(elevatorPIDDown);
+    manipController.b().whileTrue(elevatorPIDL2);
     // mElevatorMechanism.setDefaultCommand(elevatorPID);
-    manipController.b().whileTrue(algaeCommand);
-    manipController.y().whileTrue(runCoralFoward);
-    manipController.povUp().whileTrue(DriveForward);
+    manipController.y().whileTrue(elevatorPIDL3);
+    manipController.x().whileTrue(elevatorPIDL4);
+    manipController.povDown().onTrue(mElevatorMechanism.ResetPositionCMD());
+    manipController.rightTrigger(.5).whileTrue(mCoralMechanism.CoralForwardCmd());
     
    debugController.rightBumper().whileTrue(mElevatorMechanism.ElevatorDownLimitCmd());
    debugController.leftBumper().whileTrue(mElevatorMechanism.ElevatorUpLimitCmd());
@@ -186,13 +191,12 @@ final Command algaeCommand = IntakeAndMoveDown.finallyDo(IntakeAndRaise::schedul
     debugController.y().whileTrue(mCoralMechanism.CoralForwardCmd());
     // debugController.leftBumper().whileTrue(mClimbMechanism.WindBackwardCmd());
     //  debugController.rightBumper().whileTrue(mClimbMechanism.WindForwardCmd());
-    debugController.x().whileTrue(elevatorPIDTEST);
+  
   }
 
   private void configureShuffleboard() {
     SmartDashboard.putData("Command Scheduler", CommandScheduler.getInstance());
     SmartDashboard.putData(mElevatorMechanism);
-    SmartDashboard.putData(elevatorPID);
    
     
     // Add subsystems
@@ -208,8 +212,6 @@ final Command algaeCommand = IntakeAndMoveDown.finallyDo(IntakeAndRaise::schedul
     // loads New Auto auto file
 
     Command autoCommand = autoChooser.getSelected();
-
-    return autoCommand.beforeStarting(
-        () -> m_DriveTrain.resetPose(new Pose2d(1.27, 5.55, new Rotation2d())));
+    return autoCommand;
   }
 }

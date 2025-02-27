@@ -24,7 +24,7 @@ public class CoralMechanism extends SubsystemBase{
 
     public void CoralForward() {
         m_coralMotor1.set(ControlMode.PercentOutput, .8);
-        m_coralMotor2.set(ControlMode.PercentOutput, -.6);
+        m_coralMotor2.set(ControlMode.PercentOutput, -.8);
     }
 
 

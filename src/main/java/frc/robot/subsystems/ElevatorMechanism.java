@@ -74,6 +74,9 @@ public Boolean AtBottom = true;
     public void ResetPosition() {
         m_ElevatorMotor.getAlternateEncoder().setPosition(0);
     }
+    public Command ResetPositionCMD(){
+        return this.runOnce(this::ResetPosition);
+    }
 
     public void ElevatorMotorDown() {
             m_ElevatorMotor.set(-.95);
