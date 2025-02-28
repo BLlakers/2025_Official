@@ -179,8 +179,10 @@ final Command algaeCommand = IntakeAndMoveDown.finallyDo(IntakeAndRaise::schedul
     manipController.y().whileTrue(elevatorPIDL3);
     manipController.x().whileTrue(elevatorPIDL4);
     manipController.povDown().onTrue(mElevatorMechanism.ResetPositionCMD());
+    manipController.rightBumper().whileTrue(algaeCommand);
+    manipController.leftTrigger(.5).whileTrue(mCoralMechanism.CoralForwardCmd());
     manipController.rightTrigger(.5).whileTrue(mCoralMechanism.CoralForwardCmd());
-    
+    mCoralMechanism.setDefaultCommand(mCoralMechanism.ServoForwardCommand());
    debugController.rightBumper().whileTrue(mElevatorMechanism.ElevatorDownLimitCmd());
    debugController.leftBumper().whileTrue(mElevatorMechanism.ElevatorUpLimitCmd());
     debugController.povLeft().whileTrue(mAlgaeMechanism.AlgaeForwardCmd());

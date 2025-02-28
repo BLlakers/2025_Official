@@ -39,7 +39,7 @@ public class CoralMechanism extends SubsystemBase{
     }
 
     public void ServoForward() {
-        servo.setPosition(1);
+        servo.setPosition(.8);
     }
 
     public void ServoBackward() {

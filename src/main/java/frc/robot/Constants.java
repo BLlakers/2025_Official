@@ -155,5 +155,5 @@ public final class Constants {
     public static final double brTurnEncoderOffset = 2.736-.06098;
   }
 
-  public static final RobotVersion defaultRobotVersion = RobotVersion.v2023;
+  public static final RobotVersion defaultRobotVersion = RobotVersion.v2025;
 }
