@@ -99,7 +99,11 @@ public class SwerveDriveCommand extends Command {
     // Joystick Drift
     rot = MathUtil.applyDeadband(-rightX, Constants.Controller.deadzone);
 
-    RT = AccelerateRT;
+    if(Constants.CurrentDriver.currentDriver == "Asa"){
+      RT = 1.0;
+    } else {
+      RT = AccelerateRT;
+    }
 
     Elev = DecelerateElev;
 

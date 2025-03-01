@@ -47,6 +47,10 @@ final Command runCoralFoward = mCoralMechanism.CoralForwardCmd().onlyWhile(()->!
 final Command IntakeAndMoveDown = mAlgaeMechanism.AlgaePIDDown().alongWith(mAlgaeMechanism.AlgaeIntakeGet().RunIntake().withTimeout(15));
 final Command IntakeAndRaise = mAlgaeMechanism.AlgaePIDMiddle().alongWith(mAlgaeMechanism.AlgaeIntakeGet().RunIntake().withTimeout(4.5));
 final Command algaeCommand = IntakeAndMoveDown.finallyDo(IntakeAndRaise::schedule);
+
+final Command IntakeAndMoveDownThroughBore = mAlgaeMechanism.AlgaePIDDownThroughBore().alongWith(mAlgaeMechanism.AlgaeIntakeGet().RunIntake().withTimeout(15));
+final Command IntakeAndRaiseThroughBore = mAlgaeMechanism.AlgaePIDMiddleThroughBore().alongWith(mAlgaeMechanism.AlgaeIntakeGet().RunIntake().withTimeout(4.5));
+final Command algaeThroughBoreCommand = IntakeAndMoveDown.finallyDo(IntakeAndRaise::schedule);
 //final Command MoveElevatorUp = Commands.sequence(mElevatorMechanism.SetPosUp().alongWith(elevatorPID));
 //final Command MoveElevatorDown = Commands.sequence(mElevatorMechanism.SetPosDown().andThen(this::elevatorPID, mElevatorMechanism));
   /** 
@@ -180,7 +184,10 @@ final Command algaeCommand = IntakeAndMoveDown.finallyDo(IntakeAndRaise::schedul
     manipController.y().whileTrue(elevatorPIDL3);
     manipController.x().whileTrue(elevatorPIDL4);
     manipController.start().onTrue(mElevatorMechanism.ResetPositionCMD());
-    manipController.rightBumper().whileTrue(algaeCommand);
+    //manipController.rightBumper().whileTrue(algaeCommand);
+    //manipController.povDown().onTrue(mElevatorMechanism.ResetPositionCMD());
+    manipController.rightBumper().whileTrue(algaeThroughBoreCommand);
+    manipController.leftBumper().whileTrue(mAlgaeMechanism.AlgaeIntakeGet().IntakeBackwardCmd());
     manipController.leftTrigger(.5).whileTrue(mCoralMechanism.CoralForwardCmd());
     manipController.rightTrigger(.5).whileTrue(mCoralMechanism.CoralForwardCmd());
     manipController.povUp().whileTrue(mClimbMechanism.WindForwardCmd());

@@ -156,4 +156,9 @@ public final class Constants {
   }
 
   public static final RobotVersion defaultRobotVersion = RobotVersion.v2025;
+
+  public static class CurrentDriver {
+    public static String currentDriver = "Asa"; // needs to be "Asa" or "Ben" 
+  }
+
 }

@@ -186,8 +186,12 @@ public void resetAlgaePidThroughBore(){
         return resetAlgaePIDThroughBoreCmd().andThen(runEnd(() -> AlgaeThroughBorePID(-0.012), this::AlgaeStop).onlyWhile(() ->!CheckAlgaePIDThroughBore()));
     }
 
+    public Command AlgaePIDMiddleThroughBore(){
+        return resetAlgaePIDThroughBoreCmd().andThen(runEnd(() -> AlgaeThroughBorePID(-0.009), this::AlgaeStop).onlyWhile(() ->!CheckAlgaePIDThroughBore()));
+    }
+
     public Command AlgaePIDUpThroughBore(){
-        return resetAlgaePIDThroughBoreCmd().andThen(runEnd(() -> AlgaeThroughBorePID(0.0025), this::AlgaeStop).onlyWhile(() ->!CheckAlgaePIDThroughBore()));
+        return resetAlgaePIDThroughBoreCmd().andThen(runEnd(() -> AlgaeThroughBorePID(-0.0025), this::AlgaeStop).onlyWhile(() ->!CheckAlgaePIDThroughBore()));
     }
 
     public Command resetAlgaePIDThroughBoreCmd(){
