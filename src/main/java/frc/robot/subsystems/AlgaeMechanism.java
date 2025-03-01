@@ -26,7 +26,9 @@ import frc.robot.Constants;
 public class AlgaeMechanism extends SubsystemBase{
     
   private ProfiledPIDController pid = new ProfiledPIDController(.2 , 0, 0, ALGAE_CONSTRAINTS);
+  private ProfiledPIDController pidThroughBore = new ProfiledPIDController(70 , 0, 0, ALGAE_CONSTRAINTS);
   private static final TrapezoidProfile.Constraints ALGAE_CONSTRAINTS = new TrapezoidProfile.Constraints(Units.feetToMeters(10),Units.feetToMeters(8));
+
 
   private double m_AlgaeSpeed;
     public static double posUp = 0;
@@ -44,22 +46,23 @@ private double algaeVelocityConversionFactor = 1;
 private AlgaeIntake algaeIntake = new AlgaeIntake();
     public AlgaeMechanism(){
         m_AlgaeConfig.closedLoop
-        .feedbackSensor(FeedbackSensor.kPrimaryEncoder)
-        .pid(1.0,0,0);
+            .feedbackSensor(FeedbackSensor.kPrimaryEncoder)
+            .pid(1.0,0,0);
         m_AlgaeConfig
             .inverted(false)
             .idleMode(IdleMode.kBrake);
-        m_AlgaeConfig.encoder
+        // m_AlgaeConfig.encoder
+        //     .positionConversionFactor(algaePositionConversionFactor)
+        //     .velocityConversionFactor(algaeVelocityConversionFactor);
+        m_AlgaeConfig.alternateEncoder //TODO MAKE SURE TO USE RIGHT TYPE OF ENCODER WHEN DOING CONFIGS!
             .positionConversionFactor(algaePositionConversionFactor)
-            .velocityConversionFactor(algaeVelocityConversionFactor);
-           
-       
+            .velocityConversionFactor(algaeVelocityConversionFactor)
+            .countsPerRevolution(8192);
         pid.setTolerance(.15);
-       
-
-            m_AlgaeMotor.configure(m_AlgaeConfig, ResetMode.kNoResetSafeParameters, PersistMode.kPersistParameters);
-        
-        }
+        pidThroughBore.setTolerance(0.0005);
+        m_AlgaeMotor.configure(m_AlgaeConfig, ResetMode.kNoResetSafeParameters, PersistMode.kPersistParameters);
+        ResetPosition();
+    }
 
         public AlgaeIntake AlgaeIntakeGet(){
             return algaeIntake;
@@ -91,6 +94,14 @@ public Command ResetAlgaeCMD(){
         return m_AlgaeMotor.getEncoder().getPosition();
     }
 
+    public Command ResetAlgaeThroughBoreCMD(){
+        return runOnce(this::AlgaeResetAlternate);
+    }
+
+    public double getAlgaeEncoderPosThroughBore(){
+        return m_AlgaeMotor.getAlternateEncoder().getPosition();
+    }
+
     public Command AlgaeForwardCmd() {
         return this.runEnd(this::AlgaeForward, this::AlgaeStop);
     }
@@ -104,7 +115,9 @@ public Command ResetAlgaeCMD(){
     }
 
    
-  
+    public void ResetPosition() {
+        m_AlgaeMotor.getAlternateEncoder().setPosition(0);
+    }
 
     
   public Rotation2d getAlgaePos() {
@@ -120,10 +133,25 @@ public void AlgaePID(double desPosition){
       m_AlgaeSpeed = 0;
     } 
     AlgaeMove(m_AlgaeSpeed);
-    
 }
+
 public void resetAlgaePid(){
     pid.reset(getAlgaeEncoderPos());
+}
+
+public void AlgaeThroughBorePID(double desPosition){
+    pidThroughBore.setGoal(desPosition);
+    m_AlgaeSpeed = pidThroughBore.calculate(getAlgaeEncoderPosThroughBore());
+    if (pidThroughBore.atGoal()) {
+      m_AlgaeSpeed = 0;
+    } 
+    //return pidThroughBore.calculate(getAlgaeEncoderPosThroughBore());
+
+    AlgaeMove(-m_AlgaeSpeed);
+}
+
+public void resetAlgaePidThroughBore(){
+    pidThroughBore.reset(getAlgaeEncoderPosThroughBore());
 }
     
 
@@ -144,12 +172,29 @@ public void resetAlgaePid(){
     public Command AlgaePIDMiddle(){
         return resetAlgaePIDCmd().andThen(runEnd(() -> AlgaePID(posMiddle), this::AlgaeStop).onlyWhile(() ->!CheckAlgaePID()));
     }
+
     public boolean CheckAlgaePID(){
             return pid.atGoal();
         }
     
     public Command resetAlgaePIDCmd(){
       return this.runOnce(() -> resetAlgaePid());
+    }
+
+        
+    public Command AlgaePIDDownThroughBore(){
+        return resetAlgaePIDThroughBoreCmd().andThen(runEnd(() -> AlgaeThroughBorePID(-0.012), this::AlgaeStop).onlyWhile(() ->!CheckAlgaePIDThroughBore()));
+    }
+
+    public Command AlgaePIDUpThroughBore(){
+        return resetAlgaePIDThroughBoreCmd().andThen(runEnd(() -> AlgaeThroughBorePID(0.0025), this::AlgaeStop).onlyWhile(() ->!CheckAlgaePIDThroughBore()));
+    }
+
+    public Command resetAlgaePIDThroughBoreCmd(){
+        return this.runOnce(() -> resetAlgaePidThroughBore());
+      }
+      public boolean CheckAlgaePIDThroughBore(){
+        return pidThroughBore.atGoal();
     }
 
     public Command runAlgaeDown(){
@@ -160,8 +205,12 @@ public void resetAlgaePid(){
     super.initSendable(builder);
     builder.addDoubleProperty(this.getName() + "/Algae/Position/Rad", () -> getAlgaePos().getRadians(), null);
   builder.addDoubleProperty(this.getName() + "/Algae/Position/EncoderPos", () -> getAlgaeEncoderPos(), null);
+  builder.addDoubleProperty(this.getName() + "/Algae/Position/EncoderPosThroughBore", () -> getAlgaeEncoderPosThroughBore(), null);
   builder.addDoubleProperty(this.getName() + "/Algae/Position/Goal", () -> pid.getGoal().position, null);
   builder.addBooleanProperty(this.getName() + "/Algae/Position/Goal", () -> pid.atSetpoint(), null);
+  builder.addDoubleProperty(this.getName() + "/Algae/Position/GoalThroughBore", () -> pidThroughBore.getGoal().position, null);
+  builder.addBooleanProperty(this.getName() + "/Algae/Position/AtSetPointThroughBore", () -> pidThroughBore.atSetpoint(), null);
+  builder.addBooleanProperty(this.getName() + "/Algae/Position/AtGoalPointThroughBore", () -> pidThroughBore.atGoal(), null);
   builder.addDoubleProperty(this.getName() + "/Algae/Position/Speed", () -> m_AlgaeSpeed, null);
   }
 }

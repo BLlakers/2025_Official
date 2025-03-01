@@ -42,6 +42,7 @@ public class ElevatorMechanism extends SubsystemBase{
    private double elevatorVelocityConversionFactor = 1; 
    private double desiredPos;
    private elevatorState Estate =elevatorState.Down;
+   private double elevDecelerateOffset = 5.6;
    
     //A motor to rotate up and down
    private SparkMax m_ElevatorMotor = new SparkMax(Constants.Port.m_ElevatorMtrC, com.revrobotics.spark.SparkLowLevel.MotorType.kBrushless);
@@ -97,6 +98,10 @@ public Boolean AtBottom = true;
     }
     public double getElevatorEncoderPos(){
         return m_ElevatorMotor.getAlternateEncoder().getPosition();
+    }
+
+    public double getElevatorDecelerateRatio(){
+        return 1 - ((getElevatorEncoderPos())/(L4 -elevDecelerateOffset));
     }
 
 
@@ -211,5 +216,6 @@ public void periodic(){
     builder.addBooleanProperty("Elevator/AtPos", this::ElevatorAtPos, null);
     builder.addDoubleProperty("Elevator/desiredPos", this::desiredPosGet, this::desiredPosSet);
     builder.addStringProperty("Elevator/DesiredLevel", () -> this.Estate.toString(), null);
+    builder.addDoubleProperty("Elevator/DecelerateRatio", () -> getElevatorDecelerateRatio(), null);
   }
 }

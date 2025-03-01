@@ -17,6 +17,7 @@ public class SwerveDriveCommand extends Command {
  private DriveTrain m_DriveTrain;
 
   private BooleanSupplier m_RunHalfSpeed;
+  private DoubleSupplier m_ElevatorDecelerate;
 
   private static final double kDriveMaxSpeed = 0.85 * DriveTrain.kMaxSpeed;
   private static final double kTurnMaxSpeed = 0.5 * DriveTrain.kMaxTurnAngularSpeed;
@@ -33,6 +34,7 @@ public class SwerveDriveCommand extends Command {
     m_DriveTrain = _dTrain;
     m_AccelerateRT = _AccelerateRT;
     m_RunHalfSpeed = () -> false;
+    m_ElevatorDecelerate = () -> 1.0;
     addRequirements(m_DriveTrain);
   }
 
@@ -49,8 +51,27 @@ public class SwerveDriveCommand extends Command {
     m_DriveTrain = _dTrain;
     m_AccelerateRT = _AccelerateRT;
     m_RunHalfSpeed = _halfSpeedCondition;
+    m_ElevatorDecelerate = () -> 1.0;
     addRequirements(m_DriveTrain);
   }
+
+  public SwerveDriveCommand(
+    DoubleSupplier _leftY,
+    DoubleSupplier _leftX,
+    DoubleSupplier _rightX,
+    DoubleSupplier _AccelerateRT,
+    DoubleSupplier _ElevatorDecelerate,
+    DriveTrain _dTrain,
+    BooleanSupplier _halfSpeedCondition) {
+  m_leftY = _leftY;
+  m_leftX = _leftX;
+  m_rightX = _rightX;
+  m_DriveTrain = _dTrain;
+  m_AccelerateRT = _AccelerateRT;
+  m_RunHalfSpeed = _halfSpeedCondition;
+  m_ElevatorDecelerate = _ElevatorDecelerate;
+  addRequirements(m_DriveTrain);
+}
 
   // Called when the command is initially scheduled.
   @Override
@@ -59,11 +80,12 @@ public class SwerveDriveCommand extends Command {
   // Called every time the scheduler runs while the command is scheduled.
   @Override
   public void execute() {
-    double RT, x, y, rot;
+    double RT, x, y, rot, Elev;
     double AccelerateRT = m_AccelerateRT.getAsDouble();
     double leftX = m_leftX.getAsDouble();
     double leftY = m_leftY.getAsDouble();
     double rightX = m_rightX.getAsDouble();
+    double DecelerateElev = m_ElevatorDecelerate.getAsDouble();
 
     // Finds the X Value of the Left Stick on the Controller and Takes Care of
     // Joystick Drift
@@ -79,14 +101,16 @@ public class SwerveDriveCommand extends Command {
 
     RT = AccelerateRT;
 
+    Elev = DecelerateElev;
+
     double normalizingFactor = Math.hypot(x, y);
     if (normalizingFactor > 0) {
       x /= normalizingFactor;
       y /= normalizingFactor;
     }
-    double xSpeed = y * SwerveDriveCommand.kDriveMaxSpeed * RT;
-    double ySpeed = x * SwerveDriveCommand.kDriveMaxSpeed * RT;
-    double rotSpeed = rot * SwerveDriveCommand.kTurnMaxSpeed;
+    double xSpeed = y * SwerveDriveCommand.kDriveMaxSpeed * RT * Elev;
+    double ySpeed = x * SwerveDriveCommand.kDriveMaxSpeed * RT* Elev;
+    double rotSpeed = rot * SwerveDriveCommand.kTurnMaxSpeed * Elev;
 
     if (m_RunHalfSpeed.getAsBoolean() == true) {
       xSpeed /= 2;
