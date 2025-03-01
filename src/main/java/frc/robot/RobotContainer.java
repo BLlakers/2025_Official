@@ -152,6 +152,7 @@ final Command algaeCommand = IntakeAndMoveDown.finallyDo(IntakeAndRaise::schedul
             () -> driverController.getLeftX(),
             () -> driverController.getRightX(),
             () -> driverController.getRightTriggerAxis(),
+            () -> mElevatorMechanism.getElevatorDecelerateRatio(),
             m_DriveTrain,
             () -> driverController.getLeftTriggerAxis() >= 0.5));
 
@@ -178,18 +179,23 @@ final Command algaeCommand = IntakeAndMoveDown.finallyDo(IntakeAndRaise::schedul
     // mElevatorMechanism.setDefaultCommand(elevatorPID);
     manipController.y().whileTrue(elevatorPIDL3);
     manipController.x().whileTrue(elevatorPIDL4);
-    manipController.povDown().onTrue(mElevatorMechanism.ResetPositionCMD());
+    manipController.start().onTrue(mElevatorMechanism.ResetPositionCMD());
     manipController.rightBumper().whileTrue(algaeCommand);
     manipController.leftTrigger(.5).whileTrue(mCoralMechanism.CoralForwardCmd());
     manipController.rightTrigger(.5).whileTrue(mCoralMechanism.CoralForwardCmd());
+    manipController.povUp().whileTrue(mClimbMechanism.WindForwardCmd());
+    manipController.povDown().whileTrue(mClimbMechanism.WindBackwardCmd());
     mCoralMechanism.setDefaultCommand(mCoralMechanism.ServoForwardCommand());
    //debugController.rightBumper().whileTrue(mElevatorMechanism.ElevatorDownLimitCmd());
    //debugController.leftBumper().whileTrue(mElevatorMechanism.ElevatorUpLimitCmd());
     debugController.povLeft().whileTrue(mAlgaeMechanism.AlgaeForwardCmd());
     debugController.povRight().whileTrue(mAlgaeMechanism.AlgaeBackwardCmd());
     debugController.povUp().whileTrue(mAlgaeMechanism.AlgaeIntakeGet().IntakeBackwardCmd());
-    debugController.a().whileTrue(IntakeAndRaise);
-    debugController.b().onTrue(mAlgaeMechanism.ResetAlgaeCMD());
+    //debugController.a().whileTrue(IntakeAndRaise);
+    debugController.x().whileTrue(mAlgaeMechanism.AlgaePIDDownThroughBore());
+    debugController.a().whileTrue(mAlgaeMechanism.AlgaePIDUpThroughBore());
+    //debugController.b().onTrue(mAlgaeMechanism.ResetAlgaeCMD());
+    debugController.b().onTrue(mAlgaeMechanism.ResetAlgaeThroughBoreCMD());
     debugController.y().whileTrue(mCoralMechanism.CoralForwardCmd());
     debugController.leftBumper().whileTrue(mClimbMechanism.WindBackwardCmd());
     debugController.rightBumper().whileTrue(mClimbMechanism.WindForwardCmd());
