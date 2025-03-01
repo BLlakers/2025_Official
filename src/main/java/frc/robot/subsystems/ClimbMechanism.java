@@ -36,11 +36,11 @@ public class ClimbMechanism extends SubsystemBase{
     }
 
     public void WindStringForward() {
-        m_ClimbMotor.set(.25);
+        m_ClimbMotor.set(.75);
     }
 
     public void WindStringBackward() {
-        m_ClimbMotor.set(-.25);
+        m_ClimbMotor.set(-.75);
     }
 
     public void WindStop() {
@@ -48,7 +48,7 @@ public class ClimbMechanism extends SubsystemBase{
     }
 
     public Command WindForwardCmd() {
-        return this.runOnce(this::WindStringForward);
+        return this.runEnd(this::WindStringForward, this::WindStop);
     }
 
     public Command WindBackwardCmd() {
@@ -56,7 +56,7 @@ public class ClimbMechanism extends SubsystemBase{
     }
 
     public Command WindStopCmd() {
-        return this.runEnd(this::WindStringBackward, this::WindStop);
+        return this.runOnce(this::WindStop);
     }
     public double getClimbEncoderPos(){
         return m_ClimbMotor.getAlternateEncoder().getPosition();
