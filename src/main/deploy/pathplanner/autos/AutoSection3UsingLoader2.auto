@@ -1,0 +1,91 @@
+{
+  "version": "2025.0",
+  "command": {
+    "type": "sequential",
+    "data": {
+      "commands": [
+        {
+          "type": "path",
+          "data": {
+            "pathName": "StartingBargeMiddleToMiddle"
+          }
+        },
+        {
+          "type": "named",
+          "data": {
+            "name": "ElevatorToL2"
+          }
+        },
+        {
+          "type": "named",
+          "data": {
+            "name": "RunCoral"
+          }
+        },
+        {
+          "type": "path",
+          "data": {
+            "pathName": "Section1ToLoader2"
+          }
+        },
+        {
+          "type": "named",
+          "data": {
+            "name": "RunCoral"
+          }
+        },
+        {
+          "type": "path",
+          "data": {
+            "pathName": "Section3ToLoader"
+          }
+        },
+        {
+          "type": "named",
+          "data": {
+            "name": "ElevatorToL2"
+          }
+        },
+        {
+          "type": "named",
+          "data": {
+            "name": "RunCoral"
+          }
+        },
+        {
+          "type": "path",
+          "data": {
+            "pathName": "LoaderToSection3"
+          }
+        },
+        {
+          "type": "named",
+          "data": {
+            "name": "RunAlgae"
+          }
+        },
+        {
+          "type": "path",
+          "data": {
+            "pathName": "Section3ToLoader"
+          }
+        },
+        {
+          "type": "named",
+          "data": {
+            "name": "ElevatorToL2"
+          }
+        },
+        {
+          "type": "named",
+          "data": {
+            "name": "RunCoral"
+          }
+        }
+      ]
+    }
+  },
+  "resetOdom": true,
+  "folder": null,
+  "choreoAuto": false
+}

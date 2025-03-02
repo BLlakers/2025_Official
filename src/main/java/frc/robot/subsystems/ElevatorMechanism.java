@@ -69,7 +69,12 @@ public Boolean AtBottom = true;
              }
 
     public void ElevatorMotorUp() {
-        m_ElevatorMotor.set(.95);
+        if(!m_ElevatorLimitSwitchTop.get()){
+            m_ElevatorMotor.set(.95);
+        }else {
+            m_ElevatorMotor.set(0);
+        }
+
     }
 
     public void ResetPosition() {

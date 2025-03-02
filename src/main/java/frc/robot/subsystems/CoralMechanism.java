@@ -16,15 +16,14 @@ public class CoralMechanism extends SubsystemBase{
     TalonSRX m_coralMotor2 = new TalonSRX(Constants.Port.m_CoralMtrLC);
     AnalogInput IRb = new AnalogInput(0);
     AnalogInput IRf = new AnalogInput(1);
-    PWM servo = new PWM(9);
   
     public CoralMechanism(){
         
     }
 
     public void CoralForward() {
-        m_coralMotor1.set(ControlMode.PercentOutput, .8);
-        m_coralMotor2.set(ControlMode.PercentOutput, -.8);
+        m_coralMotor1.set(ControlMode.PercentOutput, .6);
+        m_coralMotor2.set(ControlMode.PercentOutput, -.6);
     }
 
 
@@ -38,25 +37,7 @@ public class CoralMechanism extends SubsystemBase{
         m_coralMotor2.set(ControlMode.PercentOutput, 0);
     }
 
-    public void ServoForward() {
-        servo.setPosition(.8);
-    }
-
-    public void ServoBackward() {
-        servo.setPosition(0);
-    }
-
-    public void ServoMiddle() {
-        servo.setPosition(.5);
-    }
-
-    public Command ServoForwardCommand() {
-        return this.runEnd(this::ServoForward, this::ServoMiddle);
-    }
-
-    public Command ServoBackwardCommand() {
-        return this.runEnd(this::ServoBackward, this::ServoMiddle);
-    }
+   
 
     public Command CoralForwardCmd() {
         return this.runEnd(this::CoralForward, this::CoralStop);
@@ -79,7 +60,7 @@ public class CoralMechanism extends SubsystemBase{
     }
 
     public boolean IsCoralLoaded(){
-        return (IrReadingf() > 1300 && IrReadingb() > 1300);
+        return (IrReadingf() > 1400 && IrReadingb() > 1400);
     }
 
     public void periodic(){
@@ -90,5 +71,6 @@ public class CoralMechanism extends SubsystemBase{
     super.initSendable(builder);
     builder.addDoubleProperty("Coral/IRf", ()-> IrReadingf(), null);
     builder.addDoubleProperty("Coral/IRb", ()-> IrReadingb(), null);
+    builder.addBooleanProperty("Coral/CoralLoaded", ()-> IsCoralLoaded(), null);
   }
 }

@@ -142,10 +142,10 @@ public final class Constants {
   }
 
   public class RobotVersion2025 extends RobotVersionConstants {
-    public static final double flTurnEncoderOffset = 3.84-.04;
-    public static final double frTurnEncoderOffset = 1.7 + Math.PI - .03;
-    public static final double blTurnEncoderOffset = 3.284;
-    public static final double brTurnEncoderOffset = 4.49;
+    public static final double flTurnEncoderOffset = 3.84-.04 + Math.PI;
+    public static final double frTurnEncoderOffset = 1.7 + Math.PI - .03 + Math.PI;
+    public static final double blTurnEncoderOffset = 3.284 + Math.PI;
+    public static final double brTurnEncoderOffset = 4.49 + Math.PI;
   }
 
   public class RobotVersion2023 extends RobotVersionConstants {
@@ -158,7 +158,7 @@ public final class Constants {
   public static final RobotVersion defaultRobotVersion = RobotVersion.v2025;
 
   public static class CurrentDriver {
-    public static String currentDriver = "Asa"; // needs to be "Asa" or "Ben" 
+    public static String currentDriver = "Ben"; // needs to be "Asa" or "Ben" 
   }
 
 }

@@ -19,7 +19,7 @@ import frc.robot.subsystems.ElevatorMechanism;
 public class ElevatorPID extends Command {
  private DoubleSupplier position;
   private ElevatorMechanism elevator;
-  private ProfiledPIDController pid = new ProfiledPIDController(.003, 0, 0, ELEVATOR_CONSTRAINTS);
+  private ProfiledPIDController pid = new ProfiledPIDController(.0032, 0, 0, ELEVATOR_CONSTRAINTS);
   private static final TrapezoidProfile.Constraints ELEVATOR_CONSTRAINTS = new TrapezoidProfile.Constraints(Units.feetToMeters(18),Units.feetToMeters(5));
 
 
@@ -27,6 +27,7 @@ public class ElevatorPID extends Command {
 
     elevator = e;
     position = p;
+    pid.setTolerance(0.25);
     addRequirements(elevator);
   }
 
@@ -70,6 +71,6 @@ public void initSendable(SendableBuilder builder) {
   // Returns true when the command should end.
   @Override
   public boolean isFinished() {
-    return false;
+    return pid.atGoal();
   }
 }
