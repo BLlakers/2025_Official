@@ -15,7 +15,7 @@ public class SwerveDriveCommand extends Command {
  private DoubleSupplier m_rightX;
  private DoubleSupplier m_AccelerateRT;
  private DriveTrain m_DriveTrain;
-
+ private String Driver;
   private BooleanSupplier m_RunHalfSpeed;
   private DoubleSupplier m_ElevatorDecelerate;
 
@@ -35,6 +35,7 @@ public class SwerveDriveCommand extends Command {
     m_AccelerateRT = _AccelerateRT;
     m_RunHalfSpeed = () -> false;
     m_ElevatorDecelerate = () -> 1.0;
+    Driver = "Ben";
     addRequirements(m_DriveTrain);
   }
 
@@ -44,7 +45,8 @@ public class SwerveDriveCommand extends Command {
       DoubleSupplier _rightX,
       DoubleSupplier _AccelerateRT,
       DriveTrain _dTrain,
-      BooleanSupplier _halfSpeedCondition) {
+      BooleanSupplier _halfSpeedCondition,
+      String d) {
     m_leftY = _leftY;
     m_leftX = _leftX;
     m_rightX = _rightX;
@@ -53,6 +55,7 @@ public class SwerveDriveCommand extends Command {
     m_RunHalfSpeed = _halfSpeedCondition;
     m_ElevatorDecelerate = () -> 1.0;
     addRequirements(m_DriveTrain);
+    Driver = d;
   }
 
   public SwerveDriveCommand(
@@ -62,7 +65,8 @@ public class SwerveDriveCommand extends Command {
     DoubleSupplier _AccelerateRT,
     DoubleSupplier _ElevatorDecelerate,
     DriveTrain _dTrain,
-    BooleanSupplier _halfSpeedCondition) {
+    BooleanSupplier _halfSpeedCondition,
+    String d) {
   m_leftY = _leftY;
   m_leftX = _leftX;
   m_rightX = _rightX;
@@ -70,6 +74,7 @@ public class SwerveDriveCommand extends Command {
   m_AccelerateRT = _AccelerateRT;
   m_RunHalfSpeed = _halfSpeedCondition;
   m_ElevatorDecelerate = _ElevatorDecelerate;
+  Driver = d;
   addRequirements(m_DriveTrain);
 }
 
@@ -98,23 +103,29 @@ public class SwerveDriveCommand extends Command {
     // Finds the X Value of the Right Stick on the Controller and Takes Care of
     // Joystick Drift
     rot = MathUtil.applyDeadband(-rightX, Constants.Controller.deadzone);
-
-    if(Constants.CurrentDriver.currentDriver == "Asa"){
-      RT = 1.0;
+    double xSpeed;
+    double ySpeed;
+    double rotSpeed;
+    Elev = DecelerateElev;
+    RT = m_AccelerateRT.getAsDouble();
+    if(Driver == "Asa"){
+    xSpeed = y * SwerveDriveCommand.kDriveMaxSpeed * Elev;
+    ySpeed = x * SwerveDriveCommand.kDriveMaxSpeed * Elev;
+    rotSpeed = rot * SwerveDriveCommand.kTurnMaxSpeed * Elev;
     } else {
-      RT = AccelerateRT;
+      xSpeed = y * SwerveDriveCommand.kDriveMaxSpeed * RT * Elev;
+    ySpeed = x * SwerveDriveCommand.kDriveMaxSpeed * RT* Elev;
+    rotSpeed = rot * SwerveDriveCommand.kTurnMaxSpeed * Elev;
     }
 
-    Elev = DecelerateElev;
+    
 
     double normalizingFactor = Math.hypot(x, y);
     if (normalizingFactor > 0) {
       x /= normalizingFactor;
       y /= normalizingFactor;
     }
-    double xSpeed = y * SwerveDriveCommand.kDriveMaxSpeed * RT * Elev;
-    double ySpeed = x * SwerveDriveCommand.kDriveMaxSpeed * RT* Elev;
-    double rotSpeed = rot * SwerveDriveCommand.kTurnMaxSpeed * Elev;
+ 
 
     if (m_RunHalfSpeed.getAsBoolean() == true) {
       xSpeed /= 2;
