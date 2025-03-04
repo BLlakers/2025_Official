@@ -40,6 +40,8 @@ public class RobotContainer {
   ElevatorPID elevatorPIDL2 = new ElevatorPID(mElevatorMechanism,  ElevatorMechanism.L2);
   ElevatorPID elevatorPIDL3 = new ElevatorPID(mElevatorMechanism,  ElevatorMechanism.L3);
   ElevatorPID elevatorPIDL4 = new ElevatorPID(mElevatorMechanism,  ElevatorMechanism.L4);
+  ElevatorPID elevatorPIDAlgae3 = new ElevatorPID(mElevatorMechanism,  ElevatorMechanism.AlgaeL3);
+  ElevatorPID elevatorPIDAlgae4 = new ElevatorPID(mElevatorMechanism,  ElevatorMechanism.AlgaeL4);
   Servo mServo = new Servo();
   AprilAlignCommand LimelightCodeFrontLeft = new AprilAlignCommand(() -> m_LimelightFrl.getCurrentAprilTag(), () ->  m_LimelightFrl.getAprilRotation2d(), m_DriveTrain, new Transform2d(-.55,0.0175, new Rotation2d(.175)), false, true, mLedStrand);
   AprilAlignCommand LimelightCodeFrontRight = new AprilAlignCommand(() -> m_LimelightFrr.getCurrentAprilTag(), () ->  m_LimelightFrr.getAprilRotation2d(), m_DriveTrain, new Transform2d(-0.25,-0.002, new Rotation2d(-0.17)), false, false, mLedStrand);
@@ -47,6 +49,12 @@ public class RobotContainer {
   AlgaeSM algaeDownCommand = new AlgaeSM(mAlgaeMechanism, AlgaeMechanism.PosDown);
   AlgaeSM algaeUpCommand = new AlgaeSM(mAlgaeMechanism, AlgaeMechanism.PosUp);
   AlgaeSM algaeMiddleCommand = new AlgaeSM(mAlgaeMechanism, AlgaeMechanism.PosMiddle);
+
+  AlgaePID algaePIDDown = new AlgaePID(mAlgaeMechanism, AlgaeMechanism.PosDown);
+  AlgaePID algaePIDMiddle = new AlgaePID(mAlgaeMechanism, AlgaeMechanism.PosMiddle);
+  AlgaePID algaePIDUp = new AlgaePID(mAlgaeMechanism, AlgaeMechanism.PosUp);
+  AlgaePID algaePIDGroud = new AlgaePID(mAlgaeMechanism, AlgaeMechanism.PosGround);
+
   
 
 
@@ -68,6 +76,19 @@ final Command d = a.andThen(c).finallyDo(b::schedule).onlyIf(() -> mAlgaeMechani
 // final Command Algae = IntakeAndMoveDownThroughBore.finallyDo(IntakeAndRaiseThroughBore::schedule);
 
 // final Command algaeThroughBoreCommand = IntakeAndMoveDownThroughBore.andThen(IntakeAndRaiseThroughBore); //andThen(mAlgaeMechanism.AlgaePIDMiddleThroughBore()).onlyIf(() -> mAlgaeMechanism.AlgaeIR() <= 100).andThen(mAlgaeMechanism.AlgaePIDUpThroughBore().onlyIf(() -> mAlgaeMechanism.AlgaeIR() > 100)); //, mAlgaeMechanism.AlgaeStopCmd()); //IntakeAndRaiseThroughBore::schedule);
+
+
+final Command algaeL3Down = algaePIDDown.alongWith(mAlgaeIntake.RunIntake()).alongWith(elevatorPIDAlgae3);
+final Command algaeL4Down = algaePIDDown.alongWith(mAlgaeIntake.RunIntake()).alongWith(elevatorPIDAlgae4);
+final Command algaeUp = algaePIDUp.alongWith(mAlgaeIntake.IntakeStopCmd()).alongWith(elevatorPIDDown);
+
+//Command to retrieve algae from L3
+final Command algaeL3 = algaeL3Down.finallyDo(algaeUp::schedule);
+//Command to retrieve algae from L4
+final Command algaeL4 = algaeL4Down.finallyDo(algaeUp::schedule);
+
+//Command to retrieve algae from ground
+final Command algaeGround = algaePIDGroud.alongWith(elevatorPIDAlgae3).alongWith(mAlgaeIntake.IntakeBackwardCmd());
 
 
 
@@ -218,7 +239,7 @@ final Command d = a.andThen(c).finallyDo(b::schedule).onlyIf(() -> mAlgaeMechani
     manipController.leftTrigger(.5).whileTrue(runCoralFoward);
     manipController.rightTrigger(.5).whileTrue(mCoralMechanism.CoralForwardCmd());
     manipController.povUp().whileTrue(mClimbMechanism.WindForwardCmd());
-    manipController.povDown().whileTrue(mClimbMechanism.WindBackwardCmd());
+    manipController.povDown().whileTrue(mClimbMechanism.WindDownCmd());
     manipController.povLeft().whileTrue(d);
     manipController.povRight().whileTrue(algaeMiddleCommand);
     mServo.setDefaultCommand(mServo.ServoForwardCommand());

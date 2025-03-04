@@ -110,6 +110,7 @@ public final class Constants {
     public static final int brTurnEncoderDIOC = 3;
     public static final int hangerLeftMagSwitchDIOC = 7;
     public static final int hangerRightMagSwitchDIOC = 8;
+    public static final int climbMagSwitchDIOC = 4;
     public static final int PHChannel = 30; // REV Pneumatic Hub
     public static final int PDHChannel = 20; // REV Power Distribution Hub
   }

@@ -23,6 +23,8 @@ public class ClimbMechanism extends SubsystemBase{
  
     RelativeEncoder m_ClimbMotorEncoder = m_ClimbMotor.getEncoder();
 
+    private DigitalInput climbMagSwitch = new DigitalInput(Constants.Port.climbMagSwitchDIOC);
+
     public ClimbMechanism(){
         m_ClimbConfig
             .inverted(true)
@@ -47,12 +49,20 @@ public class ClimbMechanism extends SubsystemBase{
         m_ClimbMotor.set(0);
     }
 
+    public boolean ClimbIsDown(){
+        return !climbMagSwitch.get();
+    }
+
     public Command WindForwardCmd() {
         return this.runEnd(this::WindStringForward, this::WindStop);
     }
 
     public Command WindBackwardCmd() {
         return this.runEnd(this::WindStringBackward, this::WindStop);
+    }
+
+    public Command WindDownCmd() {
+        return this.runEnd(this::WindStringBackward, this::WindStop).until(this::ClimbIsDown).finallyDo(this::WindStop);
     }
 
     public Command WindStopCmd() {
