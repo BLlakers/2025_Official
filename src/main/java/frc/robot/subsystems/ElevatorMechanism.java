@@ -8,6 +8,8 @@ import com.revrobotics.spark.SparkMax;
 import com.revrobotics.spark.config.ClosedLoopConfig.FeedbackSensor;
 import com.revrobotics.spark.config.SparkBaseConfig.IdleMode;
 
+import edu.wpi.first.math.controller.ProfiledPIDController;
+import edu.wpi.first.math.trajectory.TrapezoidProfile;
 import edu.wpi.first.math.util.Units;
 import edu.wpi.first.util.sendable.SendableBuilder;
 import edu.wpi.first.wpilibj.DigitalInput;
@@ -27,15 +29,15 @@ enum elevatorState {
 }
 
 public class ElevatorMechanism extends SubsystemBase{
-
+   public double m_elevatorSpeed;
    public static double Down = 0;
    public static double Troph = -2.5;
    public static double L2 = -5.8;
    public static double AlgaeL3 = -10.2;
    public static double L3 = -13.7;
    public static double AlgaeL4 = -17;
-   public static double L4 = -24.2;
-   
+   public static double L4 = -24.5;
+   public static boolean IsMoving;
    public static double ElevatorGearRatio = 375;
    private double marginOfError = 1;
    private double elevatorPositionConversionFactor = 1.6*Math.PI; // 1.6 * Math.PI = Distance per rotation
@@ -43,13 +45,18 @@ public class ElevatorMechanism extends SubsystemBase{
    private double desiredPos;
    private elevatorState Estate =elevatorState.Down;
    private double elevDecelerateOffset = 5.6;
-   
+   //public double position;
+   public double elevatorPosition;
+   private ProfiledPIDController pid = new ProfiledPIDController(.0007, 0, 0, ELEVATOR_CONSTRAINTS);
+  private static final TrapezoidProfile.Constraints ELEVATOR_CONSTRAINTS = new TrapezoidProfile.Constraints(Units.feetToMeters(140),Units.feetToMeters(125));
+
+
     //A motor to rotate up and down
    private SparkMax m_ElevatorMotor = new SparkMax(Constants.Port.m_ElevatorMtrC, com.revrobotics.spark.SparkLowLevel.MotorType.kBrushless);
 
    private DigitalInput m_ElevatorLimitSwitchTop = new DigitalInput(6);
    private DigitalInput m_ElevatorLimitSwitchBottom = new DigitalInput(7);
-public Boolean AtBottom = true;
+   public Boolean AtBottom = true;
    private SparkMaxConfig m_ElevatorConfig = new SparkMaxConfig();
 
     public ElevatorMechanism() {
@@ -67,7 +74,7 @@ public Boolean AtBottom = true;
 
              ResetPosition();
              }
-
+           
     public void ElevatorMotorUp() {
         if(!m_ElevatorLimitSwitchTop.get()){
             m_ElevatorMotor.set(.95);
@@ -131,7 +138,6 @@ public Boolean AtBottom = true;
     }
 
     
-
     public Command ElevatorStopCmd() {
         return this.runOnce(this::ElevatorMotorStop);
     }
@@ -209,12 +215,49 @@ public Boolean AtBottom = true;
 public elevatorState getEstate(){
     return this.Estate;
 }
-public void periodic(){
-   
+
+public void initElevatorPID(){
+    pid.reset(getElevatorEncoderPos());
 }
+
+public void setElevatorPIDPos(double desiredPos){
+    elevatorPosition = desiredPos;
+}
+
+public void pid(double position){
+    pid.setGoal(position);
+    m_elevatorSpeed = pid.calculate(getElevatorEncoderPos());
+    if (pid.atGoal()) {
+      m_elevatorSpeed = 0;
+    }
+    
+    if (ElevatorLimitSwitchTop() && m_elevatorSpeed < 0) {
+      m_elevatorSpeed = 0;
+    }
+
+    if (ElevatorLimitSwitchBottom() && m_elevatorSpeed > 0) {
+        m_elevatorSpeed = 0;
+      }
+    
+    ElevatorMove(m_elevatorSpeed*ElevatorMechanism.ElevatorGearRatio); 
+}
+
+public boolean atPIDGoal(){
+    return pid.atGoal();
+}
+
+@Override
+public void periodic(){
+    pid(elevatorPosition);   
+}
+   
+
+
   @Override
   public void initSendable(SendableBuilder builder) {
     super.initSendable(builder);
+    builder.addDoubleProperty(getName() + "ElevatorCommand/Command/elevatorSpeed", ()-> m_elevatorSpeed * ElevatorMechanism.ElevatorGearRatio, null);
+    builder.addDoubleProperty(getName() + "ElevatorCommand/Command/elevatorDesirePIDPos", () -> elevatorPosition, null);
     builder.addDoubleProperty("Elevator/Position", () -> getElevatorEncoderPos(), null);
     builder.addBooleanProperty("Elevator/LimitSwitchTop", this::ElevatorLimitSwitchTop, null);
     builder.addBooleanProperty("Elevator/LimitSwitchBottom", this::ElevatorLimitSwitchBottom, null);

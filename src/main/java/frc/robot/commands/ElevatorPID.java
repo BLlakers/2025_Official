@@ -17,17 +17,15 @@ import frc.robot.subsystems.DriveTrain;
 import frc.robot.subsystems.ElevatorMechanism;
 
 public class ElevatorPID extends Command {
- private DoubleSupplier position;
+ private Double position;
   private ElevatorMechanism elevator;
-  private ProfiledPIDController pid = new ProfiledPIDController(.0032, 0, 0, ELEVATOR_CONSTRAINTS);
-  private static final TrapezoidProfile.Constraints ELEVATOR_CONSTRAINTS = new TrapezoidProfile.Constraints(Units.feetToMeters(18),Units.feetToMeters(5));
 
 
-  public ElevatorPID(ElevatorMechanism e, DoubleSupplier p) {
+  public ElevatorPID(ElevatorMechanism e, Double p) {
 
     elevator = e;
     position = p;
-    pid.setTolerance(0.25);
+
     addRequirements(elevator);
   }
 
@@ -36,32 +34,16 @@ public class ElevatorPID extends Command {
   // Called when the command is initially scheduled.
   @Override
   public void initialize() {
-   pid.reset(elevator.getElevatorEncoderPos()); 
+    elevator.initElevatorPID();
   }
   // Called every time the scheduler runs while the command is scheduled.
   @Override
   public void execute() {
-
-    pid.setGoal(position.getAsDouble());
-    double m_elevatorSpeed = pid.calculate(elevator.getElevatorEncoderPos());
-    if (pid.atGoal()) {
-      m_elevatorSpeed = 0;
-    }
-    
-    if (elevator.ElevatorLimitSwitchTop()) {
-      m_elevatorSpeed = 0;
-    }
-      SmartDashboard.putNumber(elevator.getName() + "ElevatorCommand/Command/elevatorSpeed", m_elevatorSpeed * ElevatorMechanism.ElevatorGearRatio);
-      SmartDashboard.putNumber(elevator.getName() + "ElevatorCommand/Command/elevatorPos", elevator.getElevatorEncoderPos());
-      elevator.ElevatorMove(m_elevatorSpeed*ElevatorMechanism.ElevatorGearRatio); 
-    
-   
+    elevator.setElevatorPIDPos(position);
   }
 public void initSendable(SendableBuilder builder) {
     super.initSendable(builder);
-    pid.initSendable(builder);
-    builder.addDoubleProperty(this.getName() + "/position", position, null);
-   
+    
  }
   // Called once the command ends or is interrupted.
   @Override
@@ -71,6 +53,6 @@ public void initSendable(SendableBuilder builder) {
   // Returns true when the command should end.
   @Override
   public boolean isFinished() {
-    return pid.atGoal();
+    return elevator.atPIDGoal();
   }
 }

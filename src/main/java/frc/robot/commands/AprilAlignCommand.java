@@ -112,6 +112,7 @@ public class AprilAlignCommand extends Command{
       m_drivetrain.drive(xSpeed,-1* ySpeed, rotSpeed);
     }else {
       m_drivetrain.drive(-xSpeed, ySpeed, rotSpeed);
+      // m_drivetrain.drive(0, -1* ySpeed, rotSpeed);
     }
 
     SmartDashboard.putNumber(m_drivetrain.getName() + "/AprilAlignCommandV2/Command/CalcVelX", xSpeed);

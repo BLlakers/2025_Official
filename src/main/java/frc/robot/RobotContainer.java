@@ -36,13 +36,13 @@ public class RobotContainer {
   AlgaeMechanism mAlgaeMechanism = new AlgaeMechanism();
   AlgaeIntake mAlgaeIntake = new AlgaeIntake();
   ElevatorMechanism mElevatorMechanism = new ElevatorMechanism();
-  ElevatorPID elevatorPIDDown = new ElevatorPID(mElevatorMechanism, ()-> ElevatorMechanism.Down);
-  ElevatorPID elevatorPIDL2 = new ElevatorPID(mElevatorMechanism, ()-> ElevatorMechanism.L2);
-  ElevatorPID elevatorPIDL3 = new ElevatorPID(mElevatorMechanism, ()-> ElevatorMechanism.L3);
-  ElevatorPID elevatorPIDL4 = new ElevatorPID(mElevatorMechanism, ()-> ElevatorMechanism.L4);
+  ElevatorPID elevatorPIDDown = new ElevatorPID(mElevatorMechanism,  ElevatorMechanism.Down);
+  ElevatorPID elevatorPIDL2 = new ElevatorPID(mElevatorMechanism,  ElevatorMechanism.L2);
+  ElevatorPID elevatorPIDL3 = new ElevatorPID(mElevatorMechanism,  ElevatorMechanism.L3);
+  ElevatorPID elevatorPIDL4 = new ElevatorPID(mElevatorMechanism,  ElevatorMechanism.L4);
   Servo mServo = new Servo();
   AprilAlignCommand LimelightCodeFrontLeft = new AprilAlignCommand(() -> m_LimelightFrl.getCurrentAprilTag(), () ->  m_LimelightFrl.getAprilRotation2d(), m_DriveTrain, new Transform2d(-.55,0.0175, new Rotation2d(.175)), false, true, mLedStrand);
-  AprilAlignCommand LimelightCodeFrontRight = new AprilAlignCommand(() -> m_LimelightFrr.getCurrentAprilTag(), () ->  m_LimelightFrr.getAprilRotation2d(), m_DriveTrain, new Transform2d(-0.15,-0.2, new Rotation2d(0)), false, false, mLedStrand);
+  AprilAlignCommand LimelightCodeFrontRight = new AprilAlignCommand(() -> m_LimelightFrr.getCurrentAprilTag(), () ->  m_LimelightFrr.getAprilRotation2d(), m_DriveTrain, new Transform2d(-0.25,-0.002, new Rotation2d(-0.17)), false, false, mLedStrand);
   AprilAlignCommand LimelightCodeBack = new AprilAlignCommand(() -> m_LimelightBack.getCurrentAprilTag(), () ->  m_LimelightBack.getAprilRotation2d(), m_DriveTrain, new Transform2d(-.52,-0.05, new Rotation2d()), true, false, mLedStrand);
   AlgaeSM algaeDownCommand = new AlgaeSM(mAlgaeMechanism, AlgaeMechanism.PosDown);
   AlgaeSM algaeUpCommand = new AlgaeSM(mAlgaeMechanism, AlgaeMechanism.PosUp);
@@ -111,7 +111,7 @@ final Command d = a.andThen(c).finallyDo(b::schedule).onlyIf(() -> mAlgaeMechani
     mAlgaeMechanism.setName("AlgaeMechanism");
     configureShuffleboard();
     configureBindings();
-    NamedCommands.registerCommand("Limelight",LimelightCodeFrontLeft);
+   // NamedCommands.registerCommand("Limelight",LimelightCodeFrontLeft);
     NamedCommands.registerCommand("ElevatorL2",elevatorPIDL2);
     NamedCommands.registerCommand("ElevatorL4",elevatorPIDL4);
     NamedCommands.registerCommand("ElevatorBottom",elevatorPIDDown);
@@ -205,11 +205,11 @@ final Command d = a.andThen(c).finallyDo(b::schedule).onlyIf(() -> mAlgaeMechani
     // manipController.povDown().onTrue(mElevatorMechanism.MovePosDown());
     
     
-    manipController.a().whileTrue(elevatorPIDDown);
-    manipController.b().whileTrue(elevatorPIDL2);
+    manipController.a().onTrue(elevatorPIDDown);
+    manipController.b().onTrue(elevatorPIDL2);
     // mElevatorMechanism.setDefaultCommand(elevatorPID);
-    manipController.y().whileTrue(elevatorPIDL3);
-    manipController.x().whileTrue(elevatorPIDL4);
+    manipController.y().onTrue(elevatorPIDL3);
+    manipController.x().onTrue(elevatorPIDL4);
     manipController.start().onTrue(mElevatorMechanism.ResetPositionCMD());
     //manipController.rightBumper().whileTrue(algaeCommand);
     //manipController.povDown().onTrue(mElevatorMechanism.ResetPositionCMD());
@@ -247,7 +247,7 @@ final Command d = a.andThen(c).finallyDo(b::schedule).onlyIf(() -> mAlgaeMechani
     SmartDashboard.putData(m_DriveTrain);
     SmartDashboard.putData(m_DriveTrain.getName() + "/Reset Pose 2D", m_DriveTrain.resetPose2d());
     SmartDashboard.putData(mCoralMechanism);  
-    SmartDashboard.putData(m_LimelightFrl);
+    //SmartDashboard.putData(m_LimelightFrl);
     SmartDashboard.putData(mAlgaeMechanism);
     SmartDashboard.putData(mAlgaeIntake);
   }
