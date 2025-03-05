@@ -19,16 +19,16 @@ public class AprilAlignCommand extends Command{
   private static final TrapezoidProfile.Constraints X_CONSTRAINTS =
       new TrapezoidProfile.Constraints(.5, 1);
   private static final TrapezoidProfile.Constraints Y_CONSTRAINTS =
-      new TrapezoidProfile.Constraints(1, 1.5);
+      new TrapezoidProfile.Constraints(.5, 1);
   private static final TrapezoidProfile.Constraints OMEGA_CONSTRAINTS =
       new TrapezoidProfile.Constraints(Units.degreesToRadians(180), Units.degreesToRadians(360));
 
   private final ProfiledPIDController m_xController =
       new ProfiledPIDController(1, 0, 0.0, X_CONSTRAINTS);
   private final ProfiledPIDController m_yController =
-      new ProfiledPIDController(3, 0, 0.0, Y_CONSTRAINTS);
+      new ProfiledPIDController(1, 0, 0.0, Y_CONSTRAINTS);
   private final ProfiledPIDController m_omegaController =
-      new ProfiledPIDController(2, 0, 0.0, OMEGA_CONSTRAINTS);
+      new ProfiledPIDController(5, 0, 0.0, OMEGA_CONSTRAINTS);
       
   private DriveTrain m_drivetrain;
   private Supplier<AprilTag> m_aprilTagProvider;
