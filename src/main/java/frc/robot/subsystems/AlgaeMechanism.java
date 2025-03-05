@@ -121,11 +121,11 @@ public class AlgaeMechanism extends SubsystemBase{
 
     @Override
     public void periodic(){
-        if(AlgaeIR() <= irDistance){
-            AlgaePID(PosMiddle);
-        } else{
-            AlgaePID(algaePosition);
-        }
+        // if(AlgaeIR() <= irDistance){
+            // AlgaePID(PosMiddle);
+        // } else{
+            // AlgaePID(algaePosition);
+        // }
     } 
 
     public Command AlgaeForwardCmd() {

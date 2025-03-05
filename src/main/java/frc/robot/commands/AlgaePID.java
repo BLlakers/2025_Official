@@ -13,7 +13,6 @@ import edu.wpi.first.math.util.Units;
 import edu.wpi.first.util.sendable.SendableBuilder;
 import frc.robot.Constants;
 import frc.robot.Constants.Algae;
-import frc.robot.subsystems.AlgaeIntake;
 import frc.robot.subsystems.AlgaeMechanism;
 import frc.robot.subsystems.DriveTrain; 
 import frc.robot.subsystems.ElevatorMechanism;

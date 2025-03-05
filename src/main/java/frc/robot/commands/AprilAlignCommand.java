@@ -19,16 +19,16 @@ public class AprilAlignCommand extends Command{
   private static final TrapezoidProfile.Constraints X_CONSTRAINTS =
       new TrapezoidProfile.Constraints(.5, 1);
   private static final TrapezoidProfile.Constraints Y_CONSTRAINTS =
-      new TrapezoidProfile.Constraints(.5, 1);
+      new TrapezoidProfile.Constraints(1, 1.5);
   private static final TrapezoidProfile.Constraints OMEGA_CONSTRAINTS =
-      new TrapezoidProfile.Constraints(Units.degreesToRadians(180), Units.degreesToRadians(180));
+      new TrapezoidProfile.Constraints(Units.degreesToRadians(180), Units.degreesToRadians(360));
 
   private final ProfiledPIDController m_xController =
       new ProfiledPIDController(1, 0, 0.0, X_CONSTRAINTS);
   private final ProfiledPIDController m_yController =
-      new ProfiledPIDController(1.5, 0, 0.0, Y_CONSTRAINTS);
+      new ProfiledPIDController(3, 0, 0.0, Y_CONSTRAINTS);
   private final ProfiledPIDController m_omegaController =
-      new ProfiledPIDController(5, 0, 0.0, OMEGA_CONSTRAINTS);
+      new ProfiledPIDController(2, 0, 0.0, OMEGA_CONSTRAINTS);
       
   private DriveTrain m_drivetrain;
   private Supplier<AprilTag> m_aprilTagProvider;
@@ -112,7 +112,8 @@ public class AprilAlignCommand extends Command{
       m_drivetrain.drive(xSpeed,-1* ySpeed, rotSpeed);
     }else {
       m_drivetrain.drive(-xSpeed, ySpeed, rotSpeed);
-      // m_drivetrain.drive(0, -1* ySpeed, rotSpeed);
+      // m_drivetrain.drive(0, 0, rotSpeed);
+      // m_drivetrain.drive(0, ySpeed, rotSpeed);
     }
 
     SmartDashboard.putNumber(m_drivetrain.getName() + "/AprilAlignCommandV2/Command/CalcVelX", xSpeed);
