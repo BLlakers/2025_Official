@@ -43,12 +43,17 @@ public boolean IntakeFowardIR(){
  public Command IntakeForwardCmd() {
         return this.runEnd(this::IntakeForward, this::IntakeStop);
     }
+    
 
     public Command IntakeBackwardCmd() {
         return this.runEnd(this::IntakeBackward, this::IntakeStop);
     }
     public Command IntakeStopCmd() {
         return this.runOnce(this::IntakeStop);
+    }
+
+    public Command IntakeForwardOnceCmd() {
+        return this.runOnce(this::IntakeForward);
     }
 
     public Command RunIntake(){

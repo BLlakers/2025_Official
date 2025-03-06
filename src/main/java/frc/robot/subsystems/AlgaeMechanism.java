@@ -27,12 +27,12 @@ import edu.wpi.first.wpilibj2.command.SubsystemBase;
 import frc.robot.Constants;
 
 public class AlgaeMechanism extends SubsystemBase{
-    private ProfiledPIDController pid = new ProfiledPIDController(70 , 0, 0, ALGAE_CONSTRAINTS);
+    private ProfiledPIDController pid = new ProfiledPIDController(.75, 0, 0, ALGAE_CONSTRAINTS);
     private static final TrapezoidProfile.Constraints ALGAE_CONSTRAINTS = new TrapezoidProfile.Constraints(Units.feetToMeters(10),Units.feetToMeters(8));
-    public static double PosDown = -0.0135;
-    public static double PosUp = -0.0025;
-    public static double PosMiddle = -0.009;
-    public static double PosGround = -0.015;
+    public static double PosDown = -1.03;
+    public static double PosUp = -0.14;
+    public static double PosMiddle = -0.81;
+    public static double PosGround = -1.165;
     public static double irDistance = 100;
   
     private final I2C.Port i2cPort = I2C.Port.kOnboard;
@@ -45,7 +45,7 @@ public class AlgaeMechanism extends SubsystemBase{
 
     public static double GEAR_RATIO = 75;
     double algaePositionConversionFactor =
-    2 * Math.PI / AlgaeMechanism.GEAR_RATIO; // revolutions -> radians
+    360 / AlgaeMechanism.GEAR_RATIO; // revolutions -> radians
     private double algaeVelocityConversionFactor = 1;
     //private DigitalInput m_AlgaeLimitSwitchTop = new DigitalInput(7);
     //A motor to rotate up and down
@@ -64,7 +64,7 @@ public class AlgaeMechanism extends SubsystemBase{
             .positionConversionFactor(algaePositionConversionFactor)
             .velocityConversionFactor(algaeVelocityConversionFactor)
             .countsPerRevolution(8192);
-        pid.setTolerance(0.0005);
+        pid.setTolerance(0.035);
         m_AlgaeMotor.configure(m_AlgaeConfig, ResetMode.kNoResetSafeParameters, PersistMode.kPersistParameters);
         ResetPosition();
     }
@@ -87,7 +87,7 @@ public class AlgaeMechanism extends SubsystemBase{
     }
 
     public void AlgaeMove(double m) {
-        m_AlgaeMotor.set(m);
+        m_AlgaeMotor.set(-m);
     }
     
     public double getAlgaePos() {
@@ -98,12 +98,17 @@ public class AlgaeMechanism extends SubsystemBase{
         m_AlgaeMotor.getAlternateEncoder().setPosition(0);
     }
 
+    public void setAlgaePIDPosition(double desiredPos){
+        algaePosition = desiredPos;
+    }
+
     public void AlgaePID(double desPosition){
-        if (AlgaeIR() <= irDistance){
-            pid.setGoal(PosMiddle);
-        }else{
-            pid.setGoal(desPosition);
-        }
+        // if (AlgaeIR() <= irDistance){
+        //     pid.setGoal(PosMiddle);
+        // }else{
+        //     pid.setGoal(desPosition);
+        // }
+        pid.setGoal(desPosition);
         m_AlgaeSpeed = pid.calculate(getAlgaePos());
         if (pid.atGoal()) {
             m_AlgaeSpeed = 0;
@@ -121,11 +126,13 @@ public class AlgaeMechanism extends SubsystemBase{
 
     @Override
     public void periodic(){
-        // if(AlgaeIR() <= irDistance){
-            // AlgaePID(PosMiddle);
-        // } else{
-            // AlgaePID(algaePosition);
-        // }
+        // AlgaePID(algaePosition);
+        if(AlgaeIR() >= irDistance){
+            algaePosition = PosMiddle;
+            AlgaePID(PosMiddle);
+        } else{
+            AlgaePID(algaePosition);
+        }
     } 
 
     public Command AlgaeForwardCmd() {

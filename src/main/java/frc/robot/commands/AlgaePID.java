@@ -38,7 +38,7 @@ public class AlgaePID extends Command {
   // Called every time the scheduler runs while the command is scheduled.
   @Override
   public void execute() {
-      m_algaeMech.AlgaePID(position);
+      m_algaeMech.setAlgaePIDPosition(position);
   }
   
   public void initSendable(SendableBuilder builder) {
