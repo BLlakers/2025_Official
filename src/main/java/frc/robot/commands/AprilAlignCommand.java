@@ -26,7 +26,7 @@ public class AprilAlignCommand extends Command{
   private final ProfiledPIDController m_xController =
       new ProfiledPIDController(1, 0, 0.0, X_CONSTRAINTS);
   private final ProfiledPIDController m_yController =
-      new ProfiledPIDController(1, 0, 0.0, Y_CONSTRAINTS);
+      new ProfiledPIDController(1.5, 0, 0.0, Y_CONSTRAINTS);
   private final ProfiledPIDController m_omegaController =
       new ProfiledPIDController(5, 0, 0.0, OMEGA_CONSTRAINTS);
       
@@ -57,9 +57,9 @@ public class AprilAlignCommand extends Command{
     m_goalRot =goalTransformRelativeToAprilTag.getRotation().getRadians();
 
 
-    m_xController.setTolerance(0.09);
-    m_yController.setTolerance(0.015);
-    m_omegaController.setTolerance(Units.degreesToRadians(2.5));
+    m_xController.setTolerance(0.085);
+    m_yController.setTolerance(0.1);
+    m_omegaController.setTolerance(Units.degreesToRadians(3));
     m_omegaController.enableContinuousInput(-Math.PI, Math.PI);
     addRequirements(drivetrainSubsystem);
     addRequirements(leds);

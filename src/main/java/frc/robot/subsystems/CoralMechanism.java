@@ -22,14 +22,14 @@ public class CoralMechanism extends SubsystemBase{
     }
 
     public void CoralForward() {
-        m_coralMotor1.set(ControlMode.PercentOutput, .6);
-        m_coralMotor2.set(ControlMode.PercentOutput, -.6);
+        m_coralMotor1.set(ControlMode.PercentOutput, .55);
+        m_coralMotor2.set(ControlMode.PercentOutput, -.55);
     }
 
 
     public void CoralBackward() {
-        m_coralMotor1.set(ControlMode.PercentOutput, -.95);
-        m_coralMotor2.set(ControlMode.PercentOutput, .95);
+        m_coralMotor1.set(ControlMode.PercentOutput, -.55);
+        m_coralMotor2.set(ControlMode.PercentOutput, .55);
     }
     
     public void CoralStop() {

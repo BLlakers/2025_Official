@@ -7,6 +7,7 @@ import com.ctre.phoenix.motorcontrol.can.TalonSRX;
 import com.revrobotics.ColorSensorV3;
 
 import edu.wpi.first.util.sendable.SendableBuilder;
+import edu.wpi.first.wpilibj.AnalogInput;
 import edu.wpi.first.wpilibj.DigitalInput;
 import edu.wpi.first.wpilibj.I2C;
 import edu.wpi.first.wpilibj2.command.Command;
@@ -15,23 +16,12 @@ import frc.robot.Constants;
 
 public class AlgaeIntake extends SubsystemBase{
  private TalonSRX m_IntakeMotor = new TalonSRX(Constants.Algae.m_IntakeMtrC);
-    private final I2C.Port i2cPort = I2C.Port.kOnboard;
-  private final ColorSensorV3 m_colorSensorV3 = new ColorSensorV3(i2cPort);
-public static double IRVALUE = 50;
  public AlgaeIntake(){}
 
 
  public void IntakeForward() {
-        m_IntakeMotor.set(ControlMode.PercentOutput,.85);
+        m_IntakeMotor.set(ControlMode.PercentOutput,.75);
     }
-public boolean IntakeFowardIR(){
-    if (m_colorSensorV3.getIR() > IRVALUE){
-        return true;
-    }
-    else {
-        return false;
-    }
-}
 
     public void IntakeBackward() {
         m_IntakeMotor.set(ControlMode.PercentOutput,-.85);
@@ -48,6 +38,10 @@ public boolean IntakeFowardIR(){
     public Command IntakeBackwardCmd() {
         return this.runEnd(this::IntakeBackward, this::IntakeStop);
     }
+    public Command IntakeBackwardOnceCmd() {
+        return this.runOnce(this::IntakeBackward);
+    }
+
     public Command IntakeStopCmd() {
         return this.runOnce(this::IntakeStop);
     }
@@ -63,8 +57,5 @@ public boolean IntakeFowardIR(){
 public void initSendable(SendableBuilder builder) {
     
     super.initSendable(builder);
-    builder.addBooleanProperty(this.getName() + "/Intake/IRGOOD", ()->IntakeFowardIR(), null);
-    builder.addDoubleProperty(this.getName() + "/Intake/IR/Value", ()-> m_colorSensorV3.getIR(), null);
-
 }
 }

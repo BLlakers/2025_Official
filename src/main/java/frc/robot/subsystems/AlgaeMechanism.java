@@ -17,6 +17,7 @@ import edu.wpi.first.math.geometry.Rotation2d;
 import edu.wpi.first.math.trajectory.TrapezoidProfile;
 import edu.wpi.first.math.util.Units;
 import edu.wpi.first.util.sendable.SendableBuilder;
+import edu.wpi.first.wpilibj.AnalogInput;
 import edu.wpi.first.wpilibj.DigitalInput;
 import edu.wpi.first.wpilibj.I2C;
 import edu.wpi.first.wpilibj.I2C.Port;
@@ -31,18 +32,17 @@ public class AlgaeMechanism extends SubsystemBase{
     private static final TrapezoidProfile.Constraints ALGAE_CONSTRAINTS = new TrapezoidProfile.Constraints(Units.feetToMeters(10),Units.feetToMeters(8));
     public static double PosDown = -1.03;
     public static double PosUp = -0.14;
-    public static double PosMiddle = -0.81;
+    public static double PosMiddle = -0.75;
     public static double PosGround = -1.165;
     public static double irDistance = 100;
   
-    private final I2C.Port i2cPort = I2C.Port.kOnboard;
-    private final ColorSensorV3 AlgaeSensor = new ColorSensorV3(i2cPort);
     private double m_AlgaeSpeed;
     public static double posUpreg = 0;
     public static double posMiddlereg = 4.5;
     public static double posDownreg = 9; 
     public double algaePosition;
-
+AnalogInput AlgaeIR = new AnalogInput(2);
+public static double IRVALUE = 2000;
     public static double GEAR_RATIO = 75;
     double algaePositionConversionFactor =
     360 / AlgaeMechanism.GEAR_RATIO; // revolutions -> radians
@@ -59,7 +59,7 @@ public class AlgaeMechanism extends SubsystemBase{
             .pid(1.0,0,0);
         m_AlgaeConfig
             .inverted(false)
-            .idleMode(IdleMode.kBrake);
+            .idleMode(IdleMode.kCoast);
         m_AlgaeConfig.alternateEncoder //TODO MAKE SURE TO USE RIGHT TYPE OF ENCODER WHEN DOING CONFIGS!
             .positionConversionFactor(algaePositionConversionFactor)
             .velocityConversionFactor(algaeVelocityConversionFactor)
@@ -69,11 +69,6 @@ public class AlgaeMechanism extends SubsystemBase{
         ResetPosition();
     }
 
-
-    public double AlgaeIR(){
-        return AlgaeSensor.getIR();
-    }
-
     public void AlgaeForward() {
         m_AlgaeMotor.set(.1);
     }
@@ -81,7 +76,15 @@ public class AlgaeMechanism extends SubsystemBase{
     public void AlgaeBackward() {
         m_AlgaeMotor.set(-.1);
     }
-
+    public boolean IntakeFowardIR(){
+        if (AlgaeIR.getValue() > IRVALUE){
+            return true;
+        }
+        else {
+            return false;
+        }
+    }
+    
     public void AlgaeStop() {
         m_AlgaeMotor.set(0);
     }
@@ -126,8 +129,7 @@ public class AlgaeMechanism extends SubsystemBase{
 
     @Override
     public void periodic(){
-        // AlgaePID(algaePosition);
-        if(AlgaeIR() >= irDistance){
+        if(IntakeFowardIR()) {
             algaePosition = PosMiddle;
             AlgaePID(PosMiddle);
         } else{
@@ -158,6 +160,8 @@ public class AlgaeMechanism extends SubsystemBase{
         builder.addDoubleProperty(this.getName() + "/Algae/Position/Goal", () -> pid.getGoal().position, null);
         builder.addBooleanProperty(this.getName() + "/Algae/Position/atGoal", () -> CheckAlgaePID(), null);
         builder.addDoubleProperty(this.getName() + "/Algae/Position/Speed", () -> m_AlgaeSpeed, null);
-        builder.addDoubleProperty(this.getName() + "/Algae/IR", this::AlgaeIR, null);
+        builder.addBooleanProperty(this.getName() + "/Intake/IRGOOD", ()->IntakeFowardIR(), null);
+        builder.addDoubleProperty(this.getName() + "/Intake/IRValue", () -> AlgaeIR.getValue(), null);
+  
     }
 }

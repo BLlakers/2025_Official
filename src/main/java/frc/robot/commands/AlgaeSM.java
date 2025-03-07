@@ -63,6 +63,7 @@ public void initSendable(SendableBuilder builder) {
   // Returns true when the command should end.
   @Override
   public boolean isFinished() {
-    return pidThroughBore.atGoal() || m_algaeMech.AlgaeIR() <= 100;
+    return true;
+    // return pidThroughBore.atGoal() || m_algaeMech.AlgaeIR() <= 100;
   }
 }

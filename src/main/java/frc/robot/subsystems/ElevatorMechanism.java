@@ -33,8 +33,9 @@ public class ElevatorMechanism extends SubsystemBase{
    public static double Down = 0;
    public static double Troph = -2.5;
    public static double L2 = -5.8;
+   public static double AlgaeGround = -6.2;
    public static double AlgaeL3 = -10.2;
-   public static double L3 = -13.7;
+   public static double L3 = -13;
    public static double AlgaeL4 = -17;
    public static double L4 = -24.5;
    public static boolean IsMoving;
@@ -71,7 +72,7 @@ public class ElevatorMechanism extends SubsystemBase{
             .velocityConversionFactor(elevatorVelocityConversionFactor)
             .countsPerRevolution(8192);
              m_ElevatorMotor.configure(m_ElevatorConfig, ResetMode.kNoResetSafeParameters, PersistMode.kPersistParameters);
-
+            pid.setTolerance(.1);
              ResetPosition();
              }
            
@@ -262,6 +263,7 @@ public void periodic(){
     builder.addBooleanProperty("Elevator/LimitSwitchTop", this::ElevatorLimitSwitchTop, null);
     builder.addBooleanProperty("Elevator/LimitSwitchBottom", this::ElevatorLimitSwitchBottom, null);
     builder.addBooleanProperty("Elevator/AtPos", this::ElevatorAtPos, null);
+    builder.addBooleanProperty("Elevator/AtPIDGoal", this::atPIDGoal, null);
     builder.addDoubleProperty("Elevator/desiredPos", this::desiredPosGet, this::desiredPosSet);
     builder.addStringProperty("Elevator/DesiredLevel", () -> this.Estate.toString(), null);
     builder.addDoubleProperty("Elevator/DecelerateRatio", () -> getElevatorDecelerateRatio(), null);

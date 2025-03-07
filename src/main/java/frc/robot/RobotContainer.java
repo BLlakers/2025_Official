@@ -46,8 +46,8 @@ public class RobotContainer {
   ElevatorPID elevatorPIDAlgae3v2 = new ElevatorPID(mElevatorMechanism,  ElevatorMechanism.AlgaeL3);
   ElevatorPID elevatorPIDAlgae4 = new ElevatorPID(mElevatorMechanism,  ElevatorMechanism.AlgaeL4);
   Servo mServo = new Servo();
-  AprilAlignCommand LimelightCodeFrontLeft = new AprilAlignCommand(() -> m_LimelightFrl.getCurrentAprilTag(), () ->  m_LimelightFrl.getAprilRotation2d(), m_DriveTrain, new Transform2d(-0.05,0.075, new Rotation2d(.075)), false, true, mLedStrand);
-  AprilAlignCommand LimelightCodeFrontRight = new AprilAlignCommand(() -> m_LimelightFrr.getCurrentAprilTag(), () ->  m_LimelightFrr.getAprilRotation2d(), m_DriveTrain, new Transform2d(-0.1,-0.002, new Rotation2d(-0.17)), false, false, mLedStrand);
+  AprilAlignCommand LimelightCodeFrontLeft = new AprilAlignCommand(() -> m_LimelightFrl.getCurrentAprilTag(), () ->  m_LimelightFrl.getAprilRotation2d(), m_DriveTrain, new Transform2d(.21,0.00, new Rotation2d(.15)), false, true, mLedStrand);
+  AprilAlignCommand LimelightCodeFrontRight = new AprilAlignCommand(() -> m_LimelightFrr.getCurrentAprilTag(), () ->  m_LimelightFrr.getAprilRotation2d(), m_DriveTrain, new Transform2d(.19,0.00, new Rotation2d(-0.15)), false, false, mLedStrand);
   AprilAlignCommand LimelightCodeBack = new AprilAlignCommand(() -> m_LimelightBack.getCurrentAprilTag(), () ->  m_LimelightBack.getAprilRotation2d(), m_DriveTrain, new Transform2d(-.52,-0.05, new Rotation2d()), true, false, mLedStrand);
   AlgaePID algaePIDDown = new AlgaePID(mAlgaeMechanism, AlgaeMechanism.PosDown);
   AlgaePID algaePIDDown2 = new AlgaePID(mAlgaeMechanism, AlgaeMechanism.PosDown);
@@ -67,8 +67,12 @@ Command runCoralFoward = mCoralMechanism.CoralForwardCmd().onlyWhile(()->!mCoral
 //  Command algaeIntakeBackward = m_AlgaeIntake.IntakeBackwardCmd();
 
 // Compose the commands correctly, ensuring that each use is a new composition
-Command algaeDownAndRun = Commands.parallel(algaePIDDown, m_AlgaeIntake.IntakeForwardOnceCmd()); 
-Command algaeUpAndStop = Commands.parallel(algaePIDUp, m_AlgaeIntake.IntakeStopCmd()); 
+Command algaeDownAndRunA3 = Commands.race(new AlgaePID(mAlgaeMechanism, AlgaeMechanism.PosDown), m_AlgaeIntake.IntakeForwardOnceCmd(), new ElevatorPID(mElevatorMechanism, ElevatorMechanism.AlgaeL3)); 
+Command algaeDownAndRunA4 = Commands.race(new AlgaePID(mAlgaeMechanism, AlgaeMechanism.PosDown), m_AlgaeIntake.IntakeForwardOnceCmd(), new ElevatorPID(mElevatorMechanism, ElevatorMechanism.AlgaeL4)); 
+Command algaeUpAndStop = Commands.race(new AlgaePID(mAlgaeMechanism, AlgaeMechanism.PosUp), m_AlgaeIntake.IntakeStopCmd()); 
+Command algaeMiddleAndStop = Commands.race(new AlgaePID(mAlgaeMechanism, AlgaeMechanism.PosMiddle), m_AlgaeIntake.IntakeStopCmd());
+Command algaeGroundCommand = Commands.race(new AlgaePID(mAlgaeMechanism, AlgaeMechanism.PosGround), m_AlgaeIntake.IntakeBackwardOnceCmd(), new ElevatorPID(mElevatorMechanism, ElevatorMechanism.L2));
+
 // Command algaeDownAndRun = Commands.deadline(algaePIDDown2, m_AlgaeIntake.IntakeForwardOnceCmd()); 
 // Command algaeUpAndStopADown = Commands.parallel(algaePIDUp2, m_AlgaeIntake.IntakeStopCmd(), elevatorPIDDown); 
 
@@ -122,10 +126,10 @@ Command algaeUpAndStop = Commands.parallel(algaePIDUp, m_AlgaeIntake.IntakeStopC
     mAlgaeMechanism.setName("AlgaeMechanism");
     configureShuffleboard();
     configureBindings();
-   // NamedCommands.registerCommand("Limelight",LimelightCodeFrontLeft);
+   NamedCommands.registerCommand("Limelight",LimelightCodeFrontLeft);
     NamedCommands.registerCommand("ElevatorL2",elevatorPIDL2);
-    NamedCommands.registerCommand("ElevatorL4",elevatorPIDL4);
-    NamedCommands.registerCommand("ElevatorBottom",elevatorPIDDown);
+    NamedCommands.registerCommand("ElevatorL4",new ElevatorPID(mElevatorMechanism,ElevatorMechanism.L4).withTimeout(.5));
+    NamedCommands.registerCommand("ElevatorBottom",new ElevatorPID(mElevatorMechanism,ElevatorMechanism.Down));
     NamedCommands.registerCommand("ElevatorUp",mElevatorMechanism.ElevatorUpCmd());
     NamedCommands.registerCommand("ShootCoral",mCoralMechanism.CoralForwardCmd().withTimeout(1));
     NamedCommands.registerCommand("ToggleFieldRelativel", m_DriveTrain.toggleFieldRelativeEnable());
@@ -209,47 +213,55 @@ Command algaeUpAndStop = Commands.parallel(algaePIDUp, m_AlgaeIntake.IntakeStopC
     driverController.x().whileTrue(LimelightCodeFrontLeft); 
     driverController.y().whileTrue(LimelightCodeFrontRight);
     // driverController.povUp().whileTrue(runCoralFoward);//mCoralMechanism.CoralForwardCmd());
-    driverController.povDown().whileTrue(mCoralMechanism.CoralBackwardCmd());
+    // driverController.povDown().whileTrue(mCoralMechanism.CoralBackwardCmd());
     // Manipulator Controller commands
     // manipController.y().onTrue(mLedStrand.changeLedCommand()); 
     // manipController.povUp().onTrue(mElevatorMechanism.MovePosUp());
     // manipController.povDown().onTrue(mElevatorMechanism.MovePosDown());
     
-    
+    //Elevator Commands
     manipController.a().onTrue(elevatorPIDDown);
     manipController.b().onTrue(elevatorPIDL2);
-    // mElevatorMechanism.setDefaultCommand(elevatorPID);
     manipController.y().onTrue(elevatorPIDL3);
     manipController.x().onTrue(elevatorPIDL4);
-    manipController.start().onTrue(mElevatorMechanism.ResetPositionCMD());
-    //manipController.rightBumper().whileTrue(algaeCommand);
-    //manipController.povDown().onTrue(mElevatorMechanism.ResetPositionCMD());
-    // manipController.rightBumper().whileTrue(algaeDownCommand);
-    manipController.leftBumper().whileTrue(m_AlgaeIntake.IntakeBackwardCmd());
+    manipController.rightStick().onTrue(mElevatorMechanism.ResetPositionCMD());
+    //Algae Commands
+    manipController.leftBumper().onTrue(algaeDownAndRunA3);
+    manipController.rightBumper().onTrue(algaeDownAndRunA4);
+    manipController.back().onTrue(algaeUpAndStop);
+    manipController.start().whileTrue(m_AlgaeIntake.IntakeBackwardCmd());
+    manipController.povLeft().onTrue(algaeGroundCommand);
+    manipController.povRight().whileTrue(m_AlgaeIntake.IntakeForwardCmd());
+    manipController.leftStick().onTrue(algaeMiddleAndStop);
+    //Coral Commands
     manipController.leftTrigger(.5).whileTrue(runCoralFoward);
     manipController.rightTrigger(.5).whileTrue(mCoralMechanism.CoralForwardCmd());
     manipController.povUp().whileTrue(mClimbMechanism.WindForwardCmd());
     manipController.povDown().whileTrue(mClimbMechanism.WindDownCmd());
-    // manipController.povLeft().whileTrue(algaeGround);
-    // manipController.povRight().whileTrue(algaeMiddleCommand);
     mServo.setDefaultCommand(mServo.ServoForwardCommand());
+
   //  //debugController.rightBumper().whileTrue(mElevatorMechanism.ElevatorDownLimitCmd());
   //  //debugController.leftBumper().whileTrue(mElevatorMechanism.ElevatorUpLimitCmd());
-    debugController.povLeft().whileTrue(mAlgaeMechanism.AlgaeForwardCmd());
-    debugController.povRight().whileTrue(mAlgaeMechanism.AlgaeBackwardCmd());
+    // debugController.povLeft().whileTrue(m_AlgaeIntake.IntakeForwardCmd());
+    // debugController.povRight().whileTrue(mAlgaeMechanism.AlgaeBackwardCmd());
   //   debugController.povUp().whileTrue(mAlgaeMechanism.AlgaeIntakeGet().IntakeBackwardCmd());
   //   //debugController.a().whileTrue(IntakeAndRaise);
   //   debugController.x().whileTrue(mAlgaeMechanism.AlgaePIDDownThroughBore());
   //   debugController.a().whileTrue(mAlgaeMechanism.AlgaePIDUpThroughBore());
     debugController.povUp().onTrue(mAlgaeMechanism.resetAlgae());
-  //   debugController.b().onTrue(mAlgaeMechanism.ResetAlgaeThroughBoreCMD());
-  debugController.a().onTrue(algaePIDUp);
-  debugController.b().onTrue(algaePIDMiddle);
-  debugController.x().onTrue(algaePIDDown);
+    debugController.a().onTrue(algaePIDUp);
+    debugController.b().onTrue(algaePIDMiddle);
+    debugController.x().onTrue(algaePIDDown);
     debugController.y().onTrue(algaePIDGround);
-    debugController.rightBumper().onTrue(algaeDownAndRun);
-    debugController.leftBumper().onTrue(algaeUpAndStop);
+    debugController.rightBumper().whileTrue(mClimbMechanism.WindForwardCmd());
+    debugController.leftBumper().whileTrue(mClimbMechanism.WindDownCmd());
+    debugController.rightStick().onTrue(algaeDownAndRunA4);
+    // debugController.leftBumper().onTrue(algaeUpAndStop);
     debugController.povDown().onTrue(elevatorPIDAlgae3);
+    debugController.leftStick().whileTrue(m_AlgaeIntake.IntakeBackwardCmd());
+    debugController.start().onTrue(algaeMiddleAndStop);
+    debugController.leftTrigger(.5).onTrue(algaeGroundCommand);
+    
     // debugController.povDown().onTrue(algaeL3Down);
   //   debugController.leftBumper().whileTrue(mClimbMechanism.WindBackwardCmd());
   //   debugController.rightBumper().whileTrue(mClimbMechanism.WindForwardCmd());
