@@ -7,6 +7,7 @@ import edu.wpi.first.wpilibj.TimedRobot;
 import edu.wpi.first.wpilibj.smartdashboard.SmartDashboard;
 import edu.wpi.first.wpilibj2.command.Command;
 import edu.wpi.first.wpilibj2.command.CommandScheduler;
+import frc.robot.subsystems.AlgaeMechanism;
 import frc.robot.support.Telemetry;
 import frc.robot.support.limelight.LimelightUtil;
 
@@ -59,6 +60,7 @@ public class Robot extends TimedRobot {
 
     @Override
     public void disabledPeriodic() {
+        AlgaeMechanism.AUTORunning = true;
     }
 
     @Override
@@ -66,6 +68,7 @@ public class Robot extends TimedRobot {
         m_robotContainer.m_DriveTrain.m_FieldRelativeEnable = false;
         System.out.println(m_robotContainer.m_DriveTrain.m_FieldRelativeEnable);
         m_autonomousCommand = m_robotContainer.getAutonomousCommand();
+        AlgaeMechanism.AUTORunning = true;
         if (m_autonomousCommand != null) {
             m_autonomousCommand.schedule();
         }
@@ -77,6 +80,7 @@ public class Robot extends TimedRobot {
 
     @Override
     public void teleopInit() {  
+        AlgaeMechanism.AUTORunning = false;
         m_robotContainer.m_DriveTrain.m_FieldRelativeEnable = true;
         if (m_autonomousCommand != null) {
             m_autonomousCommand.cancel();

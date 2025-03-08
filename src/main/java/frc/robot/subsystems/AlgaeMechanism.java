@@ -47,6 +47,7 @@ public static double IRVALUE = 2000;
     double algaePositionConversionFactor =
     360 / AlgaeMechanism.GEAR_RATIO; // revolutions -> radians
     private double algaeVelocityConversionFactor = 1;
+    public static boolean AUTORunning;
     //private DigitalInput m_AlgaeLimitSwitchTop = new DigitalInput(7);
     //A motor to rotate up and down
    private SparkMax m_AlgaeMotor = new SparkMax(Constants.Algae.m_AlgaeMtrC, com.revrobotics.spark.SparkLowLevel.MotorType.kBrushless);
@@ -129,12 +130,15 @@ public static double IRVALUE = 2000;
 
     @Override
     public void periodic(){
-        if(IntakeFowardIR()) {
-            algaePosition = PosMiddle;
-            AlgaePID(PosMiddle);
-        } else{
-            AlgaePID(algaePosition);
+        if (!AUTORunning){
+            if(IntakeFowardIR()) {
+                algaePosition = PosMiddle;
+                AlgaePID(PosMiddle);
+            } else{
+                AlgaePID(algaePosition);
+            }
         }
+        // AlgaePID(algaePosition);
     } 
 
     public Command AlgaeForwardCmd() {
@@ -162,6 +166,7 @@ public static double IRVALUE = 2000;
         builder.addDoubleProperty(this.getName() + "/Algae/Position/Speed", () -> m_AlgaeSpeed, null);
         builder.addBooleanProperty(this.getName() + "/Intake/IRGOOD", ()->IntakeFowardIR(), null);
         builder.addDoubleProperty(this.getName() + "/Intake/IRValue", () -> AlgaeIR.getValue(), null);
+        builder.addBooleanProperty(this.getName() + "/Algae/AutoRunning", () -> AUTORunning, null);
   
     }
 }
