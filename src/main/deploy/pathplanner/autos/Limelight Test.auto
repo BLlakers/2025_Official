@@ -5,9 +5,15 @@
     "data": {
       "commands": [
         {
+          "type": "named",
+          "data": {
+            "name": "Limelight"
+          }
+        },
+        {
           "type": "path",
           "data": {
-            "pathName": "Arc"
+            "pathName": "MidToFront"
           }
         }
       ]

@@ -128,6 +128,8 @@ Command algaeGroundCommand = Commands.race(new AlgaePID(mAlgaeMechanism, AlgaeMe
     configureBindings();
    NamedCommands.registerCommand("Limelight",LimelightCodeFrontLeft);
     NamedCommands.registerCommand("ElevatorL2",elevatorPIDL2);
+    NamedCommands.registerCommand("IntakeCoral", mCoralMechanism.CoralIntakeAutoCmd());
+    NamedCommands.registerCommand("ResetOdom", m_DriveTrain.resetPose2d());
     NamedCommands.registerCommand("ElevatorL4",new ElevatorPID(mElevatorMechanism,ElevatorMechanism.L4).withTimeout(.5));
     NamedCommands.registerCommand("ElevatorBottom",new ElevatorPID(mElevatorMechanism,ElevatorMechanism.Down));
     NamedCommands.registerCommand("ElevatorUp",mElevatorMechanism.ElevatorUpCmd());

@@ -5,27 +5,21 @@
     "data": {
       "commands": [
         {
-          "type": "path",
+          "type": "named",
           "data": {
-            "pathName": "Straight"
-          }
-        },
-        {
-          "type": "wait",
-          "data": {
-            "waitTime": 0.25
+            "name": "IntakeCoral"
           }
         },
         {
           "type": "path",
           "data": {
-            "pathName": "StraightBack"
+            "pathName": "MidToFront"
           }
         }
       ]
     }
   },
-  "resetOdom": true,
+  "resetOdom": false,
   "folder": null,
   "choreoAuto": false
 }
