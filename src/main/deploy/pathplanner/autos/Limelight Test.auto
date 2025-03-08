@@ -15,6 +15,12 @@
           "data": {
             "pathName": "MidToFront"
           }
+        },
+        {
+          "type": "named",
+          "data": {
+            "name": "Limelight"
+          }
         }
       ]
     }
