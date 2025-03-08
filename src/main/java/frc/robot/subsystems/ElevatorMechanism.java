@@ -36,7 +36,7 @@ public class ElevatorMechanism extends SubsystemBase{
    public static double AlgaeGround = -6.2;
    public static double AlgaeL3 = -10.2;
    public static double L3 = -13;
-   public static double AlgaeL4 = -17;
+   public static double AlgaeL4 = -17.6;
    public static double L4 = -24.5;
    public static boolean IsMoving;
    public static double ElevatorGearRatio = 375;
