@@ -64,7 +64,7 @@ public class CoralMechanism extends SubsystemBase{
     }
 
     public boolean IsCoralLoaded(){
-        return (IrReadingf() > 1400 && IrReadingb() > 1400);
+        return (IrReadingf() > 1400 && IrReadingb() > 1600);
     }
 
     public void periodic(){

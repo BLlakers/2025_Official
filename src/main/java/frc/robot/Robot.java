@@ -32,6 +32,7 @@ public class Robot extends TimedRobot {
     // commit
     @Override
     public void robotInit() {
+        // AlgaeMechanism.AUTORunning = true;
         m_robotContainer = new RobotContainer();
         m_robotContainer.m_DriveTrain.ZeroGyro().schedule();
         m_robotContainer.mLedStrand.changeLed(128, 0, 0);
@@ -56,6 +57,7 @@ public class Robot extends TimedRobot {
 
     @Override
     public void disabledInit() {
+        // AlgaeMechanism.AUTORunning = true;
     }
 
     @Override

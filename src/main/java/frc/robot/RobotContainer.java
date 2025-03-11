@@ -208,7 +208,7 @@ Command algaeGroundCommand = Commands.race(new AlgaePID(mAlgaeMechanism, AlgaeMe
     
     // Driver Controller commands
     // - DriveTrain commands (outside of actual driving)
-    driverController.a().onTrue(m_DriveTrain.toggleFieldRelativeEnable());
+    // driverController.a().onTrue(m_DriveTrain.toggleFieldRelativeEnable());
     driverController.b().onTrue(m_DriveTrain.ZeroGyro());
     driverController.start().onTrue(m_DriveTrain.resetPose2d()); // RESETING OUR POSE 2d/ odometry
     driverController.rightStick().onTrue(m_DriveTrain.WheelLockCommand()); // lock wheels

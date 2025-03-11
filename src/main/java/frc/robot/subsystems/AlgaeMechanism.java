@@ -42,7 +42,7 @@ public class AlgaeMechanism extends SubsystemBase{
     public static double posDownreg = 9; 
     public double algaePosition;
 AnalogInput AlgaeIR = new AnalogInput(2);
-public static double IRVALUE = 2000;
+    private static final double IRVALUE = 2400;
     public static double GEAR_RATIO = 75;
     double algaePositionConversionFactor =
     360 / AlgaeMechanism.GEAR_RATIO; // revolutions -> radians
@@ -78,7 +78,8 @@ public static double IRVALUE = 2000;
         m_AlgaeMotor.set(-.1);
     }
     public boolean IntakeFowardIR(){
-        if (AlgaeIR.getValue() > IRVALUE){
+        if (AlgaeIR.getValue() >= IRVALUE){
+            System.out.println("TRUE: " + AlgaeIR.getValue() + ">= " + IRVALUE);
             return true;
         }
         else {
