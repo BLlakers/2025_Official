@@ -8,24 +8,24 @@
       },
       "prevControl": null,
       "nextControl": {
-        "x": 2.8770491803278686,
-        "y": 2.076997950819672
+        "x": 3.1492481612683325,
+        "y": 2.036003927065993
       },
       "isLocked": false,
-      "linkedName": null
+      "linkedName": "Loader2ActualStartingPose"
     },
     {
       "anchor": {
-        "x": 3.536372950819672,
-        "y": 2.3766905737704915
+        "x": 3.16875,
+        "y": 2.0554999999999994
       },
       "prevControl": {
-        "x": 2.4814549180327865,
-        "y": 1.6334528688524594
+        "x": 1.17975,
+        "y": 1.1
       },
       "nextControl": null,
       "isLocked": false,
-      "linkedName": null
+      "linkedName": "LimelightSect4Actual"
     }
   ],
   "rotationTargets": [],
@@ -48,7 +48,7 @@
   "folder": null,
   "idealStartingState": {
     "velocity": 0,
-    "rotation": 55.0
+    "rotation": 53.0
   },
   "useDefaultConstraints": false
 }

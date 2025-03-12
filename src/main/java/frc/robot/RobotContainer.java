@@ -46,8 +46,8 @@ public class RobotContainer {
   ElevatorPID elevatorPIDAlgae3v2 = new ElevatorPID(mElevatorMechanism,  ElevatorMechanism.AlgaeL3);
   ElevatorPID elevatorPIDAlgae4 = new ElevatorPID(mElevatorMechanism,  ElevatorMechanism.AlgaeL4);
   Servo mServo = new Servo();
-  AprilAlignCommand LimelightCodeFrontLeft = new AprilAlignCommand(() -> m_LimelightFrl.getCurrentAprilTag(), () ->  m_LimelightFrl.getAprilRotation2d(), m_DriveTrain, new Transform2d(.21,0.00, new Rotation2d(.15)), false, true, mLedStrand);
-  AprilAlignCommand LimelightCodeFrontRight = new AprilAlignCommand(() -> m_LimelightFrr.getCurrentAprilTag(), () ->  m_LimelightFrr.getAprilRotation2d(), m_DriveTrain, new Transform2d(.19,0.00, new Rotation2d(-0.15)), false, false, mLedStrand);
+  AprilAlignCommand LimelightCodeFrontLeft = new AprilAlignCommand(() -> m_LimelightFrl.getCurrentAprilTag(), () ->  m_LimelightFrl.getAprilRotation2d(), m_DriveTrain, new Transform2d(.05,0.00, new Rotation2d(.15)), false, true, mLedStrand);
+  AprilAlignCommand LimelightCodeFrontRight = new AprilAlignCommand(() -> m_LimelightFrr.getCurrentAprilTag(), () ->  m_LimelightFrr.getAprilRotation2d(), m_DriveTrain, new Transform2d(.05,0.00, new Rotation2d(-0.15)), false, false, mLedStrand);
   AprilAlignCommand LimelightCodeBack = new AprilAlignCommand(() -> m_LimelightBack.getCurrentAprilTag(), () ->  m_LimelightBack.getAprilRotation2d(), m_DriveTrain, new Transform2d(-.52,-0.05, new Rotation2d()), true, false, mLedStrand);
   AlgaePID algaePIDDown = new AlgaePID(mAlgaeMechanism, AlgaeMechanism.PosDown);
   AlgaePID algaePIDDown2 = new AlgaePID(mAlgaeMechanism, AlgaeMechanism.PosDown);
