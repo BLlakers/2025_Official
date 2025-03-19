@@ -31,13 +31,13 @@ enum elevatorState {
 public class ElevatorMechanism extends SubsystemBase{
    public double m_elevatorSpeed;
    public static double Down = 0;
-   public static double Troph = -2.5;
-   public static double L2 = -5.8;
-   public static double AlgaeGround = -6.2;
-   public static double AlgaeL3 = -10.2;
-   public static double L3 = -13;
-   public static double AlgaeL4 = -17.6;
-   public static double L4 = -24.5;
+   public static double Troph = 2.5;
+   public static double L2 = 5.8;
+   public static double AlgaeGround = 6.2;
+   public static double AlgaeL3 = 10.2;
+   public static double L3 = 13;
+   public static double AlgaeL4 = 17.6;
+   public static double L4 = 24.5;
    public static boolean IsMoving;
    public static double ElevatorGearRatio = 375;
    private double marginOfError = 1;
@@ -78,7 +78,7 @@ public class ElevatorMechanism extends SubsystemBase{
            
     public void ElevatorMotorUp() {
         if(!m_ElevatorLimitSwitchTop.get()){
-            m_ElevatorMotor.set(.95);
+            m_ElevatorMotor.set(-.25);
         }else {
             m_ElevatorMotor.set(0);
         }
@@ -93,7 +93,7 @@ public class ElevatorMechanism extends SubsystemBase{
     }
 
     public void ElevatorMotorDown() {
-            m_ElevatorMotor.set(-.95);
+            m_ElevatorMotor.set(.25);
         }
     public boolean ElevatorLimitSwitchTop(){
         return m_ElevatorLimitSwitchTop.get();
@@ -232,11 +232,11 @@ public void pid(double position){
       m_elevatorSpeed = 0;
     }
     
-    if (ElevatorLimitSwitchTop() && m_elevatorSpeed < 0) {
+    if (ElevatorLimitSwitchTop() && m_elevatorSpeed > 0) {
       m_elevatorSpeed = 0;
     }
 
-    if (ElevatorLimitSwitchBottom() && m_elevatorSpeed > 0) {
+    if (ElevatorLimitSwitchBottom() && m_elevatorSpeed < 0) {
         m_elevatorSpeed = 0;
       }
     

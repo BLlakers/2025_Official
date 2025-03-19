@@ -242,8 +242,8 @@ Command algaeGroundCommand = Commands.race(new AlgaePID(mAlgaeMechanism, AlgaeMe
     manipController.povDown().whileTrue(mClimbMechanism.WindDownCmd());
     mServo.setDefaultCommand(mServo.ServoForwardCommand());
 
-  //  //debugController.rightBumper().whileTrue(mElevatorMechanism.ElevatorDownLimitCmd());
-  //  //debugController.leftBumper().whileTrue(mElevatorMechanism.ElevatorUpLimitCmd());
+   debugController.rightBumper().whileTrue(mElevatorMechanism.ElevatorDownLimitCmd());
+   debugController.leftBumper().whileTrue(mElevatorMechanism.ElevatorUpLimitCmd());
     // debugController.povLeft().whileTrue(m_AlgaeIntake.IntakeForwardCmd());
     // debugController.povRight().whileTrue(mAlgaeMechanism.AlgaeBackwardCmd());
   //   debugController.povUp().whileTrue(mAlgaeMechanism.AlgaeIntakeGet().IntakeBackwardCmd());
