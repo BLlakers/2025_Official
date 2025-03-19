@@ -46,9 +46,9 @@ public class RobotContainer {
   ElevatorPID elevatorPIDAlgae3v2 = new ElevatorPID(mElevatorMechanism,  ElevatorMechanism.AlgaeL3);
   ElevatorPID elevatorPIDAlgae4 = new ElevatorPID(mElevatorMechanism,  ElevatorMechanism.AlgaeL4);
   Servo mServo = new Servo();
-  AprilAlignCommand LimelightCodeFrontLeft = new AprilAlignCommand(() -> m_LimelightFrl.getCurrentAprilTag(), () ->  m_LimelightFrl.getAprilRotation2d(), m_DriveTrain, new Transform2d(.05,0.00, new Rotation2d(.15)), false, true, mLedStrand);
-  AprilAlignCommand LimelightCodeFrontRight = new AprilAlignCommand(() -> m_LimelightFrr.getCurrentAprilTag(), () ->  m_LimelightFrr.getAprilRotation2d(), m_DriveTrain, new Transform2d(.05,0.00, new Rotation2d(-0.15)), false, false, mLedStrand);
-  AprilAlignCommand LimelightCodeBack = new AprilAlignCommand(() -> m_LimelightBack.getCurrentAprilTag(), () ->  m_LimelightBack.getAprilRotation2d(), m_DriveTrain, new Transform2d(-.52,-0.05, new Rotation2d()), true, false, mLedStrand);
+  AprilAlignCommand LimelightCodeFrontLeft = new AprilAlignCommand(() -> m_LimelightFrl.getCurrentAprilTag(), () ->  m_LimelightFrl.getAprilRotation2d(), m_DriveTrain, new Transform2d(.22,0.00, new Rotation2d(.15)), false, true, mLedStrand);
+  AprilAlignCommand LimelightCodeFrontRight = new AprilAlignCommand(() -> m_LimelightFrr.getCurrentAprilTag(), () ->  m_LimelightFrr.getAprilRotation2d(), m_DriveTrain, new Transform2d(.15,0.00, new Rotation2d(-0.15)), false, false, mLedStrand);
+  AprilAlignCommand LimelightCodeBack = new AprilAlignCommand(() -> m_LimelightBack.getCurrentAprilTag(), () ->  m_LimelightBack.getAprilRotation2d(), m_DriveTrain, new Transform2d(-.265,-0.05, new Rotation2d()), true, false, mLedStrand);
   AlgaePID algaePIDDown = new AlgaePID(mAlgaeMechanism, AlgaeMechanism.PosDown);
   AlgaePID algaePIDDown2 = new AlgaePID(mAlgaeMechanism, AlgaeMechanism.PosDown);
   AlgaePID algaePIDMiddle = new AlgaePID(mAlgaeMechanism, AlgaeMechanism.PosMiddle);
@@ -72,7 +72,6 @@ Command algaeDownAndRunA4 = Commands.race(new AlgaePID(mAlgaeMechanism, AlgaeMec
 Command algaeUpAndStop = Commands.race(new AlgaePID(mAlgaeMechanism, AlgaeMechanism.PosUp), m_AlgaeIntake.IntakeStopCmd()); 
 Command algaeMiddleAndStop = Commands.race(new AlgaePID(mAlgaeMechanism, AlgaeMechanism.PosMiddle), m_AlgaeIntake.IntakeStopCmd());
 Command algaeGroundCommand = Commands.race(new AlgaePID(mAlgaeMechanism, AlgaeMechanism.PosGround), m_AlgaeIntake.IntakeBackwardOnceCmd(), new ElevatorPID(mElevatorMechanism, ElevatorMechanism.L2));
-
 // Command algaeDownAndRun = Commands.deadline(algaePIDDown2, m_AlgaeIntake.IntakeForwardOnceCmd()); 
 // Command algaeUpAndStopADown = Commands.parallel(algaePIDUp2, m_AlgaeIntake.IntakeStopCmd(), elevatorPIDDown); 
 
@@ -115,6 +114,7 @@ Command algaeGroundCommand = Commands.race(new AlgaePID(mAlgaeMechanism, AlgaeMe
   private final Field2d field;
   // Trying to get feedback from auto
   List<Pose2d> currentPath = new ArrayList<Pose2d>();
+Command ResetPoseAuto = Commands.runOnce(()-> m_DriveTrain.resetPose(currentPath.get(0)), m_DriveTrain);
 
   public RobotContainer() {
    mElevatorMechanism.setName("ElevatorMechanism");
@@ -127,6 +127,9 @@ Command algaeGroundCommand = Commands.race(new AlgaePID(mAlgaeMechanism, AlgaeMe
     configureShuffleboard();
     configureBindings();
    NamedCommands.registerCommand("Limelight",LimelightCodeFrontLeft);
+   NamedCommands.registerCommand("LimelightBack",LimelightCodeBack);
+   NamedCommands.registerCommand("SETPOSEfrl", ResetPoseAuto);
+   NamedCommands.registerCommand("PathRESETODM", AutoBuilder.resetOdom(new Pose2d(5.002, 2.806,new Rotation2d(90))));
     NamedCommands.registerCommand("ElevatorL2",elevatorPIDL2);
     NamedCommands.registerCommand("IntakeCoral", mCoralMechanism.CoralIntakeAutoCmd());
     NamedCommands.registerCommand("ResetOdom", m_DriveTrain.resetPose2d());
@@ -136,7 +139,7 @@ Command algaeGroundCommand = Commands.race(new AlgaePID(mAlgaeMechanism, AlgaeMe
     NamedCommands.registerCommand("ShootCoral",mCoralMechanism.CoralForwardCmd().withTimeout(1));
     NamedCommands.registerCommand("ToggleFieldRelativel", m_DriveTrain.toggleFieldRelativeEnable());
     // Build an auto chooser. This will use Commands.none() as the default option.
-
+    
     autoChooser = AutoBuilder.buildAutoChooser();
 
     // Another option that allows you to specify the default auto by its name:
@@ -147,7 +150,7 @@ Command algaeGroundCommand = Commands.race(new AlgaePID(mAlgaeMechanism, AlgaeMe
     field = new Field2d();
 
     SmartDashboard.putData("Field", field);
-
+    SmartDashboard.putData("AUTOPOSITION", (s)-> AutoBuilder.getCurrentPose());
    
     // Logging callback for current robot pose
     PathPlannerLogging.setLogCurrentPoseCallback(
@@ -208,7 +211,7 @@ Command algaeGroundCommand = Commands.race(new AlgaePID(mAlgaeMechanism, AlgaeMe
     
     // Driver Controller commands
     // - DriveTrain commands (outside of actual driving)
-    // driverController.a().onTrue(m_DriveTrain.toggleFieldRelativeEnable());
+    driverController.a().whileTrue(LimelightCodeBack);
     driverController.b().onTrue(m_DriveTrain.ZeroGyro());
     driverController.start().onTrue(m_DriveTrain.resetPose2d()); // RESETING OUR POSE 2d/ odometry
     driverController.rightStick().onTrue(m_DriveTrain.WheelLockCommand()); // lock wheels

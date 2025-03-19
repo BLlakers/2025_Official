@@ -3,25 +3,25 @@
   "waypoints": [
     {
       "anchor": {
-        "x": 1.163,
-        "y": 1.106
+        "x": 1.5405000000000002,
+        "y": 0.8367499999999995
       },
       "prevControl": null,
       "nextControl": {
-        "x": 3.1492481612683325,
-        "y": 2.036003927065993
+        "x": 3.159,
+        "y": 1.7825
       },
       "isLocked": false,
-      "linkedName": "Loader2ActualStartingPose"
+      "linkedName": "LimelightSect4"
     },
     {
       "anchor": {
-        "x": 3.16875,
-        "y": 2.0554999999999994
+        "x": 3.24675,
+        "y": 1.9579999999999995
       },
       "prevControl": {
-        "x": 1.17975,
-        "y": 1.1
+        "x": 2.66175,
+        "y": 1.4314999999999996
       },
       "nextControl": null,
       "isLocked": false,

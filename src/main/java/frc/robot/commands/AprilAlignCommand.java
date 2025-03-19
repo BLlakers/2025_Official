@@ -17,19 +17,19 @@ import frc.robot.support.limelight.LimelightHelpers;
 
 public class AprilAlignCommand extends Command{
   private static final TrapezoidProfile.Constraints X_CONSTRAINTS =
-      new TrapezoidProfile.Constraints(.5, 1);
+      new TrapezoidProfile.Constraints(.5, .5);
   private static final TrapezoidProfile.Constraints Y_CONSTRAINTS =
-      new TrapezoidProfile.Constraints(.5, 1);
+      new TrapezoidProfile.Constraints(.5, .5);
   private static final TrapezoidProfile.Constraints OMEGA_CONSTRAINTS =
-      new TrapezoidProfile.Constraints(Units.degreesToRadians(360), Units.degreesToRadians(540));
+      new TrapezoidProfile.Constraints(Units.degreesToRadians(400), Units.degreesToRadians(360));
 
   private final ProfiledPIDController m_xController =
       new ProfiledPIDController(1.25, 0, 0.0, X_CONSTRAINTS);
   private final ProfiledPIDController m_yController =
-      new ProfiledPIDController(1.65, 0, 0.0, Y_CONSTRAINTS);
+      new ProfiledPIDController(1.45, 0, 0.0, Y_CONSTRAINTS);
   private final ProfiledPIDController m_omegaController =
       new ProfiledPIDController(7, 0, 0.0, OMEGA_CONSTRAINTS);
-      
+  private final ProfiledPIDController Back_xController = new ProfiledPIDController(1.4, 0, 0.0, X_CONSTRAINTS);
   private DriveTrain m_drivetrain;
   private Supplier<AprilTag> m_aprilTagProvider;
 
@@ -57,8 +57,9 @@ public class AprilAlignCommand extends Command{
     m_goalRot =goalTransformRelativeToAprilTag.getRotation().getRadians();
 
 
-    m_xController.setTolerance(0.085);
-    m_yController.setTolerance(0.1);
+    m_xController.setTolerance(0.125);
+    Back_xController.setTolerance(.03 );
+    m_yController.setTolerance(0.05);
     m_omegaController.setTolerance(Units.degreesToRadians(3));
     m_omegaController.enableContinuousInput(-Math.PI, Math.PI);
     addRequirements(drivetrainSubsystem);
@@ -81,16 +82,26 @@ public class AprilAlignCommand extends Command{
       m_drivetrain.stopModules();
       return;
     }
-
-    m_xController.setGoal(m_goalX); 
+    
     m_yController.setGoal(m_goalY);
     m_omegaController.setGoal(m_goalRot);
 
 
-    double xSpeed = m_xController.calculate(aprilTag.pose.getY());
+    double xSpeed = 0; 
+    if (m_isBackwards){
+      Back_xController.setGoal(m_goalX);
+    if (Back_xController.atGoal()) {
+      xSpeed = 0;
+    }
+    xSpeed = Back_xController.calculate(aprilTag.pose.getY());
+  } else if (!m_isBackwards){
+    m_xController.setGoal(m_goalX); 
     if (m_xController.atGoal()) {
       xSpeed = 0;
     }
+    xSpeed = m_xController.calculate(aprilTag.pose.getY());
+ 
+  }
     double ySpeed = m_yController.calculate(m_aprilRotation.get().getRadians());
     if (m_yController.atGoal()) {
       ySpeed = 0;
@@ -131,13 +142,16 @@ public class AprilAlignCommand extends Command{
     SmartDashboard.putNumber(m_drivetrain.getName() + "/AprilAlignCommandV2/Command/NEWMeasurementXController", aprilTag.pose.getY());
     SmartDashboard.putNumber(m_drivetrain.getName() + "/AprilAlignCommandV2/Command/NEWMeasurementOmegaControllerFRR", Math.toRadians(LimelightHelpers.getTX("limelight-frr")));
     SmartDashboard.putNumber(m_drivetrain.getName() + "/AprilAlignCommandV2/Command/NEWMeasurementOmegaControllerFrl", Math.toRadians(LimelightHelpers.getTX("limelight-frl")));
+    SmartDashboard.putNumber(m_drivetrain.getName() + "/AprilAlignCommandV2/Command/NEWMeasurementOmegaControllerBack", Math.toRadians(LimelightHelpers.getTX("limelight-back")));
     SmartDashboard.putNumber(m_drivetrain.getName() + "/AprilAlignCommandV2/Command/NEWMeasurementYController", m_aprilRotation.get().getRadians());
     SmartDashboard.putBoolean(m_drivetrain.getName() + "/AprilAlignCommandV2/Command/NEWAtGoalXController", m_xController.atGoal());
+    SmartDashboard.putBoolean(m_drivetrain.getName() + "/AprilAlignCommandV2/Command/NEWAtGoalXControllerBACK", Back_xController.atGoal());
     SmartDashboard.putBoolean(m_drivetrain.getName() + "/AprilAlignCommandV2/Command/NEWAtGoalOmegaController", m_omegaController.atGoal());
     SmartDashboard.putBoolean(m_drivetrain.getName() + "/AprilAlignCommandV2/Command/NEWAtGoalYController",  m_yController.atGoal());
     SmartDashboard.putBoolean(m_drivetrain.getName() + "/AprilAlignCommandV2/Command/NEWFullyAtGoal",  isFinished());
 
     SmartDashboard.putNumber(m_drivetrain.getName() + "/AprilAlignCommandV2/Command/GoalX", m_xController.getGoal().position);
+    SmartDashboard.putNumber(m_drivetrain.getName() + "/AprilAlignCommandV2/Command/GoalXBACK", Back_xController.getGoal().position);
     SmartDashboard.putNumber(m_drivetrain.getName() + "/AprilAlignCommandV2/Command/GoalY", m_yController.getGoal().position);
     SmartDashboard.putNumber(m_drivetrain.getName() + "/AprilAlignCommandV2/Command/GoalSkew", m_omegaController.getGoal().position);
 
@@ -156,6 +170,10 @@ public class AprilAlignCommand extends Command{
 
   @Override
   public boolean isFinished() {
-    return m_omegaController.atGoal() && m_xController.atGoal() && m_yController.atGoal();
+    if (m_isBackwards){
+    return m_omegaController.atGoal() && Back_xController.atGoal() && m_yController.atGoal();
+  } else {
+     return m_omegaController.atGoal() && m_xController.atGoal() && m_yController.atGoal();
   }
+}
 }

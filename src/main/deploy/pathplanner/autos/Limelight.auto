@@ -53,11 +53,17 @@
           "data": {
             "name": "ElevatorBottom"
           }
+        },
+        {
+          "type": "path",
+          "data": {
+            "pathName": "StraightBack"
+          }
         }
       ]
     }
   },
-  "resetOdom": false,
+  "resetOdom": true,
   "folder": null,
   "choreoAuto": false
 }

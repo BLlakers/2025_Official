@@ -22,14 +22,14 @@ public class CoralMechanism extends SubsystemBase{
     }
 
     public void CoralForward() {
-        m_coralMotor1.set(ControlMode.PercentOutput, .55);
-        m_coralMotor2.set(ControlMode.PercentOutput, -.55);
+        m_coralMotor1.set(ControlMode.PercentOutput, .60);
+        m_coralMotor2.set(ControlMode.PercentOutput, -.60);
     }
 
 
     public void CoralBackward() {
-        m_coralMotor1.set(ControlMode.PercentOutput, -.55);
-        m_coralMotor2.set(ControlMode.PercentOutput, .55);
+        m_coralMotor1.set(ControlMode.PercentOutput, -.60);
+        m_coralMotor2.set(ControlMode.PercentOutput, .60);
     }
     
     public void CoralStop() {
@@ -64,7 +64,7 @@ public class CoralMechanism extends SubsystemBase{
     }
 
     public boolean IsCoralLoaded(){
-        return (IrReadingf() > 1400 && IrReadingb() > 1600);
+        return (IrReadingf() > 2000 && IrReadingb() > 1500);
     }
 
     public void periodic(){
