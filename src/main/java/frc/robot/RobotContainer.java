@@ -205,7 +205,7 @@ Command ResetPoseAuto = Commands.runOnce(()-> m_DriveTrain.resetPose(currentPath
             () -> driverController.getRightTriggerAxis(),
             () -> mElevatorMechanism.getElevatorDecelerateRatio(),
             m_DriveTrain,
-            () -> driverController.getLeftTriggerAxis() >= 0.5, "Ben"));
+            () -> driverController.getLeftTriggerAxis() >= 0.5, "Asa"));
 
     
     

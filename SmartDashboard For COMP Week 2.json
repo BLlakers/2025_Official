@@ -553,58 +553,6 @@
         "vgap": 16.0,
         "titleType": 0,
         "tiles": {
-          "9,0": {
-            "size": [
-              4,
-              4
-            ],
-            "content": {
-              "_type": "Network Table Tree",
-              "_source0": "network_table:///SmartDashboard/DriveTrain/AprilAlignCommand/Command/botToGoalPose",
-              "_title": "/SmartDashboard/DriveTrain/AprilAlignCommand/Command/botToGoalPose",
-              "_glyph": 148,
-              "_showGlyph": false
-            }
-          },
-          "13,0": {
-            "size": [
-              4,
-              4
-            ],
-            "content": {
-              "_type": "Network Table Tree",
-              "_source0": "network_table:///SmartDashboard/DriveTrain/AprilAlignCommand/Command/botToTag2d",
-              "_title": "/SmartDashboard/DriveTrain/AprilAlignCommand/Command/botToTag2d",
-              "_glyph": 148,
-              "_showGlyph": false
-            }
-          },
-          "9,4": {
-            "size": [
-              4,
-              4
-            ],
-            "content": {
-              "_type": "Network Table Tree",
-              "_source0": "network_table:///SmartDashboard/DriveTrain/AprilAlignCommand/Command/goalPose",
-              "_title": "/SmartDashboard/DriveTrain/AprilAlignCommand/Command/goalPose",
-              "_glyph": 148,
-              "_showGlyph": false
-            }
-          },
-          "13,4": {
-            "size": [
-              4,
-              4
-            ],
-            "content": {
-              "_type": "Network Table Tree",
-              "_source0": "network_table:///SmartDashboard/DriveTrain/AprilAlignCommand/Command/robotPose",
-              "_title": "/SmartDashboard/DriveTrain/AprilAlignCommand/Command/robotPose",
-              "_glyph": 148,
-              "_showGlyph": false
-            }
-          },
           "5,0": {
             "size": [
               4,
@@ -636,54 +584,15 @@
               }
             }
           },
-          "17,2": {
+          "9,0": {
             "size": [
-              2,
-              1
-            ],
-            "content": {
-              "_type": "Text View",
-              "_source0": "network_table:///SmartDashboard/DriveTrain/AprilAlignCommand/Command/VelY",
-              "_title": "/SmartDashboard/DriveTrain/AprilAlignCommand/Command/VelY",
-              "_glyph": 148,
-              "_showGlyph": false
-            }
-          },
-          "17,1": {
-            "size": [
-              2,
-              1
-            ],
-            "content": {
-              "_type": "Text View",
-              "_source0": "network_table:///SmartDashboard/DriveTrain/AprilAlignCommand/Command/VelX",
-              "_title": "/SmartDashboard/DriveTrain/AprilAlignCommand/Command/VelX",
-              "_glyph": 148,
-              "_showGlyph": false
-            }
-          },
-          "17,0": {
-            "size": [
-              2,
-              1
-            ],
-            "content": {
-              "_type": "Text View",
-              "_source0": "network_table:///SmartDashboard/DriveTrain/AprilAlignCommand/Command/VelRot",
-              "_title": "/SmartDashboard/DriveTrain/AprilAlignCommand/Command/VelRot",
-              "_glyph": 148,
-              "_showGlyph": false
-            }
-          },
-          "17,3": {
-            "size": [
-              2,
-              4
+              8,
+              8
             ],
             "content": {
               "_type": "Network Table Tree",
-              "_source0": "network_table:///SmartDashboard/DriveTrain/AprilAlignCommand/Command/TbotToTag2d",
-              "_title": "/SmartDashboard/DriveTrain/AprilAlignCommand/Command/TbotToTag2d",
+              "_source0": "network_table:///SmartDashboard/DriveTrain/AprilAlignCommandV2",
+              "_title": "SmartDashboard/DriveTrain/AprilAlignCommandV2",
               "_glyph": 148,
               "_showGlyph": false
             }
