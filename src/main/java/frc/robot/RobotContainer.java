@@ -67,7 +67,8 @@ Command runCoralFoward = mCoralMechanism.CoralForwardCmd().onlyWhile(()->!mCoral
 //  Command algaeIntakeBackward = m_AlgaeIntake.IntakeBackwardCmd();
 
 // Compose the commands correctly, ensuring that each use is a new composition
-Command algaeDownAndRunA3 = Commands.race(new AlgaePID(mAlgaeMechanism, AlgaeMechanism.PosDown), m_AlgaeIntake.IntakeForwardOnceCmd(), new ElevatorPID(mElevatorMechanism, ElevatorMechanism.AlgaeL3)); 
+Command algaeDownAndRunA3 = Commands.race(new AlgaePID(mAlgaeMechanism, AlgaeMechanism.PosDown), m_AlgaeIntake.IntakeForwardOnceCmd(), new ElevatorPID(mElevatorMechanism, ElevatorMechanism.AlgaeL3));
+Command algaeDownAndRunL4 = Commands.race(new AlgaePID(mAlgaeMechanism, AlgaeMechanism.PosDown), m_AlgaeIntake.IntakeForwardOnceCmd(), new ElevatorPID(mElevatorMechanism, ElevatorMechanism.L4)); 
 Command algaeDownAndRunA4 = Commands.race(new AlgaePID(mAlgaeMechanism, AlgaeMechanism.PosDown), m_AlgaeIntake.IntakeForwardOnceCmd(), new ElevatorPID(mElevatorMechanism, ElevatorMechanism.AlgaeL4)); 
 Command algaeUpAndStop = Commands.race(new AlgaePID(mAlgaeMechanism, AlgaeMechanism.PosUp), m_AlgaeIntake.IntakeStopCmd()); 
 Command algaeMiddleAndStop = Commands.race(new AlgaePID(mAlgaeMechanism, AlgaeMechanism.PosMiddle), m_AlgaeIntake.IntakeStopCmd());
