@@ -130,7 +130,8 @@ Command ResetPoseAuto = Commands.runOnce(()-> m_DriveTrain.resetPose(currentPath
    NamedCommands.registerCommand("Limelight",LimelightCodeFrontLeft);
    NamedCommands.registerCommand("LimelightBack",LimelightCodeBack);
    NamedCommands.registerCommand("SETPOSEfrl", ResetPoseAuto);
-   NamedCommands.registerCommand("PathRESETODM", AutoBuilder.resetOdom(new Pose2d(5.002, 2.806,new Rotation2d(90))));
+   NamedCommands.registerCommand("PathRESETODMLeft", AutoBuilder.resetOdom(new Pose2d(5.002, 2.806,new Rotation2d(90))));
+   NamedCommands.registerCommand("PathRESETODMRight", AutoBuilder.resetOdom(new Pose2d(5.021, 5.253,new Rotation2d(90))));
     NamedCommands.registerCommand("ElevatorL2",new ElevatorPID(mElevatorMechanism,ElevatorMechanism.L2));
     NamedCommands.registerCommand("ElevatorA3",new ElevatorPID(mElevatorMechanism,ElevatorMechanism.AlgaeL3));
     NamedCommands.registerCommand("IntakeCoral", mCoralMechanism.CoralIntakeAutoCmd());

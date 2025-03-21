@@ -53,12 +53,6 @@
           "data": {
             "name": "ElevatorBottom"
           }
-        },
-        {
-          "type": "path",
-          "data": {
-            "pathName": "StraightBack"
-          }
         }
       ]
     }

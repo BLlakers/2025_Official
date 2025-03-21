@@ -65,13 +65,13 @@
                     {
                       "type": "named",
                       "data": {
-                        "name": "PathRESETODM"
+                        "name": "PathRESETODMLeft"
                       }
                     },
                     {
                       "type": "path",
                       "data": {
-                        "pathName": "BottomToCoral"
+                        "pathName": "BottomToCoralLeft"
                       }
                     }
                   ]

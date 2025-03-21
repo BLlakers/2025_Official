@@ -11,27 +11,21 @@
           }
         },
         {
+          "type": "wait",
+          "data": {
+            "waitTime": 2.0
+          }
+        },
+        {
           "type": "named",
           "data": {
-            "name": "PathRESETODM"
+            "name": "PathRESETODMRight"
           }
         },
         {
           "type": "path",
           "data": {
-            "pathName": "StraightBack"
-          }
-        },
-        {
-          "type": "wait",
-          "data": {
-            "waitTime": 5.0
-          }
-        },
-        {
-          "type": "named",
-          "data": {
-            "name": "LimelightBack"
+            "pathName": "BottomtoCoralRight"
           }
         }
       ]
