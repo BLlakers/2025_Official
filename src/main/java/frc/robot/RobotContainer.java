@@ -131,7 +131,7 @@ Command ResetPoseAuto = Commands.runOnce(()-> m_DriveTrain.resetPose(currentPath
    NamedCommands.registerCommand("LimelightBack",LimelightCodeBack);
    NamedCommands.registerCommand("SETPOSEfrl", ResetPoseAuto);
    NamedCommands.registerCommand("PathRESETODMLeft", AutoBuilder.resetOdom(new Pose2d(5.002, 2.806,new Rotation2d(90))));
-   NamedCommands.registerCommand("PathRESETODMRight", AutoBuilder.resetOdom(new Pose2d(5.021, 5.253,new Rotation2d(90))));
+   NamedCommands.registerCommand("PathRESETODMRight", AutoBuilder.resetOdom(new Pose2d(5.021, 5.253,new Rotation2d(180))));
     NamedCommands.registerCommand("ElevatorL2",new ElevatorPID(mElevatorMechanism,ElevatorMechanism.L2));
     NamedCommands.registerCommand("ElevatorA3",new ElevatorPID(mElevatorMechanism,ElevatorMechanism.AlgaeL3));
     NamedCommands.registerCommand("IntakeCoral", mCoralMechanism.CoralIntakeAutoCmd());
@@ -139,7 +139,7 @@ Command ResetPoseAuto = Commands.runOnce(()-> m_DriveTrain.resetPose(currentPath
     NamedCommands.registerCommand("ElevatorL4",new ElevatorPID(mElevatorMechanism,ElevatorMechanism.L4).onlyWhile(()-> !mElevatorMechanism.ElevatorAtPos()));
     NamedCommands.registerCommand("ElevatorBottom",new ElevatorPID(mElevatorMechanism,ElevatorMechanism.Down));
     NamedCommands.registerCommand("ElevatorUp",mElevatorMechanism.ElevatorUpCmd());
-    NamedCommands.registerCommand("ShootCoral",mCoralMechanism.CoralForwardCmd().withTimeout(.5));
+    NamedCommands.registerCommand("ShootCoral",mCoralMechanism.CoralForwardCmd().withTimeout(.5).onlyWhile(()->mElevatorMechanism.ElevatorAtPos()));
     NamedCommands.registerCommand("ToggleFieldRelativel", m_DriveTrain.toggleFieldRelativeEnable());
     // Build an auto chooser. This will use Commands.none() as the default option.
     
