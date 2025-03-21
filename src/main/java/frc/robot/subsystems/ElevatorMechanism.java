@@ -114,7 +114,7 @@ public class ElevatorMechanism extends SubsystemBase{
     }
 
     public double getElevatorDecelerateRatio(){
-        return 1 - ((getElevatorEncoderPos())/(L4 -elevDecelerateOffset));
+        return 1 - ((getElevatorEncoderPos())/(L4 +elevDecelerateOffset));
     }
 
 
