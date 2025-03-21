@@ -123,7 +123,7 @@ public class ElevatorMechanism extends SubsystemBase{
 
     
     public boolean  ElevatorAtPos(){
-        return getElevatorEncoderPos() > 24.1;
+        return getElevatorEncoderPos() > 23.7;
     }
 
     public Command ElevatorUpLimitCmd() {
