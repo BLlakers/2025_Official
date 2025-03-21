@@ -3,13 +3,13 @@
   "waypoints": [
     {
       "anchor": {
-        "x": 1.6303278688524592,
-        "y": 1.3457479508196706
+        "x": 2.58375,
+        "y": 2.377249999999999
       },
       "prevControl": null,
       "nextControl": {
-        "x": 3.2488278688524588,
-        "y": 2.2914979508196707
+        "x": 3.743595206840823,
+        "y": 2.7749538542677703
       },
       "isLocked": false,
       "linkedName": "LimelightSect4"
@@ -20,8 +20,8 @@
         "y": 1.9579999999999995
       },
       "prevControl": {
-        "x": 2.66175,
-        "y": 1.4314999999999996
+        "x": 2.6247753303422945,
+        "y": 1.751842104408658
       },
       "nextControl": null,
       "isLocked": false,
@@ -33,15 +33,15 @@
   "pointTowardsZones": [],
   "eventMarkers": [],
   "globalConstraints": {
-    "maxVelocity": 2.0,
-    "maxAcceleration": 3.0,
+    "maxVelocity": 3.5,
+    "maxAcceleration": 10.0,
     "maxAngularVelocity": 360.0,
     "maxAngularAcceleration": 540.0,
     "nominalVoltage": 12.0,
     "unlimited": false
   },
   "goalEndState": {
-    "velocity": 0.0,
+    "velocity": 0.25,
     "rotation": 59.99999999999999
   },
   "reversed": false,

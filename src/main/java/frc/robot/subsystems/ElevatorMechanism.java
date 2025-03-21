@@ -39,7 +39,7 @@ public class ElevatorMechanism extends SubsystemBase{
    public static double AlgaeL4 = 17.6;
    public static double L4 = 24.5;
    public static boolean IsMoving;
-   public static double ElevatorGearRatio = 375;
+   public static double ElevatorGearRatio = 275;
    private double marginOfError = 1;
    private double elevatorPositionConversionFactor = 1.6*Math.PI; // 1.6 * Math.PI = Distance per rotation
    private double elevatorVelocityConversionFactor = 1; 
@@ -72,7 +72,7 @@ public class ElevatorMechanism extends SubsystemBase{
             .velocityConversionFactor(elevatorVelocityConversionFactor)
             .countsPerRevolution(8192);
              m_ElevatorMotor.configure(m_ElevatorConfig, ResetMode.kNoResetSafeParameters, PersistMode.kPersistParameters);
-            pid.setTolerance(.1);
+            pid.setTolerance(.16);
              ResetPosition();
              }
            
@@ -107,7 +107,7 @@ public class ElevatorMechanism extends SubsystemBase{
         m_ElevatorMotor.set(0);
     }
     public void ElevatorMove(double d){
-        m_ElevatorMotor.set(-d);
+        m_ElevatorMotor.set(d);
     }
     public double getElevatorEncoderPos(){
         return m_ElevatorMotor.getAlternateEncoder().getPosition();
@@ -123,11 +123,11 @@ public class ElevatorMechanism extends SubsystemBase{
     }
 
     public Command ElevatorUpLimitCmd() {
-        return this.runEnd(this::ElevatorMotorUp, this::ElevatorMotorStop).until(() -> ElevatorLimitSwitchTop());
+        return this.runEnd(this::ElevatorMotorDown, this::ElevatorMotorStop).until(() -> ElevatorLimitSwitchTop());
     }
 
     public Command ElevatorDownLimitCmd() {
-        return this.runEnd(this::ElevatorMotorDown, this::ElevatorMotorStop).until(() -> ElevatorLimitSwitchBottom());
+        return this.runEnd(this::ElevatorMotorUp, this::ElevatorMotorStop).until(() -> ElevatorLimitSwitchBottom());
     }
 
     public Command ElevatorUpCmd() {
