@@ -1,5 +1,6 @@
 package frc.robot.subsystems;
 
+import edu.wpi.first.wpilibj.DriverStation;
 import edu.wpi.first.wpilibj.smartdashboard.SmartDashboard;
 
 import edu.wpi.first.apriltag.AprilTag;
@@ -14,6 +15,7 @@ import edu.wpi.first.networktables.NetworkTableEntry;
 import edu.wpi.first.networktables.NetworkTableInstance;
 import edu.wpi.first.networktables.TimestampedDoubleArray;
 import edu.wpi.first.util.sendable.SendableBuilder;
+import edu.wpi.first.wpilibj2.command.Command;
 import edu.wpi.first.wpilibj2.command.SubsystemBase;
 
 public class Limelight extends SubsystemBase {
@@ -92,6 +94,17 @@ public class Limelight extends SubsystemBase {
     TimestampedDoubleArray poseArray = aprilTagPoseTopic.getAtomic(); // (x, y, z, rotx, roty, rotz)
 
     return new Rotation2d(Math.toRadians(poseArray.value[5]));
+  }
+
+  public Command PriorityIDcmd(int idBlue, int idRed){
+    var alliance = DriverStation.getAlliance();
+    if (alliance.isPresent() && alliance.get() == DriverStation.Alliance.Red) {
+      return this.runOnce(()->this.SetTagIDToTrack(idRed));
+    } else if (alliance.isPresent() && alliance.get() == DriverStation.Alliance.Blue){
+      return this.runOnce(()->this.SetTagIDToTrack(idBlue));
+    }else {
+      return this.runOnce(()->this.SetTagIDToTrack(-1));
+    }
   }
 
   @Override

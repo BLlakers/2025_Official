@@ -129,6 +129,10 @@ Command ResetPoseAuto = Commands.runOnce(()-> m_DriveTrain.resetPose(currentPath
     configureShuffleboard();
     configureBindings();
    NamedCommands.registerCommand("Limelight",LimelightCodeFrontLeft);
+   NamedCommands.registerCommand("LimelightSetFirstLeftPriority", m_LimelightFrl.PriorityIDcmd(22, 9));
+   NamedCommands.registerCommand("LimelightSetSecondLeftPriority", m_LimelightFrl.PriorityIDcmd(17, 8));
+   NamedCommands.registerCommand("LimelightSetFirstRightPriority", m_LimelightFrl.PriorityIDcmd(20, 11));
+   NamedCommands.registerCommand("LimelightSetSecondRightPriority", m_LimelightFrl.PriorityIDcmd(19, 6));
    NamedCommands.registerCommand("LimelightBack",LimelightCodeBack);
    NamedCommands.registerCommand("SETPOSEfrl", ResetPoseAuto);
    NamedCommands.registerCommand("PathRESETODMLeft", AutoBuilder.resetOdom(new Pose2d(5.002, 2.806,new Rotation2d(90))));

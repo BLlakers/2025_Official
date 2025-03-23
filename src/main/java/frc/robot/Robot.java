@@ -35,6 +35,9 @@ public class Robot extends TimedRobot {
         // AlgaeMechanism.AUTORunning = true;
         m_robotContainer = new RobotContainer();
         m_robotContainer.m_DriveTrain.ZeroGyro().schedule();
+        m_robotContainer.m_LimelightBack.SetTagIDToTrack(-1);
+        m_robotContainer.m_LimelightFrl.SetTagIDToTrack(-1);
+        m_robotContainer.m_LimelightFrr.SetTagIDToTrack(-1);
         m_robotContainer.mLedStrand.changeLed(128, 0, 0);
         try {
             var cam = CameraServer.startAutomaticCapture();
@@ -84,6 +87,9 @@ public class Robot extends TimedRobot {
     public void teleopInit() {  
         AlgaeMechanism.AUTORunning = false;
         m_robotContainer.m_DriveTrain.m_FieldRelativeEnable = true;
+        m_robotContainer.m_LimelightBack.SetTagIDToTrack(-1);
+        m_robotContainer.m_LimelightFrl.SetTagIDToTrack(-1);
+        m_robotContainer.m_LimelightFrr.SetTagIDToTrack(-1);
         if (m_autonomousCommand != null) {
             m_autonomousCommand.cancel();
         }

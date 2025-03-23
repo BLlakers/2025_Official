@@ -5,6 +5,12 @@
     "data": {
       "commands": [
         {
+          "type": "named",
+          "data": {
+            "name": "LimelightSetFirstRightPriority"
+          }
+        },
+        {
           "type": "parallel",
           "data": {
             "commands": [
@@ -103,6 +109,12 @@
                 }
               }
             ]
+          }
+        },
+        {
+          "type": "named",
+          "data": {
+            "name": "LimelightSetSecondRightPriority"
           }
         },
         {
