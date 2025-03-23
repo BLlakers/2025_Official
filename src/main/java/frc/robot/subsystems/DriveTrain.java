@@ -19,6 +19,9 @@ import com.pathplanner.lib.controllers.PathFollowingController;
 import com.studica.frc.AHRS;
 import frc.robot.Constants;
 import frc.robot.support.RobotVersion;
+import frc.robot.support.limelight.LimelightHelpers;
+import edu.wpi.first.math.VecBuilder;
+import edu.wpi.first.math.estimator.SwerveDrivePoseEstimator;
 import edu.wpi.first.math.geometry.Pose2d;
 import edu.wpi.first.math.geometry.Rotation2d;
 import edu.wpi.first.wpilibj2.command.Command;
@@ -77,6 +80,9 @@ public class DriveTrain extends SubsystemBase {
       e.printStackTrace();
     }}
   private final SwerveDriveOdometry m_odometry;
+
+  private final SwerveDrivePoseEstimator m_poseEstimator; 
+     
 
   // Constructor
   /**
@@ -160,6 +166,19 @@ public class DriveTrain extends SubsystemBase {
     m_odometry =
         new SwerveDriveOdometry(
             this.m_kinematics, navx.getRotation2d(), getSwerveModulePositions());
+
+    m_poseEstimator =  new SwerveDrivePoseEstimator(
+      m_kinematics,
+      navx.getRotation2d(),
+      new SwerveModulePosition[] {
+        m_frontLeft.getModulePosition(),
+        m_frontRight.getModulePosition(),
+        m_backLeft.getModulePosition(),
+        m_backRight.getModulePosition()
+      },
+      new Pose2d(),
+      VecBuilder.fill(0.05, 0.05, Units.degreesToRadians(5)),
+      VecBuilder.fill(0.5, 0.5, Units.degreesToRadians(30)));
 
     addChild(m_frontLeft.getName(), m_frontLeft);
     addChild(m_frontRight.getName(), m_frontRight);
@@ -247,6 +266,7 @@ public class DriveTrain extends SubsystemBase {
   @Override
   public void periodic() {
     updateOdometry();
+    updatePoseEstimatorOdometry();
     super.periodic();
   }
 
@@ -407,6 +427,69 @@ public class DriveTrain extends SubsystemBase {
   /** Updates our current Odometry */
   public void updateOdometry() {
     m_odometry.update(navx.getRotation2d(), getSwerveModulePositions());
+  }
+
+  public void updatePoseEstimatorOdometry(){
+    m_poseEstimator.update(
+        navx.getRotation2d(),
+        new SwerveModulePosition[] {
+          m_frontLeft.getModulePosition(),
+          m_frontRight.getModulePosition(),
+          m_backLeft.getModulePosition(),
+          m_backRight.getModulePosition()
+        });
+
+
+    boolean useMegaTag2 = true; //set to false to use MegaTag1
+    boolean doRejectUpdate = false;
+    if(useMegaTag2 == false)
+    {
+      LimelightHelpers.PoseEstimate mt1 = LimelightHelpers.getBotPoseEstimate_wpiBlue("limelight-frl");
+      
+      if(mt1.tagCount == 1 && mt1.rawFiducials.length == 1)
+      {
+        if(mt1.rawFiducials[0].ambiguity > .7)
+        {
+          doRejectUpdate = true;
+        }
+        if(mt1.rawFiducials[0].distToCamera > 3)
+        {
+          doRejectUpdate = true;
+        }
+      }
+      if(mt1.tagCount == 0)
+      {
+        doRejectUpdate = true;
+      }
+
+      if(!doRejectUpdate)
+      {
+        m_poseEstimator.setVisionMeasurementStdDevs(VecBuilder.fill(.5,.5,9999999));
+        m_poseEstimator.addVisionMeasurement(
+            mt1.pose,
+            mt1.timestampSeconds);
+      }
+    }
+    else if (useMegaTag2 == true)
+    {
+      LimelightHelpers.SetRobotOrientation("limelight-frl", m_poseEstimator.getEstimatedPosition().getRotation().getDegrees(), 0, 0, 0, 0, 0);
+      LimelightHelpers.PoseEstimate mt2 = LimelightHelpers.getBotPoseEstimate_wpiBlue_MegaTag2("limelight-frl");
+      if(Math.abs(navx.getRate()) > 720) // if our angular velocity is greater than 720 degrees per second, ignore vision updates
+      {
+        doRejectUpdate = true;
+      }
+      if(mt2.tagCount == 0)
+      {
+        doRejectUpdate = true;
+      }
+      if(!doRejectUpdate)
+      {
+        m_poseEstimator.setVisionMeasurementStdDevs(VecBuilder.fill(.7,.7,9999999));
+        m_poseEstimator.addVisionMeasurement(
+            mt2.pose,
+            mt2.timestampSeconds);
+      }
+    }
   }
 
   /** Stops all the motors on the SwerveModules */
