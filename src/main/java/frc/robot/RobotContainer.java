@@ -3,6 +3,7 @@ package frc.robot;
 import edu.wpi.first.wpilibj2.command.Command;
 import edu.wpi.first.wpilibj2.command.CommandScheduler;
 import edu.wpi.first.wpilibj2.command.Commands;
+import edu.wpi.first.wpilibj2.command.WaitUntilCommand;
 
 import java.util.ArrayList;
 import java.util.List;
@@ -141,6 +142,7 @@ Command ResetPoseAuto = Commands.runOnce(()-> m_DriveTrain.resetPose(currentPath
     NamedCommands.registerCommand("ElevatorUp",mElevatorMechanism.ElevatorUpCmd());
     NamedCommands.registerCommand("ShootCoral",mCoralMechanism.CoralForwardCmd().withTimeout(.5));
     NamedCommands.registerCommand("ToggleFieldRelativel", m_DriveTrain.toggleFieldRelativeEnable());
+    NamedCommands.registerCommand("WaitUntilElevatorTop", new WaitUntilCommand(()-> mElevatorMechanism.ElevatorAtPos()));
     // Build an auto chooser. This will use Commands.none() as the default option.
     
     autoChooser = AutoBuilder.buildAutoChooser();
