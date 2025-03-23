@@ -89,7 +89,7 @@ private DoubleSupplier LS;
       return;
     }
 
-    double xSpeed = LS.getAsDouble() *.5;
+    double xSpeed = LS.getAsDouble() *.85;
     double ySpeed = 0;
     double rotSpeed = 0;
     if (m_isBackwards){
