@@ -10,6 +10,8 @@ import edu.wpi.first.util.sendable.SendableBuilder;
 import edu.wpi.first.wpilibj.DriverStation;
 import edu.wpi.first.wpilibj.smartdashboard.SmartDashboard;
 
+import java.util.concurrent.Flow.Publisher;
+
 import com.pathplanner.lib.auto.AutoBuilder;
 import com.pathplanner.lib.config.PIDConstants;
 import com.pathplanner.lib.config.RobotConfig;
@@ -214,7 +216,7 @@ public class DriveTrain extends SubsystemBase {
     Rotation2d robotRotation = new Rotation2d(navx.getRotation2d().getRadians());
 
     // SmartDashboard.putNumber ( "inputRotiation", robotRotation.getDegrees());
-    var swerveModuleStates =
+    SwerveModuleState[] swerveModuleStates =
         m_kinematics.toSwerveModuleStates(
             m_FieldRelativeEnable
                 ? ChassisSpeeds.fromFieldRelativeSpeeds(xSpeed, ySpeed, rot, robotRotation)
@@ -248,6 +250,7 @@ public class DriveTrain extends SubsystemBase {
   public void periodic() {
     updateOdometry();
     super.periodic();
+    publisher.set(swerveModuleStates);
   }
 
   /**
