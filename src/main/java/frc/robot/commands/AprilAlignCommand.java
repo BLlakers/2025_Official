@@ -64,7 +64,7 @@ public class AprilAlignCommand extends Command{
     m_goalRot =goalTransformRelativeToAprilTag.getRotation().getRadians();
 
 
-    Back_xController.setTolerance(.17);
+    Back_xController.setTolerance(.05);
     Back_yController.setTolerance(.1);
     Back_omegaController.setTolerance(Units.degreesToRadians(4));
     Back_omegaController.enableContinuousInput(-Math.PI, Math.PI);
