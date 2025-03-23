@@ -33,7 +33,7 @@ public class AprilAlignCommand extends Command{
       new ProfiledPIDController(1.45, 0, 0.0, Y_CONSTRAINTS);
   private final ProfiledPIDController m_omegaController =
       new ProfiledPIDController(7, 0, 0.0, OMEGA_CONSTRAINTS);
-  private final ProfiledPIDController Back_xController = new ProfiledPIDController(1, 0, 0.0, BACK_XCONSTRAINTS);
+  private final ProfiledPIDController Back_xController = new ProfiledPIDController(1.1, 0, 0.0, BACK_XCONSTRAINTS);
   private final ProfiledPIDController Back_yController = new ProfiledPIDController(.8, 0, 0.0, BACK_YCONSTRAINTS);
   private final ProfiledPIDController Back_omegaController = new ProfiledPIDController(4, 0, 0.0, OMEGA_CONSTRAINTS);
   

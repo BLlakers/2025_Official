@@ -31,6 +31,12 @@
                       }
                     },
                     {
+                      "type": "wait",
+                      "data": {
+                        "waitTime": 2.0
+                      }
+                    },
+                    {
                       "type": "named",
                       "data": {
                         "name": "ShootCoral"
@@ -116,13 +122,19 @@
                     {
                       "type": "wait",
                       "data": {
-                        "waitTime": 1.1
+                        "waitTime": 1.2
                       }
                     },
                     {
                       "type": "named",
                       "data": {
                         "name": "ElevatorL4"
+                      }
+                    },
+                    {
+                      "type": "wait",
+                      "data": {
+                        "waitTime": 2.0
                       }
                     },
                     {

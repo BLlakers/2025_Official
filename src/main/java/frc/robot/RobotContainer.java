@@ -139,7 +139,7 @@ Command ResetPoseAuto = Commands.runOnce(()-> m_DriveTrain.resetPose(currentPath
     NamedCommands.registerCommand("ElevatorL4",new ElevatorPID(mElevatorMechanism,ElevatorMechanism.L4).onlyWhile(()-> !mElevatorMechanism.ElevatorAtPos()));
     NamedCommands.registerCommand("ElevatorBottom",new ElevatorPID(mElevatorMechanism,ElevatorMechanism.Down));
     NamedCommands.registerCommand("ElevatorUp",mElevatorMechanism.ElevatorUpCmd());
-    NamedCommands.registerCommand("ShootCoral",mCoralMechanism.CoralForwardCmd().withTimeout(.5).onlyWhile(()->mElevatorMechanism.ElevatorAtPos()));
+    NamedCommands.registerCommand("ShootCoral",mCoralMechanism.CoralForwardCmd().withTimeout(.5));
     NamedCommands.registerCommand("ToggleFieldRelativel", m_DriveTrain.toggleFieldRelativeEnable());
     // Build an auto chooser. This will use Commands.none() as the default option.
     
