@@ -220,6 +220,10 @@ Command ResetPoseAuto = Commands.runOnce(()-> m_DriveTrain.resetPose(currentPath
     driverController.rightStick().onTrue(m_DriveTrain.WheelLockCommand()); // lock wheels
     driverController.x().whileTrue(LimelightCodeFrontLeft); 
     driverController.y().whileTrue(LimelightCodeFrontRight);
+    driverController.leftBumper().whileTrue(new AprilStrafeCommand(() -> m_LimelightFrl.getCurrentAprilTag(), () ->  m_LimelightFrl.getAprilRotation2d(), m_DriveTrain,new Transform2d(0,0.00, new Rotation2d(.15)), false, true, mLedStrand, ()-> driverController.getLeftY()));
+    driverController.rightBumper().whileTrue(new AprilStrafeCommand(() -> m_LimelightFrr.getCurrentAprilTag(), () ->  m_LimelightFrr.getAprilRotation2d(), m_DriveTrain, new Transform2d(0,0.00, new Rotation2d(-0.15)), false, false, mLedStrand, ()-> driverController.getLeftY()));
+    driverController.start().whileTrue(new AprilStrafeCommand(() -> m_LimelightBack.getCurrentAprilTag(), () ->  m_LimelightBack.getAprilRotation2d(), m_DriveTrain, new Transform2d(.65,0.00, new Rotation2d()), true, false, mLedStrand, ()-> driverController.getLeftY()));
+   
     // driverController.povUp().whileTrue(runCoralFoward);//mCoralMechanism.CoralForwardCmd());
     // driverController.povDown().whileTrue(mCoralMechanism.CoralBackwardCmd());
     // Manipulator Controller commands
@@ -261,6 +265,7 @@ Command ResetPoseAuto = Commands.runOnce(()-> m_DriveTrain.resetPose(currentPath
     debugController.b().onTrue(algaePIDMiddle);
     debugController.x().onTrue(algaePIDDown);
     debugController.y().onTrue(algaePIDGround);
+    
     // debugController.rightBumper().whileTrue(mClimbMechanism.WindForwardCmd());
     // debugController.leftBumper().whileTrue(mClimbMechanism.WindDownCmd());
     debugController.rightStick().onTrue(algaeDownAndRunA4);
