@@ -62,22 +62,39 @@ public class AprilPoseEstimatorCommand extends Command{
   public void execute() {
     m_drivetrain.m_FieldRelativeEnable = false;
     AprilTag aprilTag = m_currentAprilTag.get();
+    Pose2d goalPose = getGoalPose(aprilTag.ID);
+    m_goalX = goalPose.getX();
+    m_goalY = goalPose.getY();
+    m_goalRot = goalPose.getRotation().getRadians();
 
-    if(getGoalPose(aprilTag.ID).getX() == -99999){
+    if(m_goalX == -99999){
       m_drivetrain.stopModules();
       return;
     } 
 
-    if (aprilTag.ID
-        <= 0) { // is valid if > 0: we update our current estimate of where the april tag is
-      // relative to the robot
-      m_drivetrain.stopModules();
-      return;
-    }
-
     double xSpeed = 0; 
     double ySpeed = 0;
     double rotSpeed = 0;
+    Pose2d EstimatedPose = m_currentEstimatedPose.get().getEstimatedPosition();
+    m_yController.setGoal(m_goalY);
+    m_omegaController.setGoal(m_goalRot);
+    m_xController.setGoal(m_goalX); 
+
+    xSpeed = m_xController.calculate(EstimatedPose.getX());
+    if (m_xController.atGoal()) {
+      xSpeed = 0;
+    }
+    
+    ySpeed = m_yController.calculate(EstimatedPose.getY());
+    if (m_yController.atGoal()) {
+      ySpeed = 0;
+    }
+
+    rotSpeed = m_omegaController.calculate(EstimatedPose.getRotation().getRadians());
+    if (m_omegaController.atGoal()) {
+      rotSpeed = 0;
+    }
+
     m_drivetrain.drive(xSpeed, ySpeed, rotSpeed);
 
   }
@@ -98,23 +115,89 @@ public class AprilPoseEstimatorCommand extends Command{
   public Pose2d getGoalPose(int currentAprilTagID){
     Pose2d goalPose2d;
     switch (currentAprilTagID) {
-      case 1:
-        goalPose2d = new Pose2d(0,0, new Rotation2d());
+        case 6:
+        if(m_isLeft){
+          goalPose2d = new Pose2d(13.714,2.868, new Rotation2d(120));
+        } else{
+          goalPose2d = new Pose2d(13.930,3.012, new Rotation2d(120));
+        }
         break;
-      case 2:
-        goalPose2d = new Pose2d(0,0, new Rotation2d());
+      case 7:
+        if(m_isLeft){
+          goalPose2d = new Pose2d(14.373,4.019, new Rotation2d(180));
+        } else{
+          goalPose2d = new Pose2d(14.373,4.199, new Rotation2d(180));
+        }
         break;
-      case 3:
-        goalPose2d = new Pose2d(0,0, new Rotation2d());
+      case 8:
+        if(m_isLeft){
+          goalPose2d = new Pose2d(13.738,5.158, new Rotation2d(-120));
+        } else{
+          goalPose2d = new Pose2d(13.570,5.266, new Rotation2d(-120));
+        }
         break;
-      case 4:
-        goalPose2d = new Pose2d(0,0, new Rotation2d());
+      case 9:
+        if(m_isLeft){
+          goalPose2d = new Pose2d(14.373,5.182, new Rotation2d(-60));
+        } else{
+          goalPose2d = new Pose2d(12.263,5.098, new Rotation2d(-60));
+        }
         break;
-      case 5:
-        goalPose2d = new Pose2d(0,0, new Rotation2d());
+      case 10:
+        if(m_isLeft){
+          goalPose2d = new Pose2d(11.736,4.019, new Rotation2d(0));
+        } else{
+          goalPose2d = new Pose2d(11.736,3.839, new Rotation2d(0));
+        }
         break;
-      case 6:
-        goalPose2d = new Pose2d(0,0, new Rotation2d());
+      case 11:
+        if(m_isLeft){
+          goalPose2d = new Pose2d(12.407,2.904, new Rotation2d(60));
+        } else{
+          goalPose2d = new Pose2d(12.563,2.796, new Rotation2d(60));
+        }
+        break;
+      case 17:
+        if(m_isLeft){
+          goalPose2d = new Pose2d(3.824,2.904, new Rotation2d(60));
+        } else{
+          goalPose2d = new Pose2d(3.992,2.820, new Rotation2d(60));
+        }
+        break;
+      case 18:
+        if(m_isLeft){
+          goalPose2d = new Pose2d(3.165,4.031, new Rotation2d(0));
+        } else{
+          goalPose2d = new Pose2d(3.177,3.815, new Rotation2d(0));
+        }
+        break;
+      case 19:
+        if(m_isLeft){
+          goalPose2d = new Pose2d(3.824,5.170, new Rotation2d(-60));
+        } else{
+          goalPose2d = new Pose2d(3.668,5.086, new Rotation2d(-60));
+        }
+        break;
+      case 20:
+        if(m_isLeft){
+          goalPose2d = new Pose2d(5.155,5.170, new Rotation2d(-60));
+        } else{
+          goalPose2d = new Pose2d(5.023,5.242, new Rotation2d(-60));
+        }
+        break;
+      case 21:
+        if(m_isLeft){
+          goalPose2d = new Pose2d(5.814,4.019, new Rotation2d(180));
+        } else{
+          goalPose2d = new Pose2d(5.814,4.307, new Rotation2d(180));
+        }
+        break;
+      case 22:
+        if(m_isLeft){
+          goalPose2d = new Pose2d(5.119,2.880, new Rotation2d(120));
+        } else{
+          goalPose2d = new Pose2d(5.394,3.024, new Rotation2d(120));
+        }
         break;
       default:
         goalPose2d = new Pose2d(-99999,0, new Rotation2d());
