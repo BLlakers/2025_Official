@@ -3,6 +3,7 @@ package frc.robot;
 import edu.wpi.first.wpilibj2.command.Command;
 import edu.wpi.first.wpilibj2.command.CommandScheduler;
 import edu.wpi.first.wpilibj2.command.Commands;
+import edu.wpi.first.wpilibj2.command.WaitUntilCommand;
 
 import java.util.ArrayList;
 import java.util.List;
@@ -47,7 +48,7 @@ public class RobotContainer {
   ElevatorPID elevatorPIDAlgae4 = new ElevatorPID(mElevatorMechanism,  ElevatorMechanism.AlgaeL4);
   Servo mServo = new Servo();
   AprilAlignCommand LimelightCodeFrontLeft = new AprilAlignCommand(() -> m_LimelightFrl.getCurrentAprilTag(), () ->  m_LimelightFrl.getAprilRotation2d(), m_DriveTrain, new Transform2d(.18,0.00, new Rotation2d(.15)), false, true, mLedStrand);
-  AprilAlignCommand LimelightCodeFrontRight = new AprilAlignCommand(() -> m_LimelightFrr.getCurrentAprilTag(), () ->  m_LimelightFrr.getAprilRotation2d(), m_DriveTrain, new Transform2d(.15,0.00, new Rotation2d(-0.15)), false, false, mLedStrand);
+  AprilAlignCommand LimelightCodeFrontRight = new AprilAlignCommand(() -> m_LimelightFrr.getCurrentAprilTag(), () ->  m_LimelightFrr.getAprilRotation2d(), m_DriveTrain, new Transform2d(.05,0.00, new Rotation2d(-0.15)), false, false, mLedStrand);
   AprilAlignCommand LimelightCodeBack = new AprilAlignCommand(() -> m_LimelightBack.getCurrentAprilTag(), () ->  m_LimelightBack.getAprilRotation2d(), m_DriveTrain, new Transform2d(.65,0.00, new Rotation2d()), true, false, mLedStrand);
   AlgaePID algaePIDDown = new AlgaePID(mAlgaeMechanism, AlgaeMechanism.PosDown);
   AlgaePID algaePIDDown2 = new AlgaePID(mAlgaeMechanism, AlgaeMechanism.PosDown);
@@ -141,6 +142,7 @@ Command ResetPoseAuto = Commands.runOnce(()-> m_DriveTrain.resetPose(currentPath
     NamedCommands.registerCommand("ElevatorUp",mElevatorMechanism.ElevatorUpCmd());
     NamedCommands.registerCommand("ShootCoral",mCoralMechanism.CoralForwardCmd().withTimeout(.5));
     NamedCommands.registerCommand("ToggleFieldRelativel", m_DriveTrain.toggleFieldRelativeEnable());
+    NamedCommands.registerCommand("WaitUntilElevatorTop", new WaitUntilCommand(()-> mElevatorMechanism.ElevatorAtPos()));
     // Build an auto chooser. This will use Commands.none() as the default option.
     
     autoChooser = AutoBuilder.buildAutoChooser();

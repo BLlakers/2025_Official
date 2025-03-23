@@ -31,21 +31,21 @@
                       }
                     },
                     {
-                      "type": "wait",
-                      "data": {
-                        "waitTime": 2.0
-                      }
-                    },
-                    {
                       "type": "named",
                       "data": {
-                        "name": "ShootCoral"
+                        "name": "WaitUntilElevatorTop"
                       }
                     }
                   ]
                 }
               }
             ]
+          }
+        },
+        {
+          "type": "named",
+          "data": {
+            "name": "ShootCoral"
           }
         },
         {
@@ -132,21 +132,21 @@
                       }
                     },
                     {
-                      "type": "wait",
-                      "data": {
-                        "waitTime": 2.0
-                      }
-                    },
-                    {
                       "type": "named",
                       "data": {
-                        "name": "ShootCoral"
+                        "name": "WaitUntilElevatorTop"
                       }
                     }
                   ]
                 }
               }
             ]
+          }
+        },
+        {
+          "type": "named",
+          "data": {
+            "name": "ShootCoral"
           }
         },
         {
