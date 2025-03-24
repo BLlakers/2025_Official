@@ -104,6 +104,10 @@ Field2d field;
   .getStructArrayTopic("CurrentStates", SwerveModuleState.struct).publish();
   StructPublisher<ChassisSpeeds> CurrentSpeedsPublisher = NetworkTableInstance.getDefault()
   .getStructTopic("CurrentSpeed", ChassisSpeeds.struct).publish();
+  StructPublisher<Pose2d> CurrentPosePublisher = NetworkTableInstance.getDefault()
+  .getStructTopic("CurrentPose", Pose2d.struct).publish();
+  StructPublisher<Rotation2d> CurrentRotPublisher = NetworkTableInstance.getDefault()
+  .getStructTopic("CurrentPose", Rotation2d.struct).publish();
 
   public DriveTrain(RobotVersion version) {
     AutoBuilder.configure(
@@ -269,6 +273,8 @@ Field2d field;
     DesiredStatePublisher.set(DesiredStates);
     CurrentStatePublisher.set(getSwerveModuleStates());
     CurrentSpeedsPublisher.set(getChassisSpeeds());
+    CurrentPosePublisher.set(getPose2d());
+    CurrentRotPublisher.set(getPose2d().getRotation());
   }
 
   /**
@@ -380,7 +386,6 @@ Field2d field;
       m_backRight.getModuleState()
     };
   }
-
   /**
    * This is a runnable command.
    * <li>This resets the gyro's position.
