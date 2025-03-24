@@ -12,6 +12,7 @@ import com.revrobotics.spark.SparkMax;
 import com.revrobotics.spark.config.ClosedLoopConfig.FeedbackSensor;
 import com.revrobotics.spark.config.SparkBaseConfig.IdleMode;
 
+import edu.wpi.first.math.controller.ElevatorFeedforward;
 import edu.wpi.first.math.controller.ProfiledPIDController;
 import edu.wpi.first.math.trajectory.TrapezoidProfile;
 import edu.wpi.first.math.util.Units;
@@ -44,6 +45,15 @@ public class ElevatorMechanism extends SubsystemBase{
    public static double L4 = 24.5;
    public static boolean IsMoving;
    public static double ElevatorGearRatio = 275;
+   private static double kDt = 0.02;
+   private static double kMaxVelocity = 1.75;
+   private static double kMaxAcceleration = 0.75;
+   private static double kP = .0007;
+   private static double kI = 0.0;
+   private static double kD = 0.0;
+   private static double kS = 1.1;
+   private static double kG = 1.2;
+   private static double kV = 1.3; 
    private double marginOfError = 1;
    private double elevatorPositionConversionFactor = 1.6*Math.PI; // 1.6 * Math.PI = Distance per rotation
    private double elevatorVelocityConversionFactor = 1; 
@@ -52,9 +62,9 @@ public class ElevatorMechanism extends SubsystemBase{
    private double elevDecelerateOffset = 5.6;
    //public double position;
    public double elevatorPosition;
-   private ProfiledPIDController pid = new ProfiledPIDController(.0007, 0, 0, ELEVATOR_CONSTRAINTS);
+   private ProfiledPIDController pid = new ProfiledPIDController(kP, kI, kD, ELEVATOR_CONSTRAINTS, kDt);
   private static final TrapezoidProfile.Constraints ELEVATOR_CONSTRAINTS = new TrapezoidProfile.Constraints(Units.feetToMeters(140),Units.feetToMeters(125));
-
+  private final ElevatorFeedforward m_feedforward = new ElevatorFeedforward(kS, kG, kV);
 
     //A motor to rotate up and down
    private SparkMax m_ElevatorMotor = new SparkMax(Constants.Port.m_ElevatorMtrC, com.revrobotics.spark.SparkLowLevel.MotorType.kBrushless);
@@ -112,6 +122,10 @@ public class ElevatorMechanism extends SubsystemBase{
     }
     public void ElevatorMove(double d){
         m_ElevatorMotor.set(d);
+    }
+
+    public void ElevatorMoveV(double d){
+        m_ElevatorMotor.setVoltage(d);
     }
     public double getElevatorEncoderPos(){
         return m_ElevatorMotor.getAlternateEncoder().getPosition();
@@ -230,7 +244,7 @@ public void setElevatorPIDPos(double desiredPos){
 
 public void pid(double position){
     pid.setGoal(position);
-    m_elevatorSpeed = pid.calculate(getElevatorEncoderPos());
+    m_elevatorSpeed = pid.calculate(getElevatorEncoderPos()) + m_feedforward.calculate(pid.getSetpoint().velocity);
     if (pid.atGoal()) {
       m_elevatorSpeed = 0;
     }
@@ -243,7 +257,7 @@ public void pid(double position){
         m_elevatorSpeed = 0;
       }
     
-    ElevatorMove(m_elevatorSpeed*ElevatorMechanism.ElevatorGearRatio); 
+    ElevatorMoveV(m_elevatorSpeed*ElevatorMechanism.ElevatorGearRatio); 
 }
 
 public boolean atPIDGoal(){
@@ -262,15 +276,13 @@ public void periodic(){
   @Override
   public void initSendable(SendableBuilder builder) {
     super.initSendable(builder);
-    builder.addDoubleProperty(getName() + "ElevatorCommand/Command/elevatorSpeed", ()-> m_elevatorSpeed * ElevatorMechanism.ElevatorGearRatio, null);
+    builder.addDoubleProperty(getName() + "ElevatorCommand/Command/elevatorSpeedInVolts", ()-> m_elevatorSpeed * ElevatorMechanism.ElevatorGearRatio, null);
     builder.addDoubleProperty(getName() + "ElevatorCommand/Command/elevatorDesirePIDPos", () -> elevatorPosition, null);
     builder.addDoubleProperty("Elevator/Position", () -> getElevatorEncoderPos(), null);
     builder.addBooleanProperty("Elevator/LimitSwitchTop", this::ElevatorLimitSwitchTop, null);
     builder.addBooleanProperty("Elevator/LimitSwitchBottom", this::ElevatorLimitSwitchBottom, null);
     builder.addBooleanProperty("Elevator/AtPos", this::ElevatorAtPos, null);
     builder.addBooleanProperty("Elevator/AtPIDGoal", this::atPIDGoal, null);
-    builder.addDoubleProperty("Elevator/desiredPos", this::desiredPosGet, this::desiredPosSet);
-    builder.addStringProperty("Elevator/DesiredLevel", () -> this.Estate.toString(), null);
     builder.addDoubleProperty("Elevator/DecelerateRatio", () -> getElevatorDecelerateRatio(), null);
   }
 }
