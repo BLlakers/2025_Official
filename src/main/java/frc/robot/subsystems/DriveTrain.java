@@ -6,10 +6,14 @@ package frc.robot.subsystems;
 
 import edu.wpi.first.math.kinematics.*;
 import edu.wpi.first.math.util.Units;
+import edu.wpi.first.networktables.NetworkTableInstance;
+import edu.wpi.first.networktables.StructArrayPublisher;
 import edu.wpi.first.util.sendable.SendableBuilder;
 import edu.wpi.first.wpilibj.DriverStation;
+import edu.wpi.first.wpilibj.smartdashboard.Field2d;
 import edu.wpi.first.wpilibj.smartdashboard.SmartDashboard;
 
+import java.lang.reflect.Field;
 import java.util.concurrent.Flow.Publisher;
 
 import com.pathplanner.lib.auto.AutoBuilder;
@@ -28,7 +32,7 @@ import edu.wpi.first.wpilibj2.command.SubsystemBase;
 
 /** Represents a swerve drive style drivetrain. */
 public class DriveTrain extends SubsystemBase {
-
+Field2d field;
   public SwerveDriveKinematics m_kinematics =
       new SwerveDriveKinematics(
           Constants.Drive.SMFrontLeftLocation,
@@ -91,7 +95,10 @@ public class DriveTrain extends SubsystemBase {
    *
    * @param RobotVersion
    */
+  SwerveModuleState[] states;
   
+  StructArrayPublisher<SwerveModuleState> publisher = NetworkTableInstance.getDefault()
+  .getStructArrayTopic("MyStates", SwerveModuleState.struct).publish();
   public DriveTrain(RobotVersion version) {
     AutoBuilder.configure(
       this::getPose2d, // Robot pose supplier
@@ -128,7 +135,8 @@ public class DriveTrain extends SubsystemBase {
       blTurnOffset = Constants.RobotVersion2025.blTurnEncoderOffset;
       brTurnOffset = Constants.RobotVersion2025.brTurnEncoderOffset;
     }
-
+    
+    
     m_frontRight =
         new SwerveModule(
             Constants.Port.frDriveMtrC,
@@ -169,6 +177,7 @@ public class DriveTrain extends SubsystemBase {
     addChild(m_backRight.getName(), m_backRight);
 
     addChild("navx", navx);
+    field = new Field2d();
   }
 
   /**
@@ -216,14 +225,14 @@ public class DriveTrain extends SubsystemBase {
     Rotation2d robotRotation = new Rotation2d(navx.getRotation2d().getRadians());
 
     // SmartDashboard.putNumber ( "inputRotiation", robotRotation.getDegrees());
-    SwerveModuleState[] swerveModuleStates =
+    states =
         m_kinematics.toSwerveModuleStates(
             m_FieldRelativeEnable
                 ? ChassisSpeeds.fromFieldRelativeSpeeds(xSpeed, ySpeed, rot, robotRotation)
                 : new ChassisSpeeds(xSpeed, ySpeed, rot));
 
     if (!m_WheelLock) {
-      setModuleStates(swerveModuleStates);
+      setModuleStates(states);
     } else {
       WheelLock();
     }
@@ -250,7 +259,9 @@ public class DriveTrain extends SubsystemBase {
   public void periodic() {
     updateOdometry();
     super.periodic();
-    publisher.set(swerveModuleStates);
+    field.setRobotPose(getPose2d());
+    publisher.set(states);
+    
   }
 
   /**
@@ -455,5 +466,6 @@ public class DriveTrain extends SubsystemBase {
     SmartDashboard.putData("DriveTrain/" + m_frontRight.getName(), m_frontRight);
     SmartDashboard.putData("DriveTrain/" + m_backLeft.getName(), m_backLeft);
     SmartDashboard.putData("DriveTrain/" + m_backRight.getName(), m_backRight);
+    SmartDashboard.putData("field",field);
   }
 }
