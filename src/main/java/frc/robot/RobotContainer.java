@@ -3,10 +3,12 @@ package frc.robot;
 import edu.wpi.first.wpilibj2.command.Command;
 import edu.wpi.first.wpilibj2.command.CommandScheduler;
 import edu.wpi.first.wpilibj2.command.Commands;
+import edu.wpi.first.wpilibj2.command.DeferredCommand;
 import edu.wpi.first.wpilibj2.command.WaitUntilCommand;
 
 import java.util.ArrayList;
 import java.util.List;
+import java.util.Set;
 
 import com.pathplanner.lib.auto.AutoBuilder;
 import com.pathplanner.lib.auto.NamedCommands;
@@ -57,6 +59,9 @@ public class RobotContainer {
   AlgaePID algaePIDUp2 = new AlgaePID(mAlgaeMechanism, AlgaeMechanism.PosUp);
   
   AlgaePID algaePIDGround = new AlgaePID(mAlgaeMechanism, AlgaeMechanism.PosGround);
+
+  Command pathToPoseLeft = new DeferredCommand(()-> AutoBuilder.pathfindToPose(m_LimelightFrl.getGoalPose(true), Constants.AprilTagID.pathConstraints), Set.of(m_DriveTrain, m_LimelightFrl));
+  Command pathToPoseRight = new DeferredCommand(()-> AutoBuilder.pathfindToPose(m_LimelightFrl.getGoalPose(false), Constants.AprilTagID.pathConstraints), Set.of(m_DriveTrain, m_LimelightFrl));
 
   
 

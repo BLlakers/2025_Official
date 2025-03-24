@@ -5,6 +5,8 @@ import static edu.wpi.first.units.Units.Meters;
 
 import org.opencv.core.Mat;
 
+import com.pathplanner.lib.path.PathConstraints;
+
 import edu.wpi.first.math.geometry.Pose2d;
 import edu.wpi.first.math.geometry.Rotation3d;
 import edu.wpi.first.math.geometry.Transform3d;
@@ -89,6 +91,8 @@ public final class Constants {
 
     public static final Pose2d BlueSpeakerCenterPose = new Pose2d(); // TODO
     public static final Pose2d RedSpeakerCenterPose = new Pose2d(); // TODO
+
+    public static final PathConstraints pathConstraints = new PathConstraints(2, 3, 360, 540);
   }
 
   public static class Port {

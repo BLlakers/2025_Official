@@ -98,8 +98,8 @@ public class DriveTrain extends SubsystemBase {
   
   public DriveTrain(RobotVersion version) {
     AutoBuilder.configure(
-      this::getPose2d, // Robot pose supplier
-      this::resetPose, // Method to reset odometry (will be called if your auto has a starting pose)
+      this::getPose2dEstimator, // Robot pose supplier
+      this::resetPoseEstimator, // Method to reset odometry (will be called if your auto has a starting pose)
       this::getChassisSpeeds, 
       (speeds) -> driveRobotRelative(speeds), // ChassisSpeeds supplier. MUST BE ROBOT RELATIVE
        // Method that will drive the robot given ROBOT RELATIVE ChassisSpeeds. Also optionally outputs individual module feedforwards
@@ -197,6 +197,10 @@ public class DriveTrain extends SubsystemBase {
    */
   public Pose2d getPose2d() {
     return m_odometry.getPoseMeters();
+  }
+
+  public Pose2d getPose2dEstimator() {
+    return m_poseEstimator.getEstimatedPosition();
   }
 
   /**
@@ -344,6 +348,10 @@ public class DriveTrain extends SubsystemBase {
    */
   public void resetPose(Pose2d pose2d) {
     resetOdometry(pose2d);
+  }
+
+  public void resetPoseEstimator(Pose2d pose2d) {
+    m_poseEstimator.resetPosition(navx.getRotation2d(), getSwerveModulePositions(), pose2d);
   }
 
   /**

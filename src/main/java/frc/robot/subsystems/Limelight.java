@@ -4,6 +4,7 @@ import edu.wpi.first.wpilibj.DriverStation;
 import edu.wpi.first.wpilibj.smartdashboard.SmartDashboard;
 
 import edu.wpi.first.apriltag.AprilTag;
+import edu.wpi.first.math.geometry.Pose2d;
 import edu.wpi.first.math.geometry.Pose3d;
 import edu.wpi.first.math.geometry.Rotation2d;
 import edu.wpi.first.math.geometry.Rotation3d;
@@ -105,6 +106,101 @@ public class Limelight extends SubsystemBase {
     }else {
       return this.runOnce(()->this.SetTagIDToTrack(-1));
     }
+  }
+
+  public Pose2d getGoalPose(boolean isLeft){
+    boolean m_isLeft = isLeft;
+    Pose2d goalPose2d;
+    switch (getCurrentAprilTag().ID) {
+      case 6:
+      if(m_isLeft){
+        goalPose2d = new Pose2d(13.714,2.868, new Rotation2d(120));
+      } else{
+        goalPose2d = new Pose2d(13.930,3.012, new Rotation2d(120));
+      }
+      break;
+    case 7:
+      if(m_isLeft){
+        goalPose2d = new Pose2d(14.373,4.019, new Rotation2d(180));
+      } else{
+        goalPose2d = new Pose2d(14.373,4.199, new Rotation2d(180));
+      }
+      break;
+    case 8:
+      if(m_isLeft){
+        goalPose2d = new Pose2d(13.738,5.158, new Rotation2d(-120));
+      } else{
+        goalPose2d = new Pose2d(13.570,5.266, new Rotation2d(-120));
+      }
+      break;
+    case 9:
+      if(m_isLeft){
+        goalPose2d = new Pose2d(14.373,5.182, new Rotation2d(-60));
+      } else{
+        goalPose2d = new Pose2d(12.263,5.098, new Rotation2d(-60));
+      }
+      break;
+    case 10:
+      if(m_isLeft){
+        goalPose2d = new Pose2d(11.736,4.019, new Rotation2d(0));
+      } else{
+        goalPose2d = new Pose2d(11.736,3.839, new Rotation2d(0));
+      }
+      break;
+    case 11:
+      if(m_isLeft){
+        goalPose2d = new Pose2d(12.407,2.904, new Rotation2d(60));
+      } else{
+        goalPose2d = new Pose2d(12.563,2.796, new Rotation2d(60));
+      }
+      break;
+    case 17:
+      if(m_isLeft){
+        goalPose2d = new Pose2d(3.824,2.904, new Rotation2d(60));
+      } else{
+        goalPose2d = new Pose2d(3.992,2.820, new Rotation2d(60));
+      }
+      break;
+    case 18:
+      if(m_isLeft){
+        goalPose2d = new Pose2d(3.165,4.031, new Rotation2d(0));
+      } else{
+        goalPose2d = new Pose2d(3.177,3.815, new Rotation2d(0));
+      }
+      break;
+    case 19:
+      if(m_isLeft){
+        goalPose2d = new Pose2d(3.824,5.170, new Rotation2d(-60));
+      } else{
+        goalPose2d = new Pose2d(3.668,5.086, new Rotation2d(-60));
+      }
+      break;
+    case 20:
+      if(m_isLeft){
+        goalPose2d = new Pose2d(5.155,5.170, new Rotation2d(-60));
+      } else{
+        goalPose2d = new Pose2d(5.023,5.242, new Rotation2d(-60));
+      }
+      break;
+    case 21:
+      if(m_isLeft){
+        goalPose2d = new Pose2d(5.814,4.019, new Rotation2d(180));
+      } else{
+        goalPose2d = new Pose2d(5.814,4.307, new Rotation2d(180));
+      }
+      break;
+    case 22:
+      if(m_isLeft){
+        goalPose2d = new Pose2d(5.119,2.880, new Rotation2d(120));
+      } else{
+        goalPose2d = new Pose2d(5.394,3.024, new Rotation2d(120));
+      }
+      break;
+    default:
+      goalPose2d = new Pose2d(-99999,0, new Rotation2d());
+      break;
+    }
+    return goalPose2d;
   }
 
   @Override
