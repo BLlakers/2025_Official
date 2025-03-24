@@ -8,6 +8,7 @@ import edu.wpi.first.math.kinematics.*;
 import edu.wpi.first.math.util.Units;
 import edu.wpi.first.networktables.NetworkTableInstance;
 import edu.wpi.first.networktables.StructArrayPublisher;
+import edu.wpi.first.networktables.StructPublisher;
 import edu.wpi.first.util.sendable.SendableBuilder;
 import edu.wpi.first.wpilibj.DriverStation;
 import edu.wpi.first.wpilibj.smartdashboard.Field2d;
@@ -95,10 +96,15 @@ Field2d field;
    *
    * @param RobotVersion
    */
-  SwerveModuleState[] states;
-  
-  StructArrayPublisher<SwerveModuleState> publisher = NetworkTableInstance.getDefault()
-  .getStructArrayTopic("MyStates", SwerveModuleState.struct).publish();
+  SwerveModuleState[] DesiredStates;
+  SwerveModuleState[] CurrentStates;
+  StructArrayPublisher<SwerveModuleState> DesiredStatePublisher = NetworkTableInstance.getDefault()
+  .getStructArrayTopic("DesiredStates", SwerveModuleState.struct).publish();
+  StructArrayPublisher<SwerveModuleState> CurrentStatePublisher = NetworkTableInstance.getDefault()
+  .getStructArrayTopic("CurrentStates", SwerveModuleState.struct).publish();
+  StructPublisher<ChassisSpeeds> CurrentSpeedsPublisher = NetworkTableInstance.getDefault()
+  .getStructTopic("CurrentSpeed", ChassisSpeeds.struct).publish();
+
   public DriveTrain(RobotVersion version) {
     AutoBuilder.configure(
       this::getPose2d, // Robot pose supplier
@@ -225,14 +231,14 @@ Field2d field;
     Rotation2d robotRotation = new Rotation2d(navx.getRotation2d().getRadians());
 
     // SmartDashboard.putNumber ( "inputRotiation", robotRotation.getDegrees());
-    states =
+    DesiredStates =
         m_kinematics.toSwerveModuleStates(
             m_FieldRelativeEnable
                 ? ChassisSpeeds.fromFieldRelativeSpeeds(xSpeed, ySpeed, rot, robotRotation)
                 : new ChassisSpeeds(xSpeed, ySpeed, rot));
 
     if (!m_WheelLock) {
-      setModuleStates(states);
+      setModuleStates(DesiredStates);
     } else {
       WheelLock();
     }
@@ -260,8 +266,9 @@ Field2d field;
     updateOdometry();
     super.periodic();
     field.setRobotPose(getPose2d());
-    publisher.set(states);
-    
+    DesiredStatePublisher.set(DesiredStates);
+    CurrentStatePublisher.set(getSwerveModuleStates());
+    CurrentSpeedsPublisher.set(getChassisSpeeds());
   }
 
   /**
