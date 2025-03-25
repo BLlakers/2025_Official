@@ -44,16 +44,15 @@ public class ElevatorMechanism extends SubsystemBase{
    public static double AlgaeL4 = 17.6;
    public static double L4 = 24.5;
    public static boolean IsMoving;
-   public static double ElevatorGearRatio = 275;
    private static double kDt = 0.02;
-   private static double kMaxVelocity = 1.75;
-   private static double kMaxAcceleration = 0.75;
-   private static double kP = .0007;
+   private static double kMaxVelocity = .3;
+   private static double kMaxAcceleration = 0.3;
+   private static double kP = 0;
    private static double kI = 0.0;
    private static double kD = 0.0;
-   private static double kS = 1.1;
-   private static double kG = 1.2;
-   private static double kV = 1.3; 
+   private static double kS = 0;
+   private static double kG = .45;
+   private static double kV = 0; 
    private double marginOfError = 1;
    private double elevatorPositionConversionFactor = 1.6*Math.PI; // 1.6 * Math.PI = Distance per rotation
    private double elevatorVelocityConversionFactor = 1; 
@@ -257,7 +256,7 @@ public void pid(double position){
         m_elevatorSpeed = 0;
       }
     
-    ElevatorMoveV(m_elevatorSpeed*ElevatorMechanism.ElevatorGearRatio); 
+    ElevatorMoveV(m_elevatorSpeed); 
 }
 
 public boolean atPIDGoal(){
@@ -276,7 +275,7 @@ public void periodic(){
   @Override
   public void initSendable(SendableBuilder builder) {
     super.initSendable(builder);
-    builder.addDoubleProperty(getName() + "ElevatorCommand/Command/elevatorSpeedInVolts", ()-> m_elevatorSpeed * ElevatorMechanism.ElevatorGearRatio, null);
+    builder.addDoubleProperty(getName() + "ElevatorCommand/Command/elevatorSpeedInVolts", ()-> m_elevatorSpeed, null);
     builder.addDoubleProperty(getName() + "ElevatorCommand/Command/elevatorDesirePIDPos", () -> elevatorPosition, null);
     builder.addDoubleProperty("Elevator/Position", () -> getElevatorEncoderPos(), null);
     builder.addBooleanProperty("Elevator/LimitSwitchTop", this::ElevatorLimitSwitchTop, null);
