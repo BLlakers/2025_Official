@@ -136,6 +136,7 @@ Command ResetPoseAuto = Commands.runOnce(()-> m_DriveTrain.resetPose(currentPath
    NamedCommands.registerCommand("Limelight",LimelightCodeFrontLeft);
    NamedCommands.registerCommand("LimelightSetFirstLeftPriority", m_LimelightFrl.PriorityIDcmd(22, 9));
    NamedCommands.registerCommand("LimelightSetSecondLeftPriority", m_LimelightFrl.PriorityIDcmd(17, 8));
+   NamedCommands.registerCommand("LimelightSetSecondLeftPriority2", m_LimelightFrl.PriorityIDcmd(18, 8));
    NamedCommands.registerCommand("LimelightSetFirstRightPriority", m_LimelightFrl.PriorityIDcmd(20, 11));
    NamedCommands.registerCommand("LimelightSetSecondRightPriority", m_LimelightFrl.PriorityIDcmd(19, 6));
    NamedCommands.registerCommand("LimelightBack",LimelightCodeBack);
@@ -228,13 +229,11 @@ Command ResetPoseAuto = Commands.runOnce(()-> m_DriveTrain.resetPose(currentPath
     driverController.a().whileTrue(LimelightCodeBack);
     driverController.b().onTrue(m_DriveTrain.ZeroGyro());
     driverController.start().onTrue(m_DriveTrain.resetPose2d()); // RESETING OUR POSE 2d/ odometry
+    driverController.rightBumper().onTrue(m_DriveTrain.resetPoseEstimatorCmd());
     driverController.rightStick().onTrue(m_DriveTrain.WheelLockCommand()); // lock wheels
     driverController.x().whileTrue(LimelightCodeFrontLeft); 
     driverController.y().whileTrue(LimelightCodeFrontRight);
-    driverController.leftBumper().whileTrue(new AprilStrafeCommand(() -> m_LimelightFrl.getCurrentAprilTag(), () ->  m_LimelightFrl.getAprilRotation2d(), m_DriveTrain,new Transform2d(0,0.00, new Rotation2d(.15)), false, true, mLedStrand, ()-> driverController.getLeftY()));
-    driverController.rightBumper().whileTrue(new AprilStrafeCommand(() -> m_LimelightFrr.getCurrentAprilTag(), () ->  m_LimelightFrr.getAprilRotation2d(), m_DriveTrain, new Transform2d(0,0.00, new Rotation2d(-0.15)), false, false, mLedStrand, ()-> driverController.getLeftY()));
-    driverController.start().whileTrue(new AprilStrafeCommand(() -> m_LimelightBack.getCurrentAprilTag(), () ->  m_LimelightBack.getAprilRotation2d(), m_DriveTrain, new Transform2d(.65,0.00, new Rotation2d()), true, false, mLedStrand, ()-> driverController.getLeftY()));
-   
+    driverController.leftBumper().whileTrue(new AprilPoseEstimatorCommand(()->m_DriveTrain.getPose2dEstimator(), ()-> m_LimelightFrl.getCurrentAprilTag(), false, m_DriveTrain));
     // driverController.povUp().whileTrue(runCoralFoward);//mCoralMechanism.CoralForwardCmd());
     // driverController.povDown().whileTrue(mCoralMechanism.CoralBackwardCmd());
     // Manipulator Controller commands

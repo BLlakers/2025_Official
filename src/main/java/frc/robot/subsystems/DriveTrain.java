@@ -437,6 +437,16 @@ public class DriveTrain extends SubsystemBase {
     m_odometry.update(navx.getRotation2d(), getSwerveModulePositions());
   }
 
+  public void resetPoseEstimator(){
+    double skew = LimelightHelpers.getTX("limelight-frl");
+    navx.reset();
+    navx.setAngleAdjustment(60+skew);
+  }
+
+  public Command resetPoseEstimatorCmd(){
+    return this.runOnce(()-> resetPoseEstimator());
+  }
+
   public void updatePoseEstimatorOdometry(){
     m_poseEstimator.update(
         navx.getRotation2d(),
@@ -480,7 +490,7 @@ public class DriveTrain extends SubsystemBase {
     }
     else if (useMegaTag2 == true)
     {
-      LimelightHelpers.SetRobotOrientation("limelight-frl", m_poseEstimator.getEstimatedPosition().getRotation().getDegrees(), 0, 0, 0, 0, 0);
+      LimelightHelpers.SetRobotOrientation("limelight-frl", m_poseEstimator.getEstimatedPosition().getRotation().getDegrees(), navx.getYaw(), 0, 0, 0, 0);
       LimelightHelpers.PoseEstimate mt2 = LimelightHelpers.getBotPoseEstimate_wpiBlue_MegaTag2("limelight-frl");
       if(Math.abs(navx.getRate()) > 720) // if our angular velocity is greater than 720 degrees per second, ignore vision updates
       {
@@ -538,6 +548,10 @@ public class DriveTrain extends SubsystemBase {
         "FieldRelativeEnabled",
         () -> this.m_FieldRelativeEnable,
         (boolean fre) -> m_FieldRelativeEnable = fre);
+    builder.addDoubleProperty("EstimatedOdometry/Pose/X", () -> getPose2dEstimator().getX(), null);
+    builder.addDoubleProperty("EstimatedOdometry/Pose/Y", () -> getPose2dEstimator().getY(), null);
+    builder.addDoubleProperty(
+        "EstimatedOdometry/Pose/Rot", () -> getPose2dEstimator().getRotation().getDegrees(), null);
 
     SmartDashboard.putData("DriveTrain/" + m_frontLeft.getName(), m_frontLeft);
     SmartDashboard.putData("DriveTrain/" + m_frontRight.getName(), m_frontRight);

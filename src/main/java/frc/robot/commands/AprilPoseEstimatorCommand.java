@@ -25,14 +25,14 @@ public class AprilPoseEstimatorCommand extends Command{
       new TrapezoidProfile.Constraints(Units.degreesToRadians(400), Units.degreesToRadians(360));
 
   private final ProfiledPIDController m_xController =
-      new ProfiledPIDController(1.25, 0, 0.0, X_CONSTRAINTS);
+      new ProfiledPIDController(.1, 0, 0.0, X_CONSTRAINTS);
   private final ProfiledPIDController m_yController =
-      new ProfiledPIDController(1.45, 0, 0.0, Y_CONSTRAINTS);
+      new ProfiledPIDController(.1, 0, 0.0, Y_CONSTRAINTS);
   private final ProfiledPIDController m_omegaController =
-      new ProfiledPIDController(7, 0, 0.0, OMEGA_CONSTRAINTS);
+      new ProfiledPIDController(.1, 0, 0.0, OMEGA_CONSTRAINTS);
    
   private DriveTrain m_drivetrain;
-  private Supplier<SwerveDrivePoseEstimator> m_currentEstimatedPose;
+  private Supplier<Pose2d> m_currentEstimatedPose;
   private Supplier<AprilTag> m_currentAprilTag;
   
   private Boolean m_isLeft;
@@ -41,7 +41,7 @@ public class AprilPoseEstimatorCommand extends Command{
   private double m_goalY;
   private double m_goalRot;
 
-  public AprilPoseEstimatorCommand(Supplier<SwerveDrivePoseEstimator> currentEstimatedPose, Supplier<AprilTag> currentAprilTag, boolean isLeft, DriveTrain drivetrainSubsystem){
+  public AprilPoseEstimatorCommand(Supplier<Pose2d> currentEstimatedPose, Supplier<AprilTag> currentAprilTag, boolean isLeft, DriveTrain drivetrainSubsystem){
     m_currentEstimatedPose = currentEstimatedPose;
     m_currentAprilTag = currentAprilTag;
     m_isLeft = isLeft;
@@ -65,7 +65,7 @@ public class AprilPoseEstimatorCommand extends Command{
     Pose2d goalPose = getGoalPose(aprilTag.ID);
     m_goalX = goalPose.getX();
     m_goalY = goalPose.getY();
-    m_goalRot = goalPose.getRotation().getRadians();
+    m_goalRot = goalPose.getRotation().getDegrees();
 
     if(m_goalX == -99999){
       m_drivetrain.stopModules();
@@ -75,7 +75,7 @@ public class AprilPoseEstimatorCommand extends Command{
     double xSpeed = 0; 
     double ySpeed = 0;
     double rotSpeed = 0;
-    Pose2d EstimatedPose = m_currentEstimatedPose.get().getEstimatedPosition();
+    Pose2d EstimatedPose = m_currentEstimatedPose.get();
     m_yController.setGoal(m_goalY);
     m_omegaController.setGoal(m_goalRot);
     m_xController.setGoal(m_goalX); 
@@ -90,14 +90,25 @@ public class AprilPoseEstimatorCommand extends Command{
       ySpeed = 0;
     }
 
-    rotSpeed = m_omegaController.calculate(EstimatedPose.getRotation().getRadians());
+    rotSpeed = m_omegaController.calculate(EstimatedPose.getRotation().getDegrees());
     if (m_omegaController.atGoal()) {
       rotSpeed = 0;
     }
 
-    m_drivetrain.drive(xSpeed, ySpeed, rotSpeed);
+    m_drivetrain.drive(-xSpeed, -ySpeed, rotSpeed);
+
+    SmartDashboard.putNumber(m_drivetrain.getName() + "/AprilAlignPoseEstimatorCommand/Command/EstimatePoseX", EstimatedPose.getX());
+    SmartDashboard.putNumber(m_drivetrain.getName() + "/AprilAlignPoseEstimatorCommand/Command/EstimatePoseY", EstimatedPose.getY());
+    SmartDashboard.putNumber(m_drivetrain.getName() + "/AprilAlignPoseEstimatorCommand/Command/EstimatePoseRot", EstimatedPose.getRotation().getDegrees());
+    SmartDashboard.putNumber(m_drivetrain.getName() + "/AprilAlignPoseEstimatorCommand/Command/GoalPoseX", goalPose.getX());
+    SmartDashboard.putNumber(m_drivetrain.getName() + "/AprilAlignPoseEstimatorCommand/Command/GoalPoseY", goalPose.getY());
+    SmartDashboard.putNumber(m_drivetrain.getName() + "/AprilAlignPoseEstimatorCommand/Command/GoalPoseRot", goalPose.getRotation().getDegrees());
+    SmartDashboard.putNumber(m_drivetrain.getName() + "/AprilAlignPoseEstimatorCommand/Command/CalcVelX", xSpeed);
+    SmartDashboard.putNumber(m_drivetrain.getName() + "/AprilAlignPoseEstimatorCommand/Command/CalcVelY", ySpeed);
+    SmartDashboard.putNumber(m_drivetrain.getName() + "/AprilAlignPoseEstimatorCommand/Command/CalcVelRot", rotSpeed);
 
   }
+
 
 
 
