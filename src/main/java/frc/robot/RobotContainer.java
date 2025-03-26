@@ -50,7 +50,7 @@ public class RobotContainer {
   ElevatorPID elevatorPIDAlgae4 = new ElevatorPID(mElevatorMechanism,  ElevatorMechanism.AlgaeL4);
   Servo mServo = new Servo();
   AprilAlignCommand LimelightCodeFrontLeft = new AprilAlignCommand(() -> m_LimelightFrl.getCurrentAprilTag(), () ->  m_LimelightFrl.getAprilRotation2d(), m_DriveTrain, new Transform2d(-.5,0.00, new Rotation2d(-.08)), false, true, mLedStrand);
-  // AprilAlignCommand LimelightCodeFrontRight = new AprilAlignCommand(() -> m_LimelightFrr.getCurrentAprilTag(), () ->  m_LimelightFrr.getAprilRotation2d(), m_DriveTrain, new Transform2d(.05,0.00, new Rotation2d(-0.15)), false, false, mLedStrand);
+  AprilAlignCommand LimelightCodeFrontRight = new AprilAlignCommand(() -> m_LimelightFrr.getCurrentAprilTag(), () ->  m_LimelightFrr.getAprilRotation2d(), m_DriveTrain, new Transform2d(-.35,0.00, new Rotation2d(-.005)), false, false, mLedStrand);
   // AprilAlignCommand LimelightCodeBack = new AprilAlignCommand(() -> m_LimelightBack.getCurrentAprilTag(), () ->  m_LimelightBack.getAprilRotation2d(), m_DriveTrain, new Transform2d(.65,0.00, new Rotation2d()), true, false, mLedStrand);
   AlgaePID algaePIDDown = new AlgaePID(mAlgaeMechanism, AlgaeMechanism.PosDown);
   AlgaePID algaePIDDown2 = new AlgaePID(mAlgaeMechanism, AlgaeMechanism.PosDown);
@@ -130,6 +130,8 @@ Command ResetPoseAuto = Commands.runOnce(()-> m_DriveTrain.resetPose(currentPath
     
     m_AlgaeIntake.setName("AlgaeIntake");
     LimelightCodeFrontLeft.setName("LimelightCodeFrontLeft");
+    LimelightCodeFrontRight.setName("LimelightCodeFrontRight");
+   
     mAlgaeMechanism.setName("AlgaeMechanism");
     configureShuffleboard();
     configureBindings();
@@ -232,7 +234,7 @@ Command ResetPoseAuto = Commands.runOnce(()-> m_DriveTrain.resetPose(currentPath
     driverController.rightBumper().onTrue(m_DriveTrain.resetPoseEstimatorCmd());
     driverController.rightStick().onTrue(m_DriveTrain.WheelLockCommand()); // lock wheels
     driverController.x().whileTrue(LimelightCodeFrontLeft); 
-    // driverController.y().whileTrue(LimelightCodeFrontRight);
+    driverController.y().whileTrue(LimelightCodeFrontRight);
     // driverController.povUp().whileTrue(new AprilAlignHoloCommand(new Pose2d(.65,.5, new Rotation2d(Math.toDegrees(15))), "limelight-frl", m_DriveTrain));
     driverController.leftBumper().whileTrue(new AprilPoseEstimatorCommand(()->m_DriveTrain.getPose2dEstimator(), ()-> m_LimelightFrl.getCurrentAprilTag(), false, m_DriveTrain));
     // driverController.povUp().whileTrue(runCoralFoward);//mCoralMechanism.CoralForwardCmd());
@@ -295,7 +297,7 @@ Command ResetPoseAuto = Commands.runOnce(()-> m_DriveTrain.resetPose(currentPath
   private void configureShuffleboard() {
     SmartDashboard.putData("Command Scheduler", CommandScheduler.getInstance());
     SmartDashboard.putData(mElevatorMechanism);
-   
+   SmartDashboard.putData(LimelightCodeFrontRight);
     
     // Add subsystems
     SmartDashboard.putData(m_DriveTrain);

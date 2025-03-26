@@ -45,17 +45,17 @@ double RotkI = 1;
       private static final TrapezoidProfile.Constraints BACK_YCONSTRAINTS =
       new TrapezoidProfile.Constraints(1.5, 5);
   private static final TrapezoidProfile.Constraints OMEGA_CONSTRAINTS =
-      new TrapezoidProfile.Constraints(Units.degreesToRadians(720), Units.degreesToRadians(360));
+      new TrapezoidProfile.Constraints(Units.degreesToRadians(360), Units.degreesToRadians(360));
 
   private final ProfiledPIDController m_xController =
       new ProfiledPIDController(1.25, 0, 0.0, X_CONSTRAINTS);
   private final ProfiledPIDController m_yController =
       new ProfiledPIDController(1.45, 0, 0.0, Y_CONSTRAINTS);
   private final ProfiledPIDController m_omegaController =
-      new ProfiledPIDController(7, 0, 0.0, OMEGA_CONSTRAINTS);
+      new ProfiledPIDController(6, 0, 0.0, OMEGA_CONSTRAINTS);
   private final ProfiledPIDController Back_xController = new ProfiledPIDController(1.1, 0, 0.0, BACK_XCONSTRAINTS);
   private final ProfiledPIDController Back_yController = new ProfiledPIDController(.8, 0, 0.0, BACK_YCONSTRAINTS);
-  private final ProfiledPIDController Back_omegaController = new ProfiledPIDController(4, 0, 0.0, OMEGA_CONSTRAINTS);
+  private final ProfiledPIDController Back_omegaController = new ProfiledPIDController(5, 0, 0.0, OMEGA_CONSTRAINTS);
   
   private DriveTrain m_drivetrain;
   private Supplier<AprilTag> m_aprilTagProvider;
@@ -69,7 +69,7 @@ double RotkI = 1;
   private double m_goalX;
   private double m_goalY;
   private double m_goalRot;
-  private HolonomicDriveController driveController = new HolonomicDriveController(new PIDController(1.7,0,0),new PIDController(1.25,0,0), m_omegaController);
+  private HolonomicDriveController driveController = new HolonomicDriveController(new PIDController(1.7,0,0),new PIDController(.6,0,0), m_omegaController);
 
   private ShuffleboardTab tab = Shuffleboard.getTab("Limelight");
   // private GenericEntry x_p_entry = tab.add("x_controlller_P",1.7).getEntry();
@@ -133,16 +133,24 @@ double RotkI = 1;
     }
     if (m_isBackwards){
     aprilSkew = Math.toRadians(LimelightHelpers.getTX("limelight-back"));
-  }    else if (m_isLeft){
-      aprilSkew = Math.toRadians(LimelightHelpers.getTX("limelight-frl"));
-    } else{
-      aprilSkew = Math.toRadians(LimelightHelpers.getTX("limelight-frr"));
-    }
 
     speed = driveController.calculate(new Pose2d(aprilTag.pose.getY(), m_aprilTagRotation.get().getRadians(), new Rotation2d(aprilSkew)),
     new Pose2d(m_goalX, m_goalY, new Rotation2d(m_goalRot)), 1, new Rotation2d());
     m_drivetrain.driveChassisSpeeds(new ChassisSpeeds(-speed.vxMetersPerSecond, speed.vyMetersPerSecond, speed.omegaRadiansPerSecond));
-    // rotSpeed = m_omegaController.calculate(aprilSkew);
+  
+  } else if (m_isLeft){
+      aprilSkew = Math.toRadians(LimelightHelpers.getTX("limelight-frl"));
+      speed = driveController.calculate(new Pose2d(aprilTag.pose.getY(), m_aprilTagRotation.get().getRadians(), new Rotation2d(aprilSkew)),
+    new Pose2d(m_goalX, m_goalY, new Rotation2d(m_goalRot)), 1, new Rotation2d());
+    m_drivetrain.driveChassisSpeeds(new ChassisSpeeds(-speed.vxMetersPerSecond, speed.vyMetersPerSecond, speed.omegaRadiansPerSecond));
+ 
+  } else{
+      aprilSkew = Math.toRadians(LimelightHelpers.getTX("limelight-frr"));
+      speed = driveController.calculate(new Pose2d(aprilTag.pose.getY(), m_aprilTagRotation.get().getRadians(), new Rotation2d(aprilSkew)),
+    new Pose2d(m_goalX, m_goalY, new Rotation2d(m_goalRot)), 1, new Rotation2d());
+    m_drivetrain.driveChassisSpeeds(new ChassisSpeeds(-speed.vxMetersPerSecond, speed.vyMetersPerSecond, speed.omegaRadiansPerSecond));
+
+  }// rotSpeed = m_omegaController.calculate(aprilSkew);
     // if (m_omegaController.atGoal()) {
       // rotSpeed = 0;
     // }
@@ -197,5 +205,6 @@ public void initSendable(SendableBuilder builder) {
     builder.addDoubleProperty(getName() + "driveController/Rot/P" ,()->driveController.getThetaController().getP(), (s)-> driveController.getThetaController().setP(s));
     builder.addDoubleProperty(getName() + "driveController/Rot/D" ,()->driveController.getThetaController().getD(), (s)-> driveController.getThetaController().setD(s));
     builder.addDoubleProperty(getName() + "driveController/Rot/I" ,()->driveController.getThetaController().getI(), (s)-> driveController.getThetaController().setI(s));
+    builder.addBooleanProperty(getName() + "driveController/AtGoal", () -> driveController.atReference(), null);
 }
 }

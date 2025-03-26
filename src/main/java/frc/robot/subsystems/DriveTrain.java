@@ -460,7 +460,7 @@ public class DriveTrain extends SubsystemBase {
 
     boolean useMegaTag2 = true; //set to false to use MegaTag1
     boolean doRejectUpdate = false;
-    if(useMegaTag2 == false)
+    /*if(useMegaTag2 == false)
     {
       LimelightHelpers.PoseEstimate mt1 = LimelightHelpers.getBotPoseEstimate_wpiBlue("limelight-frl");
       
@@ -507,9 +507,8 @@ public class DriveTrain extends SubsystemBase {
             mt2.pose,
             mt2.timestampSeconds);
       }
-    }
-  }
 
+*/      }
   /** Stops all the motors on the SwerveModules */
   public void stopModules() {
     m_frontLeft.stop();
