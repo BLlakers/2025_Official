@@ -41,7 +41,7 @@ double RotkI = 1;
       private static final TrapezoidProfile.Constraints BACK_YCONSTRAINTS =
       new TrapezoidProfile.Constraints(1.5, 5);
   private static final TrapezoidProfile.Constraints OMEGA_CONSTRAINTS =
-      new TrapezoidProfile.Constraints(Units.degreesToRadians(400), Units.degreesToRadians(360));
+      new TrapezoidProfile.Constraints(Units.degreesToRadians(720), Units.degreesToRadians(360));
 
   private final ProfiledPIDController m_xController =
       new ProfiledPIDController(1.25, 0, 0.0, X_CONSTRAINTS);
@@ -65,7 +65,7 @@ double RotkI = 1;
   private double m_goalX;
   private double m_goalY;
   private double m_goalRot;
-  private HolonomicDriveController driveController = new HolonomicDriveController(new PIDController(3.5, 0, 0),new PIDController(1.45, 0, 0), m_omegaController);
+  private HolonomicDriveController driveController = new HolonomicDriveController(new PIDController(1.7, 0, 0),new PIDController(.65, 0, 0), m_omegaController);
 
 
 public void mXkP(double d){
@@ -138,7 +138,7 @@ public void mXkD(double d){
 
     speed = driveController.calculate(new Pose2d(aprilTag.pose.getY(), m_aprilRotation.get().getRadians(), new Rotation2d(aprilSkew)),
     new Pose2d(m_goalX, m_goalY, new Rotation2d(m_goalRot)), 1, new Rotation2d());
-    m_drivetrain.driveChassisSpeeds(new ChassisSpeeds(-speed.vxMetersPerSecond, speed.vyMetersPerSecond, speed.omegaRadiansPerSecond));
+    m_drivetrain.driveChassisSpeeds(new ChassisSpeeds( -speed.vxMetersPerSecond, speed.vyMetersPerSecond, speed.omegaRadiansPerSecond));
     // rotSpeed = m_omegaController.calculate(aprilSkew);
     // if (m_omegaController.atGoal()) {
       // rotSpeed = 0;
@@ -157,6 +157,7 @@ public void mXkD(double d){
     SmartDashboard.putNumber(m_drivetrain.getName() + "/AprilAlignCommand/Command/GoalX", m_goalX);
     SmartDashboard.putNumber(m_drivetrain.getName() + "/AprilAlignCommand/Command/ChassisGoalErrorX", driveController.getXController().getError());
     SmartDashboard.putNumber(m_drivetrain.getName() + "/AprilAlignCommand/Command/ChassisSetpointX", driveController.getXController().getSetpoint());
+    SmartDashboard.putNumber(m_drivetrain.getName() + "/AprilAlignCommand/Command/ChassisToleranceX", driveController.getXController().getErrorTolerance());
     SmartDashboard.putNumber(m_drivetrain.getName() + "/AprilAlignCommand/Command/GoalY", m_goalY);
     SmartDashboard.putNumber(m_drivetrain.getName() + "/AprilAlignCommand/Command/GoalRot", m_goalRot);
     SmartDashboard.putNumber(m_drivetrain.getName() + "/AprilAlignCommand/Command/x", aprilTag.pose.getY());
