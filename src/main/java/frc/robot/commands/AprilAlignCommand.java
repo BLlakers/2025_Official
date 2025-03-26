@@ -15,6 +15,7 @@ import edu.wpi.first.math.kinematics.ChassisSpeeds;
 import edu.wpi.first.math.trajectory.Trajectory;
 import edu.wpi.first.math.trajectory.TrapezoidProfile;
 import edu.wpi.first.math.util.Units;
+import edu.wpi.first.util.sendable.SendableBuilder;
 import edu.wpi.first.wpilibj.smartdashboard.SmartDashboard;
 import edu.wpi.first.wpilibj2.command.Command;
 import frc.robot.subsystems.DriveTrain;
@@ -22,6 +23,15 @@ import frc.robot.subsystems.LedStrand;
 import frc.robot.support.limelight.LimelightHelpers;
 
 public class AprilAlignCommand extends Command{
+double XkP = 1;
+double XkD = 1;
+double XkI = 1;
+double YkP = 1;
+double YkD = 1;
+double YkI = 1;
+double RotkP = 1;
+double RotkD = 1;
+double RotkI = 1;
   private static final TrapezoidProfile.Constraints X_CONSTRAINTS =
       new TrapezoidProfile.Constraints(.5, .5);
       private static final TrapezoidProfile.Constraints BACK_XCONSTRAINTS =
@@ -56,6 +66,32 @@ public class AprilAlignCommand extends Command{
   private double m_goalY;
   private double m_goalRot;
   private HolonomicDriveController driveController = new HolonomicDriveController(new PIDController(3.5, 0, 0),new PIDController(1.45, 0, 0), m_omegaController);
+
+
+public void mXkP(double d){
+  XkP =d;
+}
+public void mXkD(double d){
+  XkD =d;
+}public void mXkI(double d){
+  XkI =d;
+}public void mYkP(double d){
+  YkP =d;
+}public void mYkD(double d){
+  YkD =d;
+}public void mYkI(double d){
+  YkI =d;
+}public void mRotkP(double d){
+  RotkP =d;
+}public void mRotkD(double d){
+  RotkD =d;
+}public void mRotkI(double d){
+  RotkI =d;
+}
+
+
+
+
   public AprilAlignCommand(Supplier<AprilTag> aprilTagSupplier, Supplier<Rotation2d> aprilTagRotation2d, DriveTrain drivetrainSubsystem, Transform2d
   goalTransformRelativeToAprilTag, boolean isBackwards, Boolean isLeft, LedStrand leds){
     m_aprilTagProvider = aprilTagSupplier;
@@ -69,15 +105,7 @@ public class AprilAlignCommand extends Command{
     m_goalRot =goalTransformRelativeToAprilTag.getRotation().getRadians();
 
 
-    Back_xController.setTolerance(.05);
-    Back_yController.setTolerance(.1);
-    Back_omegaController.setTolerance(Units.degreesToRadians(4));
-    Back_omegaController.enableContinuousInput(-Math.PI, Math.PI);
-
-    m_xController.setTolerance(0.14);
-    m_yController.setTolerance(0.05);
-    m_omegaController.setTolerance(Units.degreesToRadians(3.5));
-    m_omegaController.enableContinuousInput(-Math.PI, Math.PI);
+  
     driveController.setTolerance(new Pose2d(.05,.05, new Rotation2d(Math.toRadians(5))));
     addRequirements(drivetrainSubsystem);
     addRequirements(leds);
@@ -100,48 +128,9 @@ public class AprilAlignCommand extends Command{
       m_drivetrain.stopModules();
       return;
     }
-
-    double xSpeed = 0; 
-    double ySpeed = 0;
-    double rotSpeed = 0;
     if (m_isBackwards){
-      
-      aprilSkew = Math.toRadians(LimelightHelpers.getTX("limelight-back")); 
-      
-      Back_xController.setGoal(m_goalX);
-      Back_yController.setGoal(m_goalY);
-      Back_omegaController.setGoal(m_goalRot);
-
-      xSpeed = Back_xController.calculate(aprilTag.pose.getY());
-      if (Back_xController.atGoal()) {
-        xSpeed = 0;
-      }
-      ySpeed = Back_yController.calculate(m_aprilRotation.get().getRadians());
-      if (Back_yController.atGoal()) {
-        ySpeed = 0;
-      }
-      rotSpeed = Back_omegaController.calculate(aprilSkew);
-      if (Back_omegaController.atGoal()) {
-        rotSpeed = 0;
-      }
-
-      m_drivetrain.drive(xSpeed,-1* ySpeed, rotSpeed);
-
-  } else {
-    m_yController.setGoal(m_goalY);
-    m_omegaController.setGoal(m_goalRot);
-    m_xController.setGoal(m_goalX); 
-
-    xSpeed = m_xController.calculate(aprilTag.pose.getY());
-    if (m_xController.atGoal()) {
-      xSpeed = 0;
-    }
-    
-    ySpeed = m_yController.calculate(m_aprilRotation.get().getRadians());
-    if (m_yController.atGoal()) {
-      ySpeed = 0;
-    }
-    if (m_isLeft){
+    aprilSkew = Math.toRadians(LimelightHelpers.getTX("limelight-back"));
+  }    else if (m_isLeft){
       aprilSkew = Math.toRadians(LimelightHelpers.getTX("limelight-frl"));
     } else{
       aprilSkew = Math.toRadians(LimelightHelpers.getTX("limelight-frr"));
@@ -155,7 +144,7 @@ public class AprilAlignCommand extends Command{
       // rotSpeed = 0;
     // }
     // m_drivetrain.drive(-xSpeed, ySpeed, rotSpeed);
-  }
+  
 
    
    
@@ -176,34 +165,6 @@ public class AprilAlignCommand extends Command{
     SmartDashboard.putNumber(m_drivetrain.getName() + "/AprilAlignCommand/Command/CalcVelX", -speed.vxMetersPerSecond);
     SmartDashboard.putNumber(m_drivetrain.getName() + "/AprilAlignCommand/Command/CalcVelY", speed.vyMetersPerSecond);
     SmartDashboard.putNumber(m_drivetrain.getName() + "/AprilAlignCommand/Command/CalcVelRot", speed.omegaRadiansPerSecond);
-
-
-
-    // SmartDashboard.putNumber(m_drivetrain.getName() + "/AprilAlignCommandV2/Command/NEWGoalXController", m_goalX);
-    // SmartDashboard.putNumber(m_drivetrain.getName() + "/AprilAlignCommandV2/Command/NEWGoalOmegaController", m_goalRot);
-    // SmartDashboard.putNumber(m_drivetrain.getName() + "/AprilAlignCommandV2/Command/NEWGoalYController",m_goalY);
-    // SmartDashboard.putNumber(m_drivetrain.getName() + "/AprilAlignCommandV2/Command/NEWMeasurementXController", aprilTag.pose.getY());
-    // SmartDashboard.putNumber(m_drivetrain.getName() + "/AprilAlignCommandV2/Command/NEWMeasurementOmegaControllerFRR", Math.toRadians(LimelightHelpers.getTX("limelight-frr")));
-    // SmartDashboard.putNumber(m_drivetrain.getName() + "/AprilAlignCommandV2/Command/NEWMeasurementOmegaControllerFrl", Math.toRadians(LimelightHelpers.getTX("limelight-frl")));
-    // SmartDashboard.putNumber(m_drivetrain.getName() + "/AprilAlignCommandV2/Command/NEWMeasurementOmegaControllerBack", Math.toRadians(LimelightHelpers.getTX("limelight-back")));
-    // SmartDashboard.putNumber(m_drivetrain.getName() + "/AprilAlignCommandV2/Command/NEWMeasurementYController", m_aprilRotation.get().getRadians());
-    // SmartDashboard.putBoolean(m_drivetrain.getName() + "/AprilAlignCommandV2/Command/NEWAtGoalXController", m_xController.atGoal());
-    // SmartDashboard.putBoolean(m_drivetrain.getName() + "/AprilAlignCommandV2/Command/NEWAtGoalXControllerBACK", Back_xController.atGoal());
-    // SmartDashboard.putBoolean(m_drivetrain.getName() + "/AprilAlignCommandV2/Command/NEWAtGoalOmegaController", m_omegaController.atGoal());
-    // SmartDashboard.putBoolean(m_drivetrain.getName() + "/AprilAlignCommandV2/Command/NEWAtGoalYController",  m_yController.atGoal());
-    // SmartDashboard.putBoolean(m_drivetrain.getName() + "/AprilAlignCommandV2/Command/NEWFullyAtGoal",  isFinished());
-
-    // SmartDashboard.putNumber(m_drivetrain.getName() + "/AprilAlignCommandV2/Command/GoalX", m_xController.getGoal().position);
-    // SmartDashboard.putNumber(m_drivetrain.getName() + "/AprilAlignCommandV2/Command/GoalXBACK", Back_xController.getGoal().position);
-    // SmartDashboard.putNumber(m_drivetrain.getName() + "/AprilAlignCommandV2/Command/GoalOmegaBACK", Back_omegaController.getGoal().position);
-    // SmartDashboard.putNumber(m_drivetrain.getName() + "/AprilAlignCommandV2/Command/GoalYBACK", Back_yController.getGoal().position);
-    // SmartDashboard.putNumber(m_drivetrain.getName() + "/AprilAlignCommandV2/Command/GoalY", m_yController.getGoal().position);
-    // SmartDashboard.putNumber(m_drivetrain.getName() + "/AprilAlignCommandV2/Command/GoalSkew", m_omegaController.getGoal().position);
-    // SmartDashboard.putBoolean(m_drivetrain.getName() + "/AprilAlignCommandV2/Command/NEWAtGoalYControllerBACK", Back_yController.atGoal());
-    // SmartDashboard.putBoolean(m_drivetrain.getName() + "/AprilAlignCommandV2/Command/NEWAtGoalOmegaControllerBACK", Back_omegaController.atGoal());
-
-    
-
   }
 
 
@@ -218,5 +179,18 @@ public class AprilAlignCommand extends Command{
   @Override
   public boolean isFinished() {
     return driveController.atReference();
+}
+@Override
+public void initSendable(SendableBuilder builder) {
+    super.initSendable(builder);
+    builder.addDoubleProperty(getName() + "driveController/X/P" , ()->driveController.getXController().getP(), (s)-> mXkP(s));
+    builder.addDoubleProperty(getName() + "driveController/X/D" , ()->driveController.getXController().getD(), (s)-> mXkD(s));
+    builder.addDoubleProperty(getName() + "driveController/X/I" , ()->driveController.getXController().getI(), (s)-> mXkI(s));
+    builder.addDoubleProperty(getName() + "driveController/Y/P" , ()->driveController.getYController().getP(), (s)-> mYkP(s));
+    builder.addDoubleProperty(getName() + "driveController/Y/D" , ()->driveController.getYController().getD(), (s)-> mYkD(s));
+    builder.addDoubleProperty(getName() + "driveController/Y/I" , ()-> driveController.getYController().getI(),(s)-> mYkI(s));
+    builder.addDoubleProperty(getName() + "driveController/Rot/P" ,()->driveController.getThetaController().getP(), (s)-> mRotkP(s));
+    builder.addDoubleProperty(getName() + "driveController/Rot/D" ,()->driveController.getThetaController().getD(), (s)-> mRotkD(s));
+    builder.addDoubleProperty(getName() + "driveController/Rot/I" ,()->driveController.getThetaController().getI(), (s)-> mRotkI(s));
 }
 }

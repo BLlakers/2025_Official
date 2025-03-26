@@ -129,7 +129,7 @@ Command ResetPoseAuto = Commands.runOnce(()-> m_DriveTrain.resetPose(currentPath
     mCoralMechanism.setName("CoralMechnaism");
     
     m_AlgaeIntake.setName("AlgaeIntake");
-
+    LimelightCodeFrontLeft.setName("LimelightCodeFrontLeft");
     mAlgaeMechanism.setName("AlgaeMechanism");
     configureShuffleboard();
     configureBindings();
@@ -304,6 +304,7 @@ Command ResetPoseAuto = Commands.runOnce(()-> m_DriveTrain.resetPose(currentPath
     //SmartDashboard.putData(m_LimelightFrl);
     SmartDashboard.putData(mAlgaeMechanism);
     SmartDashboard.putData(m_AlgaeIntake);
+    SmartDashboard.putData(LimelightCodeFrontLeft);
   }
 
   public Command getAutonomousCommand() {
