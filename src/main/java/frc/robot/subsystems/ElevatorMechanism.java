@@ -1,5 +1,6 @@
 package frc.robot.subsystems;
 
+import java.net.ContentHandler;
 import java.util.function.DoubleConsumer;
 
 import javax.print.attribute.standard.RequestingUserName;
@@ -47,12 +48,12 @@ public class ElevatorMechanism extends SubsystemBase{
    private static double kDt = 0.02;
    private static double kMaxVelocity = .3;
    private static double kMaxAcceleration = 0.3;
-   private static double kP = 0;
+   private static double kP = 0.2;
    private static double kI = 0.0;
    private static double kD = 0.0;
-   private static double kS = 0;
-   private static double kG = .45;
-   private static double kV = 0; 
+   private static double kS = .275;
+   private static double kG = 1;
+   private static double kV = .455; 
    private double marginOfError = 1;
    private double elevatorPositionConversionFactor = 1.6*Math.PI; // 1.6 * Math.PI = Distance per rotation
    private double elevatorVelocityConversionFactor = 1; 
@@ -61,18 +62,18 @@ public class ElevatorMechanism extends SubsystemBase{
    private double elevDecelerateOffset = 5.6;
    //public double position;
    public double elevatorPosition;
-   private ProfiledPIDController pid = new ProfiledPIDController(kP, kI, kD, ELEVATOR_CONSTRAINTS, kDt);
+   private ProfiledPIDController pid = new ProfiledPIDController(kP, kI, kD, ELEVATOR_CONSTRAINTS);
   private static final TrapezoidProfile.Constraints ELEVATOR_CONSTRAINTS = new TrapezoidProfile.Constraints(Units.feetToMeters(140),Units.feetToMeters(125));
   private final ElevatorFeedforward m_feedforward = new ElevatorFeedforward(kS, kG, kV);
 
     //A motor to rotate up and down
    private SparkMax m_ElevatorMotor = new SparkMax(Constants.Port.m_ElevatorMtrC, com.revrobotics.spark.SparkLowLevel.MotorType.kBrushless);
-
+   private SparkMax mFollower = new SparkMax(Constants.Port.m_Follower, com.revrobotics.spark.SparkLowLevel.MotorType.kBrushless);
    private DigitalInput m_ElevatorLimitSwitchTop = new DigitalInput(6);
    private DigitalInput m_ElevatorLimitSwitchBottom = new DigitalInput(7);
    public Boolean AtBottom = true;
    private SparkMaxConfig m_ElevatorConfig = new SparkMaxConfig();
-
+   private SparkMaxConfig mFollowerConfig = new SparkMaxConfig();
     public ElevatorMechanism() {
         m_ElevatorConfig.closedLoop
         .feedbackSensor(FeedbackSensor.kAlternateOrExternalEncoder)
@@ -85,13 +86,18 @@ public class ElevatorMechanism extends SubsystemBase{
             .velocityConversionFactor(elevatorVelocityConversionFactor)
             .countsPerRevolution(8192);
              m_ElevatorMotor.configure(m_ElevatorConfig, ResetMode.kNoResetSafeParameters, PersistMode.kPersistParameters);
-            pid.setTolerance(.16);
+            mFollowerConfig.follow(Constants.Port.m_ElevatorMtrC,true);
+           
+             m_ElevatorMotor.configure(m_ElevatorConfig, ResetMode.kNoResetSafeParameters, PersistMode.kPersistParameters);
+             mFollower.configure(mFollowerConfig, ResetMode.kNoResetSafeParameters, PersistMode.kPersistParameters);
+             pid.setTolerance(.16);
              ResetPosition();
+
              }
            
     public void ElevatorMotorUp() {
         if(!m_ElevatorLimitSwitchTop.get()){
-            m_ElevatorMotor.set(-.25);
+            m_ElevatorMotor.set(.15);
         }else {
             m_ElevatorMotor.set(0);
         }
@@ -106,7 +112,7 @@ public class ElevatorMechanism extends SubsystemBase{
     }
 
     public void ElevatorMotorDown() {
-            m_ElevatorMotor.set(.25);
+            m_ElevatorMotor.set(-.05);
         }
     public boolean ElevatorLimitSwitchTop(){
         return m_ElevatorLimitSwitchTop.get();
@@ -140,11 +146,11 @@ public class ElevatorMechanism extends SubsystemBase{
     }
 
     public Command ElevatorUpLimitCmd() {
-        return this.runEnd(this::ElevatorMotorDown, this::ElevatorMotorStop).until(() -> ElevatorLimitSwitchTop());
+        return this.runEnd(this::ElevatorMotorUp, this::ElevatorMotorStop).until(() -> ElevatorLimitSwitchTop());
     }
 
     public Command ElevatorDownLimitCmd() {
-        return this.runEnd(this::ElevatorMotorUp, this::ElevatorMotorStop).until(() -> ElevatorLimitSwitchBottom());
+        return this.runEnd(this::ElevatorMotorDown, this::ElevatorMotorStop).until(() -> ElevatorLimitSwitchBottom());
     }
 
     public Command ElevatorUpCmd() {
@@ -243,9 +249,9 @@ public void setElevatorPIDPos(double desiredPos){
 
 public void pid(double position){
     pid.setGoal(position);
-    m_elevatorSpeed = pid.calculate(getElevatorEncoderPos()) + m_feedforward.calculate(pid.getSetpoint().velocity);
+    m_elevatorSpeed = (18* pid.calculate(getElevatorEncoderPos())) +kG/*m_feedforward.calculate(pid.getSetpoint().velocity)*/;
     if (pid.atGoal()) {
-      m_elevatorSpeed = 0;
+      m_elevatorSpeed = kG;
     }
     
     if (ElevatorLimitSwitchTop() && m_elevatorSpeed > 0) {

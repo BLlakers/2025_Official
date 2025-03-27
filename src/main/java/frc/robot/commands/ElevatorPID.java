@@ -53,6 +53,6 @@ public void initSendable(SendableBuilder builder) {
   // Returns true when the command should end.
   @Override
   public boolean isFinished() {
-    return elevator.atPIDGoal();
+    return false;
   }
 }
