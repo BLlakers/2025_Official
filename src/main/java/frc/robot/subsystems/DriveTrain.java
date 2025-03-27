@@ -8,6 +8,7 @@ import edu.wpi.first.math.kinematics.*;
 import edu.wpi.first.math.util.Units;
 import edu.wpi.first.util.sendable.SendableBuilder;
 import edu.wpi.first.wpilibj.DriverStation;
+import edu.wpi.first.wpilibj.DriverStation.Alliance;
 import edu.wpi.first.wpilibj.smartdashboard.SmartDashboard;
 
 import com.pathplanner.lib.auto.AutoBuilder;
@@ -310,10 +311,21 @@ public class DriveTrain extends SubsystemBase {
 
     return this.runOnce(
         () -> {
+          if (DriverStation.getAlliance().get() == DriverStation.Alliance.Red) {
+          navx.setAngleAdjustment(0);
           navx.reset();
+          System.out.println(DriverStation.getAlliance().get().toString() + navx.getAngle() + navx.getRotation2d());
+          } else {
+            navx.setAngleAdjustment(180);
+            navx.reset();
+            
+            System.out.println(DriverStation.getAlliance().get().toString() + navx.getAngle() + navx.getRotation2d());
+          }
         });
-  }
-
+      }
+      
+          
+      
   /**
    * Tells the robot to drive based of off a given velocity.
    *

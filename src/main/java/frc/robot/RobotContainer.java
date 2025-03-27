@@ -12,6 +12,9 @@ import java.util.Set;
 
 import com.pathplanner.lib.auto.AutoBuilder;
 import com.pathplanner.lib.auto.NamedCommands;
+import com.pathplanner.lib.path.PathConstraints;
+import com.pathplanner.lib.path.PathPlannerPath;
+import com.pathplanner.lib.path.Waypoint;
 import com.pathplanner.lib.util.PathPlannerLogging;
 import edu.wpi.first.math.geometry.Pose2d;
 import edu.wpi.first.math.geometry.Rotation2d;
@@ -122,6 +125,15 @@ Command algaeGroundCommand = Commands.race(new AlgaePID(mAlgaeMechanism, AlgaeMe
   // Trying to get feedback from auto
   List<Pose2d> currentPath = new ArrayList<Pose2d>();
 Command ResetPoseAuto = Commands.runOnce(()-> m_DriveTrain.resetPose(currentPath.get(0)), m_DriveTrain);
+
+
+Pose2d targetPose = new Pose2d(3.165, 4.031,Rotation2d.fromDegrees(0));
+PathConstraints constraints = new PathConstraints(1.0, 1.0, 1 * Math.PI, 1 * Math.PI); // The constraints for this path.
+Command pathfindingCommand = AutoBuilder.pathfindToPose(
+        targetPose,
+        constraints,
+        0.0 // Goal end velocity in meters/sec
+);
 
   public RobotContainer() {
    mElevatorMechanism.setName("ElevatorMechanism");
@@ -235,6 +247,7 @@ Command ResetPoseAuto = Commands.runOnce(()-> m_DriveTrain.resetPose(currentPath
     driverController.y().whileTrue(LimelightCodeFrontRight);
     driverController.leftBumper().whileTrue(new AprilPoseEstimatorCommand(()->m_DriveTrain.getPose2dEstimator(), ()-> m_LimelightFrl.getCurrentAprilTag(), false, m_DriveTrain));
     // driverController.povUp().whileTrue(runCoralFoward);//mCoralMechanism.CoralForwardCmd());
+    driverController.povUp().whileTrue(pathfindingCommand);
     // driverController.povDown().whileTrue(mCoralMechanism.CoralBackwardCmd());
     // Manipulator Controller commands
     // manipController.y().onTrue(mLedStrand.changeLedCommand()); 
