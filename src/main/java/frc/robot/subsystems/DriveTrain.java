@@ -19,6 +19,7 @@ import com.pathplanner.lib.controllers.PPLTVController;
 import com.pathplanner.lib.controllers.PathFollowingController;
 import com.studica.frc.AHRS;
 import frc.robot.Constants;
+import frc.robot.RobotContainer;
 import frc.robot.support.RobotVersion;
 import frc.robot.support.limelight.LimelightHelpers;
 import edu.wpi.first.math.VecBuilder;
@@ -41,6 +42,7 @@ public class DriveTrain extends SubsystemBase {
   public PIDConstants Rotation = new PIDConstants(3);
   public boolean m_WheelLock = false;
   public boolean m_FieldRelativeEnable = true;
+  Pose2d goalPose;
   public static final double kMaxSpeed =
       Units.feetToMeters(12.1); // WP this seemed to work don't know why // 3.68
   // meters per second or 12.1
@@ -311,12 +313,14 @@ public class DriveTrain extends SubsystemBase {
 
     return this.runOnce(
         () -> {
+          double skew = LimelightHelpers.getTX("limelight-frl");
           if (DriverStation.getAlliance().get() == DriverStation.Alliance.Red) {
+        
           navx.setAngleAdjustment(0);
           navx.reset();
           System.out.println(DriverStation.getAlliance().get().toString() + navx.getAngle() + navx.getRotation2d());
           } else {
-            navx.setAngleAdjustment(180);
+            navx.setAngleAdjustment(0);
             navx.reset();
             
             System.out.println(DriverStation.getAlliance().get().toString() + navx.getAngle() + navx.getRotation2d());
@@ -414,6 +418,12 @@ public class DriveTrain extends SubsystemBase {
           resetPose(new Pose2d());
         });
   }
+
+public Pose2d getGoal(){
+goalPose = getPose2dEstimator().nearest(Constants.Poses.Positions);
+ // Goal end velocity in meters/sec
+return goalPose;
+}
 
   /**
    * This is a runnable command.
@@ -564,7 +574,9 @@ public class DriveTrain extends SubsystemBase {
     builder.addDoubleProperty("EstimatedOdometry/Pose/Y", () -> getPose2dEstimator().getY(), null);
     builder.addDoubleProperty(
         "EstimatedOdometry/Pose/Rot", () -> getPose2dEstimator().getRotation().getDegrees(), null);
-
+builder.addDoubleProperty("GOALPOSE/X", ()->getGoal().getX(), null);
+builder.addDoubleProperty("GOALPOSE/Y", ()->getGoal().getY(), null);
+builder.addDoubleProperty("GOALPOSE/ROT", ()->getGoal().getRotation().getRadians(), null);
     SmartDashboard.putData("DriveTrain/" + m_frontLeft.getName(), m_frontLeft);
     SmartDashboard.putData("DriveTrain/" + m_frontRight.getName(), m_frontRight);
     SmartDashboard.putData("DriveTrain/" + m_backLeft.getName(), m_backLeft);

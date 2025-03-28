@@ -3,17 +3,20 @@ package frc.robot;
 import static edu.wpi.first.units.Units.Inches;
 import static edu.wpi.first.units.Units.Meters;
 
-import org.opencv.core.Mat;
+import java.lang.reflect.Array;
+import java.util.Arrays;
+import java.util.List;
 
 import com.pathplanner.lib.path.PathConstraints;
 
 import edu.wpi.first.math.geometry.Pose2d;
+import edu.wpi.first.math.geometry.Rotation2d;
 import edu.wpi.first.math.geometry.Rotation3d;
 import edu.wpi.first.math.geometry.Transform3d;
 import edu.wpi.first.math.geometry.Translation2d;
 import edu.wpi.first.math.trajectory.TrapezoidProfile;
-import frc.robot.support.RobotVersion;
 import frc.robot.subsystems.DriveTrain;
+import frc.robot.support.RobotVersion;
 
 public final class Constants {
   public static class Drive {
@@ -158,6 +161,38 @@ public final class Constants {
     public static final double frTurnEncoderOffset = Math.PI/2 - 0.1242 - .05759;
     public static final double blTurnEncoderOffset = 4.2+0.0385;
     public static final double brTurnEncoderOffset = 2.736-.06098;
+  }
+  public static final class Poses {
+  
+
+ public static final Pose2d SixLeft = new Pose2d(13.714,2.868, new Rotation2d(120));
+ public static final Pose2d SixRight = new Pose2d(13.930,3.012, new Rotation2d(120));
+ public static final Pose2d SevenLeft = new Pose2d(14.373,4.019, new Rotation2d(180));
+ public static final Pose2d SevenRight = new Pose2d(14.373,4.199, new Rotation2d(180));
+ public static final Pose2d EightLeft = new Pose2d(13.738,5.158, new Rotation2d(-120));
+ public static final Pose2d EightRight = new Pose2d(13.570,5.266, new Rotation2d(-120));
+ public static final Pose2d NineLeft = new Pose2d(14.373,5.182, new Rotation2d(-60));
+ public static final Pose2d NineRight = new Pose2d(12.263,5.098, new Rotation2d(-60));
+ public static final Pose2d TenLeft = new Pose2d(11.736,4.019, new Rotation2d(0));
+ public static final Pose2d TenRight = new Pose2d(11.736,3.839, new Rotation2d(0));
+ public static final Pose2d ElevenLeft = new Pose2d(12.407,2.904, new Rotation2d(60));
+ public static final Pose2d ElevenRight = new Pose2d(12.563,2.796, new Rotation2d(60));
+ public static final Pose2d SeventeenLeft = new Pose2d(3.824,2.904, new Rotation2d(60));
+ public static final Pose2d SeventeenRight = new Pose2d(3.992,2.820, new Rotation2d(60));
+ public static final Pose2d EighteenLeft = new Pose2d(3.165,4.031, new Rotation2d(0));
+ public static final Pose2d EighteenRight = new Pose2d(3.177,3.815, new Rotation2d(0));
+ public static final Pose2d NineteenLeft = new Pose2d(3.824,5.170, new Rotation2d(-60));
+ public static final Pose2d NineteenRight = new Pose2d(3.668,5.086, new Rotation2d(-60));
+ public static final Pose2d TwentyLeft = new Pose2d(5.155,5.170, new Rotation2d(-60));
+ public static final Pose2d TwentyRight = new Pose2d(5.023,5.242, new Rotation2d(-60));
+ public static final Pose2d TwentyoneLeft = new Pose2d(5.814,4.019, new Rotation2d(180));
+ public static final Pose2d TwentyoneRight = new Pose2d(5.814,4.307, new Rotation2d(180));
+ public static final Pose2d TwentytwoLeft = new Pose2d(5.119,2.880, new Rotation2d(120));
+ public static final Pose2d TwentytwoRight = new Pose2d(5.394,3.024, new Rotation2d(120));
+ public static final Pose2d defaultGoal = new Pose2d(-99999,0, new Rotation2d());
+    
+  public static List<Pose2d> Positions = Arrays.asList(SixLeft,SixRight,SevenLeft,SevenRight, EightLeft,EightRight, NineLeft, NineRight, TenLeft, TenRight, ElevenLeft, ElevenRight, SeventeenLeft,SeventeenRight, EighteenLeft, EighteenRight, NineteenLeft, NineteenRight, TwentyLeft, TwentyRight, TwentyoneLeft, TwentyoneRight, TwentytwoLeft, TwentytwoRight);
+
   }
 
   public static final RobotVersion defaultRobotVersion = RobotVersion.v2025;

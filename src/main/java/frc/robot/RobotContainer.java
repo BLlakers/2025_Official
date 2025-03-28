@@ -128,10 +128,8 @@ Command ResetPoseAuto = Commands.runOnce(()-> m_DriveTrain.resetPose(currentPath
 
 
 Pose2d targetPose = new Pose2d(3.165, 4.031,Rotation2d.fromDegrees(0));
-PathConstraints constraints = new PathConstraints(1.0, 1.0, 1 * Math.PI, 1 * Math.PI); // The constraints for this path.
-Command pathfindingCommand = AutoBuilder.pathfindToPose(
-        targetPose,
-        constraints,
+public static final PathConstraints SPEED_CONSTRAINTS = new PathConstraints(3, 3, 1 * Math.PI, 1 * Math.PI); // The constraints for this path.
+Command pathfindingCommand = AutoBuilder.pathfindToPose(targetPose, SPEED_CONSTRAINTS,
         0.0 // Goal end velocity in meters/sec
 );
 
@@ -247,7 +245,7 @@ Command pathfindingCommand = AutoBuilder.pathfindToPose(
     driverController.y().whileTrue(LimelightCodeFrontRight);
     driverController.leftBumper().whileTrue(new AprilPoseEstimatorCommand(()->m_DriveTrain.getPose2dEstimator(), ()-> m_LimelightFrl.getCurrentAprilTag(), false, m_DriveTrain));
     // driverController.povUp().whileTrue(runCoralFoward);//mCoralMechanism.CoralForwardCmd());
-    driverController.povUp().whileTrue(pathfindingCommand);
+    // driverController.povUp().whileTrue(m_DriveTrain.PathFindToPose());
     // driverController.povDown().whileTrue(mCoralMechanism.CoralBackwardCmd());
     // Manipulator Controller commands
     // manipController.y().onTrue(mLedStrand.changeLedCommand()); 
