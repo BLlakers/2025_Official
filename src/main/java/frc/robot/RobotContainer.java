@@ -121,7 +121,6 @@ Command algaeGroundCommand = Commands.race(new AlgaePID(mAlgaeMechanism, AlgaeMe
   // A chooser for autonomous commands
   private final SendableChooser<Command> autoChooser;
   // Creating 2d field in Sim/ShuffleBoard
-  private final Field2d field;
   // Trying to get feedback from auto
   List<Pose2d> currentPath = new ArrayList<Pose2d>();
 Command ResetPoseAuto = Commands.runOnce(()-> m_DriveTrain.resetPose(currentPath.get(0)), m_DriveTrain);
@@ -172,36 +171,12 @@ Command pathfindingCommand = AutoBuilder.pathfindToPose(targetPose, SPEED_CONSTR
 
     SmartDashboard.putData("Auto Chooser", autoChooser);
     // Creates a field to be put to the shuffleboard
-    field = new Field2d();
-
-    SmartDashboard.putData("Field", field);
     SmartDashboard.putData("AUTOPOSITION", (s)-> AutoBuilder.getCurrentPose());
    
-    // Logging callback for current robot pose
-    PathPlannerLogging.setLogCurrentPoseCallback(
-        (pose) -> {
-          // Do whatever you want with the pose here
-          field.setRobotPose(pose);
-        });
-
-    // Logging callback for target robot pose
-    PathPlannerLogging.setLogTargetPoseCallback(
-        (pose) -> {
-          // Do whatever you want with the pose here
-          field.getObject("target pose").setPose(pose);
-        });
-
-    // Logging callback for the active path, this is sent as a list of poses
-    PathPlannerLogging.setLogActivePathCallback(
-        (poses) -> {
-          // Do whatever you want with the poses here
-          field.getObject("path").setPoses(poses);
-        });
   }
 
   public void periodic() {
     // us trying to set pose for field2d
-    field.setRobotPose(m_DriveTrain.getPose2d());
   }
 
   /**
@@ -314,6 +289,7 @@ Command pathfindingCommand = AutoBuilder.pathfindToPose(targetPose, SPEED_CONSTR
     //SmartDashboard.putData(m_LimelightFrl);
     SmartDashboard.putData(mAlgaeMechanism);
     SmartDashboard.putData(m_AlgaeIntake);
+
   }
 
   public Command getAutonomousCommand() {
