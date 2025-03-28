@@ -214,13 +214,13 @@ Command pathfindingCommand = AutoBuilder.pathfindToPose(targetPose, SPEED_CONSTR
     driverController.a().whileTrue(LimelightCodeBack);
     driverController.b().onTrue(m_DriveTrain.ZeroGyro());
     driverController.start().onTrue(m_DriveTrain.resetPose2d()); // RESETING OUR POSE 2d/ odometry
-    driverController.rightBumper().onTrue(m_DriveTrain.resetPoseEstimatorCmd());
+    // driverController.rightBumper().onTrue(m_DriveTrain.resetPoseEstimatorCmd());
     driverController.rightStick().onTrue(m_DriveTrain.WheelLockCommand()); // lock wheels
     driverController.x().whileTrue(LimelightCodeFrontLeft); 
     driverController.y().whileTrue(LimelightCodeFrontRight);
-    driverController.leftBumper().whileTrue(new AprilPoseEstimatorCommand(()->m_DriveTrain.getPose2dEstimator(), ()-> m_LimelightFrl.getCurrentAprilTag(), false, m_DriveTrain));
+    // driverController.leftBumper().whileTrue(new AprilPoseEstimatorCommand(()->m_DriveTrain.getPose2dEstimator(), ()-> m_LimelightFrl.getCurrentAprilTag(), false, m_DriveTrain));
     // driverController.povUp().whileTrue(runCoralFoward);//mCoralMechanism.CoralForwardCmd());
-    // driverController.povUp().whileTrue(m_DriveTrain.PathFindToPose());
+    driverController.povUp().whileTrue(m_DriveTrain.PathFindLeft());
     // driverController.povDown().whileTrue(mCoralMechanism.CoralBackwardCmd());
     // Manipulator Controller commands
     // manipController.y().onTrue(mLedStrand.changeLedCommand()); 

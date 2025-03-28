@@ -115,8 +115,10 @@ Field2d field;
   .getStructTopic("CurrentSpeed", ChassisSpeeds.struct).publish();
   StructPublisher<Pose2d> CurrentPosePublisher = NetworkTableInstance.getDefault()
   .getStructTopic("CurrentPose", Pose2d.struct).publish();
+  StructPublisher<Pose2d> CurrentPoseEstimatorPublisher = NetworkTableInstance.getDefault()
+  .getStructTopic("CurrentPoseEstimator", Pose2d.struct).publish();
   StructPublisher<Rotation2d> CurrentRotPublisher = NetworkTableInstance.getDefault()
-  .getStructTopic("CurrentPose", Rotation2d.struct).publish();
+  .getStructTopic("CurrentRot", Rotation2d.struct).publish();
 
   public DriveTrain(RobotVersion version) {
     AutoBuilder.configure(
@@ -296,12 +298,13 @@ Field2d field;
     updateOdometry();
     updatePoseEstimatorOdometry();
     super.periodic();
-    field.setRobotPose(getPose2d());
+    field.setRobotPose(getPose2dEstimator());
     DesiredStatePublisher.set(DesiredStates);
     CurrentStatePublisher.set(getSwerveModuleStates());
     CurrentSpeedsPublisher.set(getChassisSpeeds());
     CurrentPosePublisher.set(getPose2d());
     CurrentRotPublisher.set(getPose2d().getRotation());
+    CurrentPoseEstimatorPublisher.set(getPose2dEstimator());
   }
 
   /**
@@ -340,18 +343,7 @@ Field2d field;
 
     return this.runOnce(
         () -> {
-          double skew = LimelightHelpers.getTX("limelight-frl");
-          if (DriverStation.getAlliance().get() == DriverStation.Alliance.Red) {
-        
-          navx.setAngleAdjustment(0);
           navx.reset();
-          System.out.println(DriverStation.getAlliance().get().toString() + navx.getAngle() + navx.getRotation2d());
-          } else {
-            navx.setAngleAdjustment(0);
-            navx.reset();
-            
-            System.out.println(DriverStation.getAlliance().get().toString() + navx.getAngle() + navx.getRotation2d());
-          }
         });
       }
       
@@ -373,7 +365,7 @@ Field2d field;
   }
 
   public void driveFieldRelative(ChassisSpeeds fieldRelativeSpeeds) {
-    driveRobotRelative(ChassisSpeeds.fromFieldRelativeSpeeds(fieldRelativeSpeeds, getPose2d().getRotation()));
+    driveRobotRelative(ChassisSpeeds.fromFieldRelativeSpeeds(fieldRelativeSpeeds, getPose2dEstimator().getRotation()));
   }
 
   public void driveRobotRelative(ChassisSpeeds robotRelativeSpeeds) {
@@ -414,6 +406,16 @@ Field2d field;
   public ChassisSpeeds getChassisSpeeds() {
     return m_kinematics.toChassisSpeeds(getSwerveModuleStates());
   }
+
+public Command PathFindLeft(){
+  goalPose = getPose2dEstimator().nearest(Constants.Poses.PositionsLeft);
+  return AutoBuilder.pathfindToPose(goalPose, RobotContainer.SPEED_CONSTRAINTS,0.0);
+}
+
+public Command PathFindRight(){
+  goalPose = getPose2dEstimator().nearest(Constants.Poses.PositionsRight);
+  return AutoBuilder.pathfindToPose(goalPose, RobotContainer.SPEED_CONSTRAINTS,0.0);
+}
 
   /**
    * This command gets the 4 individual SwerveModule States, and groups it into 1 array. <pi> Used
@@ -485,14 +487,14 @@ return goalPose;
     m_odometry.update(navx.getRotation2d(), getSwerveModulePositions());
   }
 
-  public void resetPoseEstimator(){
-    double skew = LimelightHelpers.getTX("limelight-frl");
-    navx.reset();
-    navx.setAngleAdjustment(60+skew);
-  }
+  // public void resetPoseEstimator(){
+    // double skew = LimelightHelpers.getTX("limelight-frl");
+    // navx.reset();
+    // navx.setAngleAdjustment(60+skew);
+  // }
 
   public Command resetPoseEstimatorCmd(){
-    return this.runOnce(()-> resetPoseEstimator());
+    return this.runOnce(()-> resetPoseEstimator(getPose2dEstimator()));
   }
 
   public void updatePoseEstimatorOdometry(){
@@ -538,7 +540,7 @@ return goalPose;
     }
     else if (useMegaTag2 == true)
     {
-      LimelightHelpers.SetRobotOrientation("limelight-frl", m_poseEstimator.getEstimatedPosition().getRotation().getDegrees(), navx.getYaw(), 0, 0, 0, 0);
+      LimelightHelpers.SetRobotOrientation("limelight-frl", m_poseEstimator.getEstimatedPosition().getRotation().getDegrees(), 0, 0, 0, 0, 0);
       LimelightHelpers.PoseEstimate mt2 = LimelightHelpers.getBotPoseEstimate_wpiBlue_MegaTag2("limelight-frl");
       if(Math.abs(navx.getRate()) > 720) // if our angular velocity is greater than 720 degrees per second, ignore vision updates
       {
