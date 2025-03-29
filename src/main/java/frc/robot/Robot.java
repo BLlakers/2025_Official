@@ -34,7 +34,6 @@ public class Robot extends TimedRobot {
     public void robotInit() {
         // AlgaeMechanism.AUTORunning = true;
         m_robotContainer = new RobotContainer();
-        m_robotContainer.m_DriveTrain.ZeroGyro().schedule();
         m_robotContainer.m_LimelightBack.SetTagIDToTrack(-1);
         m_robotContainer.m_LimelightFrl.SetTagIDToTrack(-1);
         m_robotContainer.m_LimelightFrr.SetTagIDToTrack(-1);
@@ -85,6 +84,7 @@ public class Robot extends TimedRobot {
 
     @Override
     public void teleopInit() {  
+        // m_robotContainer.m_DriveTrain.ZeroGyro().schedule();
         AlgaeMechanism.AUTORunning = false;
         m_robotContainer.m_DriveTrain.m_FieldRelativeEnable = true;
         m_robotContainer.m_LimelightBack.SetTagIDToTrack(-1);

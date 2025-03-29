@@ -211,16 +211,16 @@ Command pathfindingCommand = AutoBuilder.pathfindToPose(targetPose, SPEED_CONSTR
     
     // Driver Controller commands
     // - DriveTrain commands (outside of actual driving)
-    driverController.a().whileTrue(LimelightCodeBack);
-    driverController.b().onTrue(m_DriveTrain.ZeroGyro());
+    // driverController.a().whileTrue(LimelightCodeBack);
+    driverController.b().onTrue(m_DriveTrain.SetGyroAdjustmentAngle());
     driverController.start().onTrue(m_DriveTrain.resetPose2d()); // RESETING OUR POSE 2d/ odometry
     // driverController.rightBumper().onTrue(m_DriveTrain.resetPoseEstimatorCmd());
     driverController.rightStick().onTrue(m_DriveTrain.WheelLockCommand()); // lock wheels
     driverController.x().whileTrue(LimelightCodeFrontLeft); 
     driverController.y().whileTrue(LimelightCodeFrontRight);
-    driverController.leftBumper().whileTrue((m_DriveTrain.PathFindLeft(()->m_DriveTrain.getPose2dEstimator())));
-    driverController.rightBumper().whileTrue((m_DriveTrain.PathFindRight(()->m_DriveTrain.getPose2dEstimator())));
-
+    driverController.leftBumper().whileTrue((m_DriveTrain.PathFindLeft()));
+    driverController.rightBumper().whileTrue((m_DriveTrain.PathFindRight()));
+    driverController.a().onTrue(m_DriveTrain.ZeroGyro());
     driverController.povDown().whileTrue(pathfindingCommand);
     // Manipulator Controller commands
     // manipController.y().onTrue(mLedStrand.changeLedCommand()); 

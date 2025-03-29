@@ -17,6 +17,8 @@ import edu.wpi.first.wpilibj.smartdashboard.SmartDashboard;
 
 import java.lang.reflect.Field;
 import java.util.concurrent.Flow.Publisher;
+import java.util.function.BiConsumer;
+import java.util.function.Consumer;
 import java.util.function.Supplier;
 
 import com.pathplanner.lib.auto.AutoBuilder;
@@ -35,6 +37,7 @@ import edu.wpi.first.math.estimator.SwerveDrivePoseEstimator;
 import edu.wpi.first.math.geometry.Pose2d;
 import edu.wpi.first.math.geometry.Rotation2d;
 import edu.wpi.first.wpilibj2.command.Command;
+import edu.wpi.first.wpilibj2.command.Commands;
 import edu.wpi.first.wpilibj2.command.SubsystemBase;
 
 /** Represents a swerve drive style drivetrain. */
@@ -231,9 +234,7 @@ Field2d field;
 
   public Pose2d getPose2dEstimator() {
     return m_poseEstimator.getEstimatedPosition();
-  }
-
-  /**
+  }/**
    * Gets the Position of the four SwerveModules.
    *
    * <p>This gets the encoder in the motor (drive) and the encoder on the swerve module.
@@ -299,6 +300,7 @@ Field2d field;
 
   @Override
   public void periodic() {
+    navx.updateDisplacement(navx.getRawAccelX(), navx.getRawAccelY(), navx.getActualUpdateRate(), navx.isMoving());
     updateOdometry();
     updatePoseEstimatorOdometry();
     super.periodic();
@@ -348,10 +350,20 @@ Field2d field;
 
     return this.runOnce(
         () -> {
-          navx.reset();
+          navx.enableBoardlevelYawReset(false);
+          navx.zeroYaw();
         });
       }
-      
+      public Command SetGyroAdjustmentAngle() {
+    // Inline construction of command goes here.
+    // Subsystem::RunOnce implicitly requires `this` subsystem.
+
+    return this.runOnce(
+        () -> {
+          navx.resetDisplacement();
+          navx.setAngleAdjustment(LimelightHelpers.getBotPoseEstimate_wpiBlue("limelight-frl").pose.getRotation().getDegrees());
+        });
+      }
           
       
   /**
@@ -412,15 +424,24 @@ Field2d field;
     return m_kinematics.toChassisSpeeds(getSwerveModuleStates());
   }
 
-public Command PathFindLeft(Supplier<Pose2d> d){
-  goalPose = d.get().nearest(Constants.Poses.PositionsLeft);
-  return AutoBuilder.pathfindToPose(goalPose, RobotContainer.SPEED_CONSTRAINTS,0.0);
+public Command PathFindLeft(){
+  return this.defer(() -> {
+    Pose2d goal = getPose2dEstimator().nearest(Constants.Poses.PositionsLeft);
+    SmartDashboard.putNumber("goal/X", goal.getX());
+    SmartDashboard.putNumber("goal/Y", goal.getY());
+    SmartDashboard.putNumber("goal/Rot", goal.getRotation().getDegrees());
+    return AutoBuilder.pathfindToPose(goal, RobotContainer.SPEED_CONSTRAINTS);
+    });
 }
 
-public Command PathFindRight(Supplier<Pose2d> d){
-  goalPose = d.get().nearest(Constants.Poses.PositionsRight);
-  return AutoBuilder.pathfindToPose(goalPose, RobotContainer.SPEED_CONSTRAINTS,0.0);
-}
+public Command PathFindRight(){
+  return this.defer(() -> {
+    Pose2d goal = getPose2dEstimator().nearest(Constants.Poses.PositionsRight);
+    SmartDashboard.putNumber("goalRight/X", goal.getX());
+    SmartDashboard.putNumber("goalRight/Y", goal.getY());
+    SmartDashboard.putNumber("goalRight/Rot", goal.getRotation().getDegrees());
+    return AutoBuilder.pathfindToPose(goal, RobotContainer.SPEED_CONSTRAINTS);
+    });}
 
   /**
    * This command gets the 4 individual SwerveModule States, and groups it into 1 array. <pi> Used
@@ -494,7 +515,6 @@ return goalPose;
 
   // public void resetPoseEstimator(){
     // double skew = LimelightHelpers.getTX("limelight-frl");
-    // navx.reset();
     // navx.setAngleAdjustment(60+skew);
   // }
 
@@ -545,13 +565,16 @@ return goalPose;
     }
     else if (useMegaTag2 == true)
     {
-      LimelightHelpers.SetRobotOrientation("limelight-frl", m_poseEstimator.getEstimatedPosition().getRotation().getDegrees(), 0, 0, 0, 0, 0);
+      LimelightHelpers.SetRobotOrientation("limelight-frl", m_poseEstimator.getEstimatedPosition().getRotation().getDegrees(), navx.getRate(), navx.getPitch(), navx.getRawGyroX() , navx.getRoll(), navx.getRawGyroY());
       LimelightHelpers.PoseEstimate mt2 = LimelightHelpers.getBotPoseEstimate_wpiBlue_MegaTag2("limelight-frl");
       if(Math.abs(navx.getRate()) > 720) // if our angular velocity is greater than 720 degrees per second, ignore vision updates
       {
         doRejectUpdate = true;
       }
-      if(mt2.tagCount == 0)
+      if (mt2 == null){
+        doRejectUpdate = true;
+      }
+      else if(mt2.tagCount == 0)
       {
         doRejectUpdate = true;
       }
@@ -616,5 +639,8 @@ builder.addDoubleProperty("GOALPOSE/ROT", ()->getGoal().getRotation().getRadians
     SmartDashboard.putData("DriveTrain/" + m_backLeft.getName(), m_backLeft);
     SmartDashboard.putData("DriveTrain/" + m_backRight.getName(), m_backRight);
     SmartDashboard.putData("field",field);
+    builder.addDoubleProperty("GYRO ANGLE", ()-> navx.getAngle(), null);
+    SmartDashboard.putData("NAVX DATA",navx);
+    builder.addDoubleProperty("NAVX ROTATION",()-> navx.getRotation2d().getDegrees(), null);
   }
 }
