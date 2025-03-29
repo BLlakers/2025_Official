@@ -117,6 +117,9 @@ Field2d field;
   .getStructTopic("CurrentPose", Pose2d.struct).publish();
   StructPublisher<Pose2d> CurrentPoseEstimatorPublisher = NetworkTableInstance.getDefault()
   .getStructTopic("CurrentPoseEstimator", Pose2d.struct).publish();
+  StructPublisher<Pose2d> GoalPosePublisher = NetworkTableInstance.getDefault()
+  .getStructTopic("GoalPoseEstimator", Pose2d.struct).publish();
+ 
   StructPublisher<Rotation2d> CurrentRotPublisher = NetworkTableInstance.getDefault()
   .getStructTopic("CurrentRot", Rotation2d.struct).publish();
 
@@ -305,6 +308,7 @@ Field2d field;
     CurrentPosePublisher.set(getPose2d());
     CurrentRotPublisher.set(getPose2d().getRotation());
     CurrentPoseEstimatorPublisher.set(getPose2dEstimator());
+    GoalPosePublisher.set(goalPose);
   }
 
   /**
@@ -552,6 +556,7 @@ return goalPose;
       }
       if(!doRejectUpdate)
       {
+        
         m_poseEstimator.setVisionMeasurementStdDevs(VecBuilder.fill(.7,.7,9999999));
         m_poseEstimator.addVisionMeasurement(
             mt2.pose,

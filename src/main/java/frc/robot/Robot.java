@@ -34,6 +34,7 @@ public class Robot extends TimedRobot {
     public void robotInit() {
         // AlgaeMechanism.AUTORunning = true;
         m_robotContainer = new RobotContainer();
+        m_robotContainer.m_DriveTrain.ZeroGyro().schedule();
         m_robotContainer.m_LimelightBack.SetTagIDToTrack(-1);
         m_robotContainer.m_LimelightFrl.SetTagIDToTrack(-1);
         m_robotContainer.m_LimelightFrr.SetTagIDToTrack(-1);
