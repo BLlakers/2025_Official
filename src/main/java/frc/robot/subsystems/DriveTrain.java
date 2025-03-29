@@ -17,6 +17,7 @@ import edu.wpi.first.wpilibj.smartdashboard.SmartDashboard;
 
 import java.lang.reflect.Field;
 import java.util.concurrent.Flow.Publisher;
+import java.util.function.Supplier;
 
 import com.pathplanner.lib.auto.AutoBuilder;
 import com.pathplanner.lib.config.PIDConstants;
@@ -411,13 +412,13 @@ Field2d field;
     return m_kinematics.toChassisSpeeds(getSwerveModuleStates());
   }
 
-public Command PathFindLeft(){
-  goalPose = getPose2dEstimator().nearest(Constants.Poses.PositionsLeft);
+public Command PathFindLeft(Supplier<Pose2d> d){
+  goalPose = d.get().nearest(Constants.Poses.PositionsLeft);
   return AutoBuilder.pathfindToPose(goalPose, RobotContainer.SPEED_CONSTRAINTS,0.0);
 }
 
-public Command PathFindRight(){
-  goalPose = getPose2dEstimator().nearest(Constants.Poses.PositionsRight);
+public Command PathFindRight(Supplier<Pose2d> d){
+  goalPose = d.get().nearest(Constants.Poses.PositionsRight);
   return AutoBuilder.pathfindToPose(goalPose, RobotContainer.SPEED_CONSTRAINTS,0.0);
 }
 

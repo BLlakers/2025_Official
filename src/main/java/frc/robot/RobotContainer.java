@@ -218,8 +218,8 @@ Command pathfindingCommand = AutoBuilder.pathfindToPose(targetPose, SPEED_CONSTR
     driverController.rightStick().onTrue(m_DriveTrain.WheelLockCommand()); // lock wheels
     driverController.x().whileTrue(LimelightCodeFrontLeft); 
     driverController.y().whileTrue(LimelightCodeFrontRight);
-    driverController.leftBumper().whileTrue(new PathFindToPose(()->m_DriveTrain.getPose2dEstimator(), true, m_DriveTrain));
-    driverController.rightBumper().whileTrue(new PathFindToPose(()->m_DriveTrain.getPose2dEstimator(), false, m_DriveTrain));
+    driverController.leftBumper().whileTrue((m_DriveTrain.PathFindLeft(()->m_DriveTrain.getPose2dEstimator())));
+    driverController.rightBumper().whileTrue((m_DriveTrain.PathFindRight(()->m_DriveTrain.getPose2dEstimator())));
 
     driverController.povDown().whileTrue(pathfindingCommand);
     // Manipulator Controller commands
