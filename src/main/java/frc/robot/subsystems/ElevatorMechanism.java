@@ -247,12 +247,10 @@ public void setElevatorPIDPos(double desiredPos){
     elevatorPosition = desiredPos;
 }
 
-public void pid(double position){
+public void pid(
+    double position){
     pid.setGoal(position);
-    m_elevatorSpeed = (18* pid.calculate(getElevatorEncoderPos())) +kG/*m_feedforward.calculate(pid.getSetpoint().velocity)*/;
-    if (pid.atGoal()) {
-      m_elevatorSpeed = kG;
-    }
+    m_elevatorSpeed = (18* pid.calculate(getElevatorEncoderPos())) /*kG/*m_feedforward.calculate(pid.getSetpoint().velocity)*/;
     
     if (ElevatorLimitSwitchTop() && m_elevatorSpeed > 0) {
       m_elevatorSpeed = 0;

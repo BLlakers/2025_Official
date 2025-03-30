@@ -179,9 +179,9 @@ public final class Constants {
  public static final Pose2d ElevenLeft = new Pose2d(12.407,2.904, new Rotation2d(Math.toRadians(60)));
  public static final Pose2d ElevenRight = new Pose2d(12.563,2.796, new Rotation2d(Math.toRadians(60)));
  public static final Pose2d SeventeenLeft = new Pose2d(3.824,2.904, new Rotation2d(Math.toRadians(60)));
- public static final Pose2d SeventeenRight = new Pose2d(3.992,2.820, new Rotation2d(Math.toRadians(60)));
+ public static final Pose2d SeventeenRight = new Pose2d(4.18, 2.79, new Rotation2d(Math.toRadians(60)));
  public static final Pose2d EighteenLeft = new Pose2d(3.165,4.031, new Rotation2d(Math.toRadians(0)));
- public static final Pose2d EighteenRight = new Pose2d(3.177,3.815, new Rotation2d(Math.toRadians(0)));
+ public static final Pose2d EighteenRight = new Pose2d(3.177,3.685, new Rotation2d(Math.toRadians(0)));
  public static final Pose2d NineteenLeft = new Pose2d(3.824,5.170, new Rotation2d(Math.toRadians(-60)));
  public static final Pose2d NineteenRight = new Pose2d(3.668,5.086, new Rotation2d(Math.toRadians(-60)));
  public static final Pose2d TwentyLeft = new Pose2d(5.155,5.170, new Rotation2d(Math.toRadians(-60)));
@@ -198,7 +198,7 @@ public final class Constants {
   
   }
 
-  public static final RobotVersion defaultRobotVersion = RobotVersion.v2023;
+  public static final RobotVersion defaultRobotVersion = RobotVersion.v2025;
 
 
 }
