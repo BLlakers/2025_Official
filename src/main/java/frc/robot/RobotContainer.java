@@ -126,11 +126,17 @@ Command algaeGroundCommand = Commands.race(new AlgaePID(mAlgaeMechanism, AlgaeMe
 Command ResetPoseAuto = Commands.runOnce(()-> m_DriveTrain.resetPose(currentPath.get(0)), m_DriveTrain);
 
 
-Pose2d targetPose = new Pose2d(3.165, 4.031,Rotation2d.fromDegrees(0));
+Pose2d HANGREDPOS = new Pose2d(8.775, 0.794,Rotation2d.fromDegrees(-90));
+Pose2d HANGBLUEPOS = new Pose2d(8.775, 7.300,Rotation2d.fromDegrees(-90));
+
 public static final PathConstraints SPEED_CONSTRAINTS = new PathConstraints(2, 2, 1 * Math.PI, 1 * Math.PI); // The constraints for this path.
-Command pathfindingCommand = AutoBuilder.pathfindToPose(targetPose, SPEED_CONSTRAINTS,
+Command HANGRED = AutoBuilder.pathfindToPose(HANGREDPOS, SPEED_CONSTRAINTS,
         0.0 // Goal end velocity in meters/sec
 );
+Command HANGBLUE = AutoBuilder.pathfindToPose(HANGBLUEPOS, SPEED_CONSTRAINTS,
+        0.0 // Goal end velocity in meters/sec
+);
+
 
   public RobotContainer() {
    mElevatorMechanism.setName("ElevatorMechanism");
@@ -212,16 +218,17 @@ Command pathfindingCommand = AutoBuilder.pathfindToPose(targetPose, SPEED_CONSTR
     // Driver Controller commands
     // - DriveTrain commands (outside of actual driving)
     // driverController.a().whileTrue(LimelightCodeBack);
-    driverController.b().onTrue(m_DriveTrain.SetGyroAdjustmentAngle());
-    driverController.start().onTrue(m_DriveTrain.resetPose2d()); // RESETING OUR POSE 2d/ odometry
+    // driverController.b().onTrue(m_DriveTrain.SetGyroAdjustmentAngle());
+    // driverController.start().onTrue(m_DriveTrain.resetPose2d()); // RESETING OUR POSE 2d/ odometry
     // driverController.rightBumper().onTrue(m_DriveTrain.resetPoseEstimatorCmd());
     driverController.rightStick().onTrue(m_DriveTrain.WheelLockCommand()); // lock wheels
-    driverController.x().whileTrue(LimelightCodeFrontLeft); 
-    driverController.y().whileTrue(LimelightCodeFrontRight);
+    // driverController.x().whileTrue(LimelightCodeFrontLeft); 
+    // driverController.y().whileTrue(LimelightCodeFrontRight);
     driverController.leftBumper().whileTrue((m_DriveTrain.PathFindLeft()));
     driverController.rightBumper().whileTrue((m_DriveTrain.PathFindRight()));
-    driverController.a().onTrue(m_DriveTrain.ZeroGyro());
-    driverController.povDown().whileTrue(pathfindingCommand);
+    // driverController.a().onTrue(m_DriveTrain.ZeroGyro());
+    driverController.povRight().whileTrue(HANGRED);
+    driverController.povRight().whileTrue(HANGBLUE);
     // Manipulator Controller commands
     // manipController.y().onTrue(mLedStrand.changeLedCommand()); 
     // manipController.povUp().onTrue(mElevatorMechanism.MovePosUp());

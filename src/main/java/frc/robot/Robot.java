@@ -9,6 +9,7 @@ import edu.wpi.first.wpilibj2.command.Command;
 import edu.wpi.first.wpilibj2.command.CommandScheduler;
 import frc.robot.subsystems.AlgaeMechanism;
 import frc.robot.support.Telemetry;
+import frc.robot.support.limelight.LimelightHelpers;
 import frc.robot.support.limelight.LimelightUtil;
 
 // some imports no longer needed but leaving them here untill final version
@@ -33,7 +34,17 @@ public class Robot extends TimedRobot {
     @Override
     public void robotInit() {
         // AlgaeMechanism.AUTORunning = true;
+        // TODO 1: READ TAG, turn on bot pushed up against the reef wall. make sure to read tag, then move  
+        // 
         m_robotContainer = new RobotContainer();
+        if (LimelightHelpers.getTV("limelight-frl")){
+            if (m_robotContainer.m_LimelightFrl.getCurrentAprilTag().ID ==  17){
+            m_robotContainer.m_DriveTrain.navx.setAngleAdjustment(-60);
+            }
+            if (m_robotContainer.m_LimelightFrl.getCurrentAprilTag().ID ==  19){
+                m_robotContainer.m_DriveTrain.navx.setAngleAdjustment(60);
+            }
+        }
         m_robotContainer.m_LimelightBack.SetTagIDToTrack(-1);
         m_robotContainer.m_LimelightFrl.SetTagIDToTrack(-1);
         m_robotContainer.m_LimelightFrr.SetTagIDToTrack(-1);

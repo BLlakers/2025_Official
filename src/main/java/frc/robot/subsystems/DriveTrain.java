@@ -75,7 +75,7 @@ Field2d field;
 
   // creates a gyro object. Gyro gives the robots rotation/ where the robot is
   // pointed.
-  private final AHRS navx = new AHRS(AHRS.NavXComType.kMXP_SPI);
+  public final AHRS navx = new AHRS(AHRS.NavXComType.kMXP_SPI);
 
   // Creates each swerve module. Swerve modules have a turning and drive motor + a
   // turning and drive encoder.
@@ -300,7 +300,6 @@ Field2d field;
 
   @Override
   public void periodic() {
-    navx.updateDisplacement(navx.getRawAccelX(), navx.getRawAccelY(), navx.getActualUpdateRate(), navx.isMoving());
     updateOdometry();
     updatePoseEstimatorOdometry();
     super.periodic();
@@ -350,8 +349,7 @@ Field2d field;
 
     return this.runOnce(
         () -> {
-          navx.enableBoardlevelYawReset(false);
-          navx.zeroYaw();
+           navx.reset();
         });
       }
       public Command SetGyroAdjustmentAngle() {
@@ -360,7 +358,6 @@ Field2d field;
 
     return this.runOnce(
         () -> {
-          navx.resetDisplacement();
           navx.setAngleAdjustment(LimelightHelpers.getBotPoseEstimate_wpiBlue("limelight-frl").pose.getRotation().getDegrees());
         });
       }
@@ -513,11 +510,6 @@ return goalPose;
     m_odometry.update(navx.getRotation2d(), getSwerveModulePositions());
   }
 
-  // public void resetPoseEstimator(){
-    // double skew = LimelightHelpers.getTX("limelight-frl");
-    // navx.setAngleAdjustment(60+skew);
-  // }
-
   public Command resetPoseEstimatorCmd(){
     return this.runOnce(()-> resetPoseEstimator(getPose2dEstimator()));
   }
@@ -565,7 +557,7 @@ return goalPose;
     }
     else if (useMegaTag2 == true)
     {
-      LimelightHelpers.SetRobotOrientation("limelight-frl", m_poseEstimator.getEstimatedPosition().getRotation().getDegrees(), navx.getRate(), navx.getPitch(), navx.getRawGyroX() , navx.getRoll(), navx.getRawGyroY());
+      LimelightHelpers.SetRobotOrientation("limelight-frl", m_poseEstimator.getEstimatedPosition().getRotation().getDegrees(), navx.getRate(), navx.getPitch(), 0, navx.getRoll(), 0);
       LimelightHelpers.PoseEstimate mt2 = LimelightHelpers.getBotPoseEstimate_wpiBlue_MegaTag2("limelight-frl");
       if(Math.abs(navx.getRate()) > 720) // if our angular velocity is greater than 720 degrees per second, ignore vision updates
       {
