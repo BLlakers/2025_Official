@@ -129,7 +129,7 @@ Command ResetPoseAuto = Commands.runOnce(()-> m_DriveTrain.resetPose(currentPath
 Pose2d HANGREDPOS = new Pose2d(8.775, 0.794,Rotation2d.fromDegrees(-90));
 Pose2d HANGBLUEPOS = new Pose2d(8.775, 7.300,Rotation2d.fromDegrees(-90));
 
-public static final PathConstraints SPEED_CONSTRAINTS = new PathConstraints(2, 2, 1 * Math.PI, 1 * Math.PI); // The constraints for this path.
+public static final PathConstraints SPEED_CONSTRAINTS = new PathConstraints(3.5 , 3, 1 * Math.PI, 1 * Math.PI); // The constraints for this path.
 Command HANGRED = AutoBuilder.pathfindToPose(HANGREDPOS, SPEED_CONSTRAINTS,
         0.0 // Goal end velocity in meters/sec
 );

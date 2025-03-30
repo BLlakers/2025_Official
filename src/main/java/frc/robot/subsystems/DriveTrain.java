@@ -55,7 +55,7 @@ Field2d field;
   public boolean m_FieldRelativeEnable = true;
   Pose2d goalPose;
   public static final double kMaxSpeed =
-      Units.feetToMeters(12.1); // WP this seemed to work don't know why // 3.68
+      Units.feetToMeters(12.5); // WP this seemed to work don't know why // 3.68
   // meters per second or 12.1
   // ft/s (max speed of SDS Mk3 with Neo motor) // TODO KMaxSpeed needs to go with
   // enum
