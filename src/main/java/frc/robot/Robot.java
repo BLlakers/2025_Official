@@ -19,6 +19,7 @@ public class Robot extends TimedRobot {
     private RobotContainer m_robotContainer;
     String codeVersion = "0.0";
     private PowerDistribution PDH = new PowerDistribution(20, PowerDistribution.ModuleType.kRev);
+    public static boolean navxCalibrated = false;
 
     @Override
     public void close() {
@@ -34,10 +35,41 @@ public class Robot extends TimedRobot {
     @Override
     public void robotInit() {
         // AlgaeMechanism.AUTORunning = true;
-        // TODO 1: READ TAG, turn on bot pushed up against the reef wall. make sure to read tag, then move  
+        m_robotContainer.m_LimelightBack.SetTagIDToTrack(-1);
+        m_robotContainer.m_LimelightFrl.SetTagIDToTrack(-1);
+        m_robotContainer.m_LimelightFrr.SetTagIDToTrack(-1);
+        m_robotContainer.mLedStrand.changeLed(128, 0, 0);
+        try {
+            var cam = CameraServer.startAutomaticCapture();
+            cam.setResolution(100, 100);
+            cam.setFPS(60);
+        } catch (Exception e) {
+            // TODO: handle exception
+        }
+
+        SmartDashboard.putString("Code Version", codeVersion);
+
+        // TODO: Evaluate port forwarding setup
+    }
+
+    @Override
+    public void robotPeriodic() {
+        SmartDashboard.putData(PDH);
+        CommandScheduler.getInstance().run();
+    }
+
+    @Override
+    public void disabledInit() {
+        // AlgaeMechanism.AUTORunning = true;
+    }
+
+    @Override
+    public void disabledPeriodic() {
+        AlgaeMechanism.AUTORunning = true;
+                // TODO 1: READ TAG, turn on bot pushed up against the reef wall. make sure to read tag, then move  
         // 
         m_robotContainer = new RobotContainer();
-        if (LimelightHelpers.getTV("limelight-frl")){
+        if (LimelightHelpers.getTV("limelight-frl") && navxCalibrated == false){
             if (m_robotContainer.m_LimelightFrl.getCurrentAprilTag().ID ==  17){
                 m_robotContainer.m_DriveTrain.navx.setAngleAdjustment(-60);
             }
@@ -75,39 +107,8 @@ public class Robot extends TimedRobot {
                 m_robotContainer.m_DriveTrain.navx.setAngleAdjustment(120);
             }
 
-            
+            navxCalibrated = true;
         }
-        m_robotContainer.m_LimelightBack.SetTagIDToTrack(-1);
-        m_robotContainer.m_LimelightFrl.SetTagIDToTrack(-1);
-        m_robotContainer.m_LimelightFrr.SetTagIDToTrack(-1);
-        m_robotContainer.mLedStrand.changeLed(128, 0, 0);
-        try {
-            var cam = CameraServer.startAutomaticCapture();
-            cam.setResolution(100, 100);
-            cam.setFPS(60);
-        } catch (Exception e) {
-            // TODO: handle exception
-        }
-
-        SmartDashboard.putString("Code Version", codeVersion);
-
-        // TODO: Evaluate port forwarding setup
-    }
-
-    @Override
-    public void robotPeriodic() {
-        SmartDashboard.putData(PDH);
-        CommandScheduler.getInstance().run();
-    }
-
-    @Override
-    public void disabledInit() {
-        // AlgaeMechanism.AUTORunning = true;
-    }
-
-    @Override
-    public void disabledPeriodic() {
-        AlgaeMechanism.AUTORunning = true;
     }
 
     @Override
