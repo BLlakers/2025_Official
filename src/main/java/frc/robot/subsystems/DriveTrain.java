@@ -269,7 +269,7 @@ Field2d field;
     Rotation2d robotRotation;
     
     if (alliance.isPresent() && alliance.get() == DriverStation.Alliance.Red) {
-      robotRotation = new Rotation2d(navx.getRotation2d().getRadians()).rotateBy(Rotation2d.k180deg);
+      robotRotation = new Rotation2d(navx.getRotation2d().getRadians() + Rotation2d.fromDegrees(180).getRadians());
     } else {
       robotRotation = new Rotation2d(navx.getRotation2d().getRadians());
     }
@@ -641,5 +641,6 @@ builder.addDoubleProperty("GOALPOSE/ROT", ()->getGoal().getRotation().getRadians
     builder.addDoubleProperty("GYRO ANGLE", ()-> navx.getAngle(), null);
     SmartDashboard.putData("NAVX DATA",navx);
     builder.addDoubleProperty("NAVX ROTATION",()-> navx.getRotation2d().getDegrees(), null);
+    builder.addDoubleProperty("NAVX AngleAdjustment",()-> navx.getAngleAdjustment(), null);
   }
 }
