@@ -265,7 +265,14 @@ Field2d field;
     SmartDashboard.putNumber(getName() + "/Command/Rot Speed", rot);
     SmartDashboard.putBoolean(getName() + "/Command/RobotRelative", m_FieldRelativeEnable);
 
-    Rotation2d robotRotation = new Rotation2d(navx.getRotation2d().getRadians());
+    var alliance = DriverStation.getAlliance();
+    Rotation2d robotRotation;
+    
+    if (alliance.isPresent() && alliance.get() == DriverStation.Alliance.Red) {
+      robotRotation = new Rotation2d(navx.getRotation2d().getRadians()).rotateBy(Rotation2d.k180deg);
+    } else {
+      robotRotation = new Rotation2d(navx.getRotation2d().getRadians());
+    }
 
     // SmartDashboard.putNumber ( "inputRotiation", robotRotation.getDegrees());
     DesiredStates =

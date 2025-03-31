@@ -3,29 +3,29 @@
   "waypoints": [
     {
       "anchor": {
-        "x": 5.1067622950819676,
-        "y": 1.7533299180327868
+        "x": 5.155,
+        "y": 5.17
       },
       "prevControl": null,
       "nextControl": {
-        "x": 6.1067622950819525,
-        "y": 1.7533299180327868
+        "x": 5.37225,
+        "y": 5.73125
       },
       "isLocked": false,
-      "linkedName": null
+      "linkedName": "Tag20Left"
     },
     {
       "anchor": {
-        "x": 1.9899590163934429,
-        "y": 1.7533299180327868
+        "x": 1.6185000000000003,
+        "y": 7.34
       },
       "prevControl": {
-        "x": 0.9899590163934429,
-        "y": 1.7533299180327868
+        "x": 2.0572500000000002,
+        "y": 6.784249999999999
       },
       "nextControl": null,
       "isLocked": false,
-      "linkedName": null
+      "linkedName": "RightCoralStation"
     }
   ],
   "rotationTargets": [],
@@ -33,16 +33,16 @@
   "pointTowardsZones": [],
   "eventMarkers": [],
   "globalConstraints": {
-    "maxVelocity": 2.5,
-    "maxAcceleration": 3.0,
+    "maxVelocity": 3.4,
+    "maxAcceleration": 5.0,
     "maxAngularVelocity": 360.0,
-    "maxAngularAcceleration": 540.0,
+    "maxAngularAcceleration": 720.0,
     "nominalVoltage": 12.0,
-    "unlimited": false
+    "unlimited": true
   },
   "goalEndState": {
     "velocity": 0,
-    "rotation": 0.0
+    "rotation": -55.0
   },
   "reversed": false,
   "folder": null,

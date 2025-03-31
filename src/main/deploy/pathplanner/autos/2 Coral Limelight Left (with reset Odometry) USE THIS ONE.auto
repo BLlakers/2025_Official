@@ -67,12 +67,6 @@
           }
         },
         {
-          "type": "path",
-          "data": {
-            "pathName": "CoralToBottom"
-          }
-        },
-        {
           "type": "named",
           "data": {
             "name": "Limelight"
