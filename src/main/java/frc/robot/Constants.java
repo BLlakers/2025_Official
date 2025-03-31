@@ -182,14 +182,14 @@ public final class Constants {
  public static final Pose2d SeventeenRight = new Pose2d(4.18, 2.79, new Rotation2d(Math.toRadians(60)));
  public static final Pose2d EighteenLeft = new Pose2d(3.165,4.031, new Rotation2d(Math.toRadians(0)));
  public static final Pose2d EighteenRight = new Pose2d(3.177,3.685, new Rotation2d(Math.toRadians(0)));
- public static final Pose2d NineteenLeft = new Pose2d(3.824,5.170, new Rotation2d(Math.toRadians(-60)));
- public static final Pose2d NineteenRight = new Pose2d(3.668,5.086, new Rotation2d(Math.toRadians(-60)));
- public static final Pose2d TwentyLeft = new Pose2d(5.155,5.170, new Rotation2d(Math.toRadians(-60)));
- public static final Pose2d TwentyRight = new Pose2d(5.023,5.242, new Rotation2d(Math.toRadians(-60)));
- public static final Pose2d TwentyoneLeft = new Pose2d(5.814,4.019, new Rotation2d(Math.toRadians(180)));
- public static final Pose2d TwentyoneRight = new Pose2d(5.814,4.307, new Rotation2d(Math.toRadians(180)));
- public static final Pose2d TwentytwoLeft = new Pose2d(5.119,2.880, new Rotation2d(Math.toRadians(120)));
- public static final Pose2d TwentytwoRight = new Pose2d(5.394,3.024, new Rotation2d(Math.toRadians(120)));
+ public static final Pose2d NineteenLeft = new Pose2d(3.9,5.11, new Rotation2d(Math.toRadians(-60)));
+ public static final Pose2d NineteenRight = new Pose2d(3.73,4.92, new Rotation2d(Math.toRadians(-60)));
+ public static final Pose2d TwentyLeft = new Pose2d(5.155,5.170, new Rotation2d(Math.toRadians(-120)));
+ public static final Pose2d TwentyRight = new Pose2d(4.82,5.23, new Rotation2d(Math.toRadians(-120)));
+ public static final Pose2d TwentyoneLeft = new Pose2d(5.74,4.019, new Rotation2d(Math.toRadians(180)));
+ public static final Pose2d TwentyoneRight = new Pose2d(5.74,4.332, new Rotation2d(Math.toRadians(180)));
+ public static final Pose2d TwentytwoLeft = new Pose2d(5.07,3.02, new Rotation2d(Math.toRadians(120)));
+ public static final Pose2d TwentytwoRight = new Pose2d(5.37,3.17, new Rotation2d(Math.toRadians(120)));
  public static final Pose2d defaultGoal = new Pose2d(-99999,0, new Rotation2d());
     
   public static List<Pose2d> Positions = Arrays.asList(SixLeft,SixRight,SevenLeft,SevenRight, EightLeft,EightRight, NineLeft, NineRight, TenLeft, TenRight, ElevenLeft, ElevenRight, SeventeenLeft,SeventeenRight, EighteenLeft, EighteenRight, NineteenLeft, NineteenRight, TwentyLeft, TwentyRight, TwentyoneLeft, TwentyoneRight, TwentytwoLeft, TwentytwoRight);
@@ -198,7 +198,7 @@ public final class Constants {
   
   }
 
-  public static final RobotVersion defaultRobotVersion = RobotVersion.v2025;
+  public static final RobotVersion defaultRobotVersion = RobotVersion.v2023;
 
 
 }
