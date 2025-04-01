@@ -430,22 +430,30 @@ Field2d field;
 
 public Command PathFindLeft(){
   return this.defer(() -> {
-    Pose2d goal = getPose2dEstimator().nearest(Constants.Poses.PositionsLeft);
-    SmartDashboard.putNumber("goal/X", goal.getX());
-    SmartDashboard.putNumber("goal/Y", goal.getY());
-    SmartDashboard.putNumber("goal/Rot", goal.getRotation().getDegrees());
-    return AutoBuilder.pathfindToPose(goal, RobotContainer.SPEED_CONSTRAINTS);
-    });
+    Pose2d goalLeft = getPose2dEstimator().nearest(Constants.Poses.PositionsLeft);
+    SmartDashboard.putNumber("goalLeft/X", goalLeft.getX());
+    SmartDashboard.putNumber("goalLeft/Y", goalLeft.getY());
+    SmartDashboard.putNumber("goal/Rot", goalLeft.getRotation().getDegrees());
+    if (DriverStation.getAlliance().get() == DriverStation.Alliance.Red){
+      return AutoBuilder.pathfindToPoseFlipped(goalLeft, RobotContainer.SPEED_CONSTRAINTS);
+    } else {
+    return AutoBuilder.pathfindToPose(goalLeft, RobotContainer.SPEED_CONSTRAINTS);
+    }
+});
 }
 
 public Command PathFindRight(){
   return this.defer(() -> {
-    Pose2d goal = getPose2dEstimator().nearest(Constants.Poses.PositionsRight);
-    SmartDashboard.putNumber("goalRight/X", goal.getX());
-    SmartDashboard.putNumber("goalRight/Y", goal.getY());
-    SmartDashboard.putNumber("goalRight/Rot", goal.getRotation().getDegrees());
-    return AutoBuilder.pathfindToPose(goal, RobotContainer.SPEED_CONSTRAINTS);
-    });}
+    Pose2d goalRight = getPose2dEstimator().nearest(Constants.Poses.PositionsRight);
+    SmartDashboard.putNumber("goalRight/X", goalRight.getX());
+    SmartDashboard.putNumber("goalRight/Y", goalRight.getY());
+    SmartDashboard.putNumber("goalRight/Rot", goalRight.getRotation().getDegrees());
+    if (DriverStation.getAlliance().get() == DriverStation.Alliance.Red){
+    return AutoBuilder.pathfindToPoseFlipped(goalRight, RobotContainer.SPEED_CONSTRAINTS);
+    } else {
+    return AutoBuilder.pathfindToPose(goalRight, RobotContainer.SPEED_CONSTRAINTS);
+ }
+});}
 
   /**
    * This command gets the 4 individual SwerveModule States, and groups it into 1 array. <pi> Used

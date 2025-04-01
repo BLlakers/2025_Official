@@ -193,8 +193,8 @@ public final class Constants {
  public static final Pose2d defaultGoal = new Pose2d(-99999,0, new Rotation2d());
     
   public static List<Pose2d> Positions = Arrays.asList(SixLeft,SixRight,SevenLeft,SevenRight, EightLeft,EightRight, NineLeft, NineRight, TenLeft, TenRight, ElevenLeft, ElevenRight, SeventeenLeft,SeventeenRight, EighteenLeft, EighteenRight, NineteenLeft, NineteenRight, TwentyLeft, TwentyRight, TwentyoneLeft, TwentyoneRight, TwentytwoLeft, TwentytwoRight);
-  public static List<Pose2d> PositionsLeft = Arrays.asList(SixLeft,SevenLeft, EightLeft, NineLeft, TenLeft, ElevenLeft, SeventeenLeft, EighteenLeft, NineteenLeft, TwentyLeft, TwentyoneLeft, TwentytwoLeft);
-  public static List<Pose2d> PositionsRight = Arrays.asList(SixRight,SevenRight,EightRight, NineRight, TenRight, ElevenRight, SeventeenRight, EighteenRight, NineteenRight, TwentyRight, TwentyoneRight, TwentytwoRight);
+  public static List<Pose2d> PositionsLeft = Arrays.asList(/*SixLeft,SevenLeft, EightLeft, NineLeft, TenLeft, ElevenLeft,*/ SeventeenLeft, EighteenLeft, NineteenLeft, TwentyLeft, TwentyoneLeft, TwentytwoLeft);
+  public static List<Pose2d> PositionsRight = Arrays.asList(/*SixRight,SevenRight,EightRight, NineRight, TenRight, ElevenRight,*/ SeventeenRight, EighteenRight, NineteenRight, TwentyRight, TwentyoneRight, TwentytwoRight);
   
   }
 
