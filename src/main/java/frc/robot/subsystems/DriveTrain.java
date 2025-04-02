@@ -16,6 +16,7 @@ import edu.wpi.first.wpilibj.DriverStation.Alliance;
 import edu.wpi.first.wpilibj.smartdashboard.SmartDashboard;
 
 import java.lang.reflect.Field;
+import java.util.List;
 import java.util.concurrent.Flow.Publisher;
 import java.util.function.BiConsumer;
 import java.util.function.Consumer;
@@ -27,6 +28,11 @@ import com.pathplanner.lib.config.RobotConfig;
 import com.pathplanner.lib.controllers.PPHolonomicDriveController;
 import com.pathplanner.lib.controllers.PPLTVController;
 import com.pathplanner.lib.controllers.PathFollowingController;
+import com.pathplanner.lib.path.GoalEndState;
+import com.pathplanner.lib.path.PathConstraints;
+import com.pathplanner.lib.path.PathPlannerPath;
+import com.pathplanner.lib.path.Waypoint;
+import com.pathplanner.lib.util.FlippingUtil;
 import com.studica.frc.AHRS;
 import frc.robot.Constants;
 import frc.robot.RobotContainer;
@@ -36,6 +42,7 @@ import edu.wpi.first.math.VecBuilder;
 import edu.wpi.first.math.estimator.SwerveDrivePoseEstimator;
 import edu.wpi.first.math.geometry.Pose2d;
 import edu.wpi.first.math.geometry.Rotation2d;
+import edu.wpi.first.math.geometry.Translation2d;
 import edu.wpi.first.wpilibj2.command.Command;
 import edu.wpi.first.wpilibj2.command.Commands;
 import edu.wpi.first.wpilibj2.command.SubsystemBase;
@@ -462,6 +469,60 @@ public Command PathFindRight(){
     return AutoBuilder.pathfindToPose(goalRight, RobotContainer.SPEED_CONSTRAINTS);
  }
 });}
+
+
+public Command PathGenerateLeft(){
+  return this.defer(() -> {
+    Pose2d goalRight = getPose2dEstimator().nearest(Constants.Poses.PositionsRight);
+    SmartDashboard.putNumber("goalRight/X", goalRight.getX());
+    SmartDashboard.putNumber("goalRight/Y", goalRight.getY());
+    SmartDashboard.putNumber("goalRight/Rot", goalRight.getRotation().getDegrees());
+    return generatePath(getPose2dEstimator(), goalRight, RobotContainer.SPEED_CONSTRAINTS);
+});}
+
+
+public Command PathGenerateRight(){
+  return this.defer(() -> {
+    Pose2d goalRight = getPose2dEstimator().nearest(Constants.Poses.PositionsRight);
+    SmartDashboard.putNumber("goalRight/X", goalRight.getX());
+    SmartDashboard.putNumber("goalRight/Y", goalRight.getY());
+    SmartDashboard.putNumber("goalRight/Rot", goalRight.getRotation().getDegrees());
+    return generatePath(getPose2dEstimator(), goalRight, RobotContainer.SPEED_CONSTRAINTS);
+});}
+
+/**
+ * Creates Path from current pose to goal pose following path constraints
+ * Could be used as a substitue to PathPlanner onTheFly 
+ * 
+ * @param currentPose
+ * @param goalPose 
+ * @param pathConstraints
+ * @return Autobuilder followPath Command
+ */
+public Command generatePath(Pose2d currentPose, Pose2d goalPose, PathConstraints pathConstraints){
+    Translation2d currentPosition = currentPose.getTranslation();
+    Translation2d goalPosition = goalPose.getTranslation();
+    Rotation2d goalRotation = goalPose.getRotation();
+
+    Translation2d currentToGoalDistance = goalPosition.minus(currentPosition);
+    Rotation2d currentToGoalDirection = currentToGoalDistance.getAngle();
+
+    //Flips the goal Pose if the alliance is Red
+    if (DriverStation.getAlliance().orElseThrow().equals(Alliance.Red)) {
+      goalPosition = FlippingUtil.flipFieldPosition(goalPosition);
+      goalRotation = FlippingUtil.flipFieldRotation(goalRotation);
+    }
+
+    List<Waypoint> waypoints = PathPlannerPath.waypointsFromPoses(
+            new Pose2d(currentPosition.getX(), currentPose.getY(), currentToGoalDirection),
+            new Pose2d(goalPosition.getX(), goalPosition.getY(), currentToGoalDirection));
+
+    PathPlannerPath path =
+            new PathPlannerPath(waypoints, pathConstraints, null, new GoalEndState(0, goalRotation));
+    path.preventFlipping = true;
+    
+    return AutoBuilder.followPath(path);
+}
 
   /**
    * This command gets the 4 individual SwerveModule States, and groups it into 1 array. <pi> Used
