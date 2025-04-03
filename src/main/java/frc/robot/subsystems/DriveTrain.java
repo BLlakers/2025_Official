@@ -12,6 +12,7 @@ import edu.wpi.first.networktables.StructPublisher;
 import edu.wpi.first.util.sendable.SendableBuilder;
 import edu.wpi.first.wpilibj.DriverStation;
 import edu.wpi.first.wpilibj.smartdashboard.Field2d;
+import edu.wpi.first.wpilibj.smartdashboard.SendableChooser;
 import edu.wpi.first.wpilibj.DriverStation.Alliance;
 import edu.wpi.first.wpilibj.smartdashboard.SmartDashboard;
 
@@ -437,14 +438,17 @@ Field2d field;
 
 public Command PathFindLeft(){
   return this.defer(() -> {
-    Pose2d goalLeft = getPose2dEstimator().nearest(Constants.Poses.PositionsLeft);
-    if (DriverStation.getAlliance().get() == DriverStation.Alliance.Red){
-      var mason = AutoBuilder.pathfindToPoseFlipped(goalLeft, RobotContainer.SPEED_CONSTRAINTS);
+    Pose2d goalLeft;
+    if (DriverStation.getAlliance().orElseThrow().equals(Alliance.Red)) {
+      goalLeft = getPose2dEstimator().nearest(Constants.Poses.PositionsLeftRed);
       SmartDashboard.putNumber("goalLeft/X", goalLeft.getX());
       SmartDashboard.putNumber("goalLeft/Y", goalLeft.getY());
       SmartDashboard.putNumber("goalLeft/Rot", goalLeft.getRotation().getDegrees());
-      return mason;
+      return AutoBuilder.pathfindToPose(goalLeft, RobotContainer.SPEED_CONSTRAINTS);
+
+     
     } else {
+     goalLeft = getPose2dEstimator().nearest(Constants.Poses.PositionsLeftBlue);
       SmartDashboard.putNumber("goalLeft/X", goalLeft.getX());
       SmartDashboard.putNumber("goalLeft/Y", goalLeft.getY());
       SmartDashboard.putNumber("goalLeft/Rot", goalLeft.getRotation().getDegrees());
@@ -455,14 +459,17 @@ public Command PathFindLeft(){
 
 public Command PathFindRight(){
   return this.defer(() -> {
-    Pose2d goalRight = getPose2dEstimator().nearest(Constants.Poses.PositionsRight);
-    if (DriverStation.getAlliance().get() == DriverStation.Alliance.Red){
-    var jared = AutoBuilder.pathfindToPoseFlipped(goalRight, RobotContainer.SPEED_CONSTRAINTS);
+    Pose2d goalRight; 
+   
+      if (DriverStation.getAlliance().orElseThrow().equals(Alliance.Red)) {
+    goalRight = getPose2dEstimator().nearest(Constants.Poses.PositionsRightRed);
     SmartDashboard.putNumber("goalRight/X", goalRight.getX());
     SmartDashboard.putNumber("goalRight/Y", goalRight.getY());
     SmartDashboard.putNumber("goalRight/Rot", goalRight.getRotation().getDegrees());
-    return jared;
+    return AutoBuilder.pathfindToPose(goalRight, RobotContainer.SPEED_CONSTRAINTS);
+   
     } else {
+    goalRight = getPose2dEstimator().nearest(Constants.Poses.PositionsRightBlue);
     SmartDashboard.putNumber("goalRight/X", goalRight.getX());
     SmartDashboard.putNumber("goalRight/Y", goalRight.getY());
     SmartDashboard.putNumber("goalRight/Rot", goalRight.getRotation().getDegrees());
@@ -471,9 +478,11 @@ public Command PathFindRight(){
 });}
 
 
+
+
 public Command PathGenerateLeft(){
   return this.defer(() -> {
-    Pose2d goalRight = getPose2dEstimator().nearest(Constants.Poses.PositionsRight);
+    Pose2d goalRight = getPose2dEstimator().nearest(Constants.Poses.PositionsRightBlue);
     SmartDashboard.putNumber("goalRight/X", goalRight.getX());
     SmartDashboard.putNumber("goalRight/Y", goalRight.getY());
     SmartDashboard.putNumber("goalRight/Rot", goalRight.getRotation().getDegrees());
@@ -483,7 +492,7 @@ public Command PathGenerateLeft(){
 
 public Command PathGenerateRight(){
   return this.defer(() -> {
-    Pose2d goalRight = getPose2dEstimator().nearest(Constants.Poses.PositionsRight);
+    Pose2d goalRight = getPose2dEstimator().nearest(Constants.Poses.PositionsRightBlue);
     SmartDashboard.putNumber("goalRight/X", goalRight.getX());
     SmartDashboard.putNumber("goalRight/Y", goalRight.getY());
     SmartDashboard.putNumber("goalRight/Rot", goalRight.getRotation().getDegrees());
@@ -555,7 +564,7 @@ public Command generatePath(Pose2d currentPose, Pose2d goalPose, PathConstraints
   }
 
 public Pose2d getGoal(){
-goalPose = getPose2dEstimator().nearest(Constants.Poses.Positions);
+goalPose = getPose2dEstimator().nearest(Constants.Poses.PositionsRed);
  // Goal end velocity in meters/sec
 return goalPose;
 }
@@ -680,7 +689,7 @@ return goalPose;
           stopModules();
         });
   }
-
+  
   @Override
   public void initSendable(SendableBuilder builder) {
     super.initSendable(builder);

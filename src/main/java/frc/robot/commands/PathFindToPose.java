@@ -31,9 +31,9 @@ public PathFindToPose(Supplier<Pose2d> CurrentPose, Boolean Left, DriveTrain d){
         Pose2d goalposition;
 
         if (side == true){
-        goalposition = RoboPose.nearest(Constants.Poses.PositionsLeft);
+        goalposition = RoboPose.nearest(Constants.Poses.PositionsLeftBlue);
         } else {
-        goalposition = RoboPose.nearest(Constants.Poses.PositionsRight); 
+        goalposition = RoboPose.nearest(Constants.Poses.PositionsRightBlue); 
         }
        System.out.println(goalposition);
         

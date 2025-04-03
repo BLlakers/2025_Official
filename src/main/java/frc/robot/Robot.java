@@ -1,17 +1,20 @@
 package frc.robot;
 
 import edu.wpi.first.cameraserver.CameraServer;
+import edu.wpi.first.wpilibj.DriverStation;
+import edu.wpi.first.wpilibj.IterativeRobotBase;
 import edu.wpi.first.wpilibj.PWM;
 import edu.wpi.first.wpilibj.PowerDistribution;
+import edu.wpi.first.wpilibj.RobotBase;
 import edu.wpi.first.wpilibj.TimedRobot;
 import edu.wpi.first.wpilibj.smartdashboard.SmartDashboard;
 import edu.wpi.first.wpilibj2.command.Command;
 import edu.wpi.first.wpilibj2.command.CommandScheduler;
+import edu.wpi.first.wpilibj2.command.WaitCommand;
 import frc.robot.subsystems.AlgaeMechanism;
 import frc.robot.support.Telemetry;
 import frc.robot.support.limelight.LimelightHelpers;
 import frc.robot.support.limelight.LimelightUtil;
-
 // some imports no longer needed but leaving them here untill final version
 
 public class Robot extends TimedRobot {
@@ -20,6 +23,7 @@ public class Robot extends TimedRobot {
     String codeVersion = "0.0";
     private PowerDistribution PDH = new PowerDistribution(20, PowerDistribution.ModuleType.kRev);
     public static boolean navxCalibrated = false;
+    private boolean isConnected = false;
 
     @Override
     public void close() {
@@ -56,6 +60,7 @@ public class Robot extends TimedRobot {
     public void robotPeriodic() {
         SmartDashboard.putData(PDH);
         CommandScheduler.getInstance().run();
+ 
     }
 
     @Override
@@ -94,7 +99,7 @@ public class Robot extends TimedRobot {
                 navxCalibrated = true;
             }
             if (m_robotContainer.m_LimelightFrl.getCurrentAprilTag().ID ==  6){
-                m_robotContainer.m_DriveTrain.navx.setAngleAdjustment(-60);
+                m_robotContainer.m_DriveTrain.navx.setAngleAdjustment(240);
                 navxCalibrated = true;
             }
             if (m_robotContainer.m_LimelightFrl.getCurrentAprilTag().ID == 7){
@@ -102,11 +107,11 @@ public class Robot extends TimedRobot {
                 navxCalibrated = true;
             }
             if (m_robotContainer.m_LimelightFrl.getCurrentAprilTag().ID ==  8){
-                m_robotContainer.m_DriveTrain.navx.setAngleAdjustment(-120);
+                m_robotContainer.m_DriveTrain.navx.setAngleAdjustment(120);
                 navxCalibrated = true;
             }
             if (m_robotContainer.m_LimelightFrl.getCurrentAprilTag().ID ==  9){
-                m_robotContainer.m_DriveTrain.navx.setAngleAdjustment(-60);
+                m_robotContainer.m_DriveTrain.navx.setAngleAdjustment(60);
                 navxCalibrated = true;
             }
             if (m_robotContainer.m_LimelightFrl.getCurrentAprilTag().ID ==  10){
@@ -114,7 +119,7 @@ public class Robot extends TimedRobot {
                 navxCalibrated = true;
             }
             if (m_robotContainer.m_LimelightFrl.getCurrentAprilTag().ID ==  11){
-                m_robotContainer.m_DriveTrain.navx.setAngleAdjustment(120);
+                m_robotContainer.m_DriveTrain.navx.setAngleAdjustment(300);
                 navxCalibrated = true;
             }
 
@@ -128,9 +133,11 @@ public class Robot extends TimedRobot {
         m_robotContainer.m_DriveTrain.m_FieldRelativeEnable = false;
         System.out.println(m_robotContainer.m_DriveTrain.m_FieldRelativeEnable);
         m_autonomousCommand = m_robotContainer.getAutonomousCommand();
+        
         AlgaeMechanism.AUTORunning = true;
         if (m_autonomousCommand != null) {
             m_autonomousCommand.schedule();
+        
         }
     }
 

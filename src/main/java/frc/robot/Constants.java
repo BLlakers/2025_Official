@@ -8,6 +8,7 @@ import java.util.Arrays;
 import java.util.List;
 
 import com.pathplanner.lib.path.PathConstraints;
+import com.pathplanner.lib.util.FlippingUtil;
 
 import edu.wpi.first.math.geometry.Pose2d;
 import edu.wpi.first.math.geometry.Rotation2d;
@@ -18,6 +19,7 @@ import edu.wpi.first.math.trajectory.TrapezoidProfile;
 import frc.robot.subsystems.DriveTrain;
 import frc.robot.support.RobotVersion;
 
+@SuppressWarnings("unused")
 public final class Constants {
   public static class Drive {
 
@@ -165,38 +167,39 @@ public final class Constants {
   }
   public static final class Poses {
   
+    public static final Pose2d SeventeenLeft = new Pose2d(3.824,2.904, new Rotation2d(Math.toRadians(60)));
+    public static final Pose2d SeventeenRight = new Pose2d(4.19, 2.78, new Rotation2d(Math.toRadians(60)));
+    public static final Pose2d EighteenLeft = new Pose2d(3.22,4.06, new Rotation2d(Math.toRadians(0)));
+    public static final Pose2d EighteenRight = new Pose2d(3.22,3.76, new Rotation2d(Math.toRadians(0)));
+    public static final Pose2d NineteenLeft = new Pose2d(3.9,5.15, new Rotation2d(Math.toRadians(-60)));
+    public static final Pose2d NineteenRight = new Pose2d(3.73,4.92, new Rotation2d(Math.toRadians(-60)));
+    public static final Pose2d TwentyLeft = new Pose2d(5.18,5.11, new Rotation2d(Math.toRadians(-120)));
+    public static final Pose2d TwentyRight = new Pose2d(4.82,5.23, new Rotation2d(Math.toRadians(-120)));
+    public static final Pose2d TwentyoneLeft = new Pose2d(5.77,3.98, new Rotation2d(Math.toRadians(180)));
+    public static final Pose2d TwentyoneRight = new Pose2d(5.78,4.36, new Rotation2d(Math.toRadians(180)));
+    public static final Pose2d TwentytwoLeft = new Pose2d(5.1,2.91, new Rotation2d(Math.toRadians(120)));
+    public static final Pose2d TwentytwoRight = new Pose2d(5.34,3.13, new Rotation2d(Math.toRadians(120)));
+    public static final Pose2d defaultGoal = new Pose2d(-99999,0, new Rotation2d());
+public static final Pose2d SixLeft = FlippingUtil.flipFieldPose(TwentytwoLeft);
+public static final Pose2d SixRight = FlippingUtil.flipFieldPose(TwentytwoRight);
+ public static final Pose2d SevenLeft =  FlippingUtil.flipFieldPose(TwentyoneLeft);
+ public static final Pose2d SevenRight =  FlippingUtil.flipFieldPose(TwentyoneRight);
+ public static final Pose2d EightLeft = FlippingUtil.flipFieldPose(TwentyLeft);
+ public static final Pose2d EightRight = FlippingUtil.flipFieldPose(TwentyRight);
+ public static final Pose2d NineLeft = FlippingUtil.flipFieldPose(NineteenLeft);
+ public static final Pose2d NineRight = FlippingUtil.flipFieldPose(NineteenRight);
+ public static final Pose2d TenLeft = FlippingUtil.flipFieldPose(EighteenLeft);
+ public static final Pose2d TenRight = FlippingUtil.flipFieldPose(EighteenRight);
+ public static final Pose2d ElevenLeft = FlippingUtil.flipFieldPose(SeventeenLeft);
+ public static final Pose2d ElevenRight = FlippingUtil.flipFieldPose(SeventeenRight);
 
- public static final Pose2d SixLeft = new Pose2d(13.714,2.868, new Rotation2d(Math.toRadians(120)));
- public static final Pose2d SixRight = new Pose2d(13.930,3.012, new Rotation2d(Math.toRadians(120)));
- public static final Pose2d SevenLeft = new Pose2d(14.373,4.019, new Rotation2d(Math.toRadians(180)));
- public static final Pose2d SevenRight = new Pose2d(14.373,4.199, new Rotation2d(Math.toRadians(180)));
- public static final Pose2d EightLeft = new Pose2d(13.738,5.158, new Rotation2d(Math.toRadians(-120)));
- public static final Pose2d EightRight = new Pose2d(13.570,5.266, new Rotation2d(Math.toRadians(-120)));
- public static final Pose2d NineLeft = new Pose2d(14.373,5.182, new Rotation2d(Math.toRadians(-60)));
- public static final Pose2d NineRight = new Pose2d(12.263,5.098, new Rotation2d(Math.toRadians(-60)));
- public static final Pose2d TenLeft = new Pose2d(11.736,4.019, new Rotation2d(Math.toRadians(0)));
- public static final Pose2d TenRight = new Pose2d(11.736,3.839, new Rotation2d(Math.toRadians(0)));
- public static final Pose2d ElevenLeft = new Pose2d(12.407,2.904, new Rotation2d(Math.toRadians(60)));
- public static final Pose2d ElevenRight = new Pose2d(12.563,2.796, new Rotation2d(Math.toRadians(60)));
- public static final Pose2d SeventeenLeft = new Pose2d(3.824,2.904, new Rotation2d(Math.toRadians(60)));
- public static final Pose2d SeventeenRight = new Pose2d(4.19, 2.78, new Rotation2d(Math.toRadians(60)));
- public static final Pose2d EighteenLeft = new Pose2d(3.22,4.06, new Rotation2d(Math.toRadians(0)));
- public static final Pose2d EighteenRight = new Pose2d(3.22,3.76, new Rotation2d(Math.toRadians(0)));
- public static final Pose2d NineteenLeft = new Pose2d(3.9,5.15, new Rotation2d(Math.toRadians(-60)));
- public static final Pose2d NineteenRight = new Pose2d(3.73,4.92, new Rotation2d(Math.toRadians(-60)));
- public static final Pose2d TwentyLeft = new Pose2d(5.18,5.11, new Rotation2d(Math.toRadians(-120)));
- public static final Pose2d TwentyRight = new Pose2d(4.82,5.23, new Rotation2d(Math.toRadians(-120)));
- public static final Pose2d TwentyoneLeft = new Pose2d(5.77,3.98, new Rotation2d(Math.toRadians(180)));
- public static final Pose2d TwentyoneRight = new Pose2d(5.78,4.36, new Rotation2d(Math.toRadians(180)));
- public static final Pose2d TwentytwoLeft = new Pose2d(5.1,2.91, new Rotation2d(Math.toRadians(120)));
- public static final Pose2d TwentytwoRight = new Pose2d(5.34,3.13, new Rotation2d(Math.toRadians(120)));
- public static final Pose2d defaultGoal = new Pose2d(-99999,0, new Rotation2d());
-    
-  public static List<Pose2d> Positions = Arrays.asList(SixLeft,SixRight,SevenLeft,SevenRight, EightLeft,EightRight, NineLeft, NineRight, TenLeft, TenRight, ElevenLeft, ElevenRight, SeventeenLeft,SeventeenRight, EighteenLeft, EighteenRight, NineteenLeft, NineteenRight, TwentyLeft, TwentyRight, TwentyoneLeft, TwentyoneRight, TwentytwoLeft, TwentytwoRight);
-  public static List<Pose2d> PositionsLeft = Arrays.asList(/*SixLeft,SevenLeft, EightLeft, NineLeft, TenLeft, ElevenLeft,*/ SeventeenLeft, EighteenLeft, NineteenLeft, TwentyLeft, TwentyoneLeft, TwentytwoLeft);
-  public static List<Pose2d> PositionsRight = Arrays.asList(/*SixRight,SevenRight,EightRight, NineRight, TenRight, ElevenRight,*/ SeventeenRight, EighteenRight, NineteenRight, TwentyRight, TwentyoneRight, TwentytwoRight);
-  
-  }
+  public static List<Pose2d> PositionsRed = Arrays.asList(SixLeft,SixRight,SevenLeft,SevenRight, EightLeft,EightRight, NineLeft, NineRight, TenLeft, TenRight, ElevenLeft, ElevenRight, SeventeenLeft,SeventeenRight, EighteenLeft, EighteenRight, NineteenLeft, NineteenRight, TwentyLeft, TwentyRight, TwentyoneLeft, TwentyoneRight, TwentytwoLeft, TwentytwoRight);
+  public static List<Pose2d> PositionsLeftBlue = Arrays.asList(/*SixLeft,SevenLeft, EightLeft, NineLeft, TenLeft, ElevenLeft,*/ SeventeenLeft, EighteenLeft, NineteenLeft, TwentyLeft, TwentyoneLeft, TwentytwoLeft);
+  public static List<Pose2d> PositionsRightBlue = Arrays.asList(/*SixRight,SevenRight,EightRight, NineRight, TenRight, ElevenRight,*/ SeventeenRight, EighteenRight, NineteenRight, TwentyRight, TwentyoneRight, TwentytwoRight);
+  public static List<Pose2d> PositionsLeftRed = Arrays.asList(SixLeft,SevenLeft, EightLeft, NineLeft, TenLeft, ElevenLeft/*, SeventeenLeft, EighteenLeft, NineteenLeft, TwentyLeft, TwentyoneLeft, TwentytwoLeft*/);
+  public static List<Pose2d> PositionsRightRed = Arrays.asList(SixRight,SevenRight,EightRight, NineRight, TenRight, ElevenRight/* ,SeventeenRight, EighteenRight, NineteenRight, TwentyRight, TwentyoneRight, TwentytwoRight*/);
+
+}
 
   public static final RobotVersion defaultRobotVersion = RobotVersion.v2025;
 

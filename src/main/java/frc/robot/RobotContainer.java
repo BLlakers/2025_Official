@@ -69,6 +69,7 @@ public class RobotContainer {
   
 
 
+
 //  final Command TEST = elevatorPIDDown.finallyDo(elevatorPIDL2::schedule);
 
 Command runCoralFoward = mCoralMechanism.CoralForwardCmd().onlyWhile(()->!mCoralMechanism.IsCoralLoaded()).withName("RunCoral");
@@ -172,10 +173,14 @@ Command HANGBLUE = AutoBuilder.pathfindToPose(HANGBLUEPOS, SPEED_CONSTRAINTS,
     
     autoChooser = AutoBuilder.buildAutoChooser();
 
+  
+  
+  
     // Another option that allows you to specify the default auto by its name:
     // autoChooser = AutoBuilder.buildAutoChooser("My Default Auto");
 
     SmartDashboard.putData("Auto Chooser", autoChooser);
+   
     // Creates a field to be put to the shuffleboard
     SmartDashboard.putData("AUTOPOSITION", (s)-> AutoBuilder.getCurrentPose());
    
