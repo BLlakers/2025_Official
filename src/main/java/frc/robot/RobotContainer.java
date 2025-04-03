@@ -222,18 +222,20 @@ Command HANGBLUE = AutoBuilder.pathfindToPose(HANGBLUEPOS, SPEED_CONSTRAINTS,
     
     // Driver Controller commands
     // - DriveTrain commands (outside of actual driving)
-    // driverController.a().whileTrue(LimelightCodeBack);
+    driverController.a().whileTrue(LimelightCodeBack);
     // driverController.b().onTrue(m_DriveTrain.SetGyroAdjustmentAngle());
     // driverController.start().onTrue(m_DriveTrain.resetPose2d()); // RESETING OUR POSE 2d/ odometry
     // driverController.rightBumper().onTrue(m_DriveTrain.resetPoseEstimatorCmd());
     driverController.rightStick().onTrue(m_DriveTrain.WheelLockCommand()); // lock wheels
-    // driverController.x().whileTrue(LimelightCodeFrontLeft); 
-    // driverController.y().whileTrue(LimelightCodeFrontRight);
+    driverController.x().whileTrue(LimelightCodeFrontLeft); 
+    driverController.y().whileTrue(LimelightCodeFrontRight);
+    driverController.povLeft().onTrue(m_LimelightFrl.setLimelightUsageField());
+    driverController.povRight().onTrue(m_LimelightFrl.setLimelightUsageRobot());
     driverController.leftBumper().whileTrue((m_DriveTrain.PathFindLeft()));
     driverController.rightBumper().whileTrue((m_DriveTrain.PathFindRight()));
-    // driverController.a().onTrue(m_DriveTrain.ZeroGyro());
-    driverController.povRight().whileTrue(HANGRED);
-    driverController.povRight().whileTrue(HANGBLUE);
+    driverController.start().onTrue(m_DriveTrain.ZeroGyro());
+    // driverController.povRight().whileTrue(HANGRED);
+    // driverController.povRight().whileTrue(HANGBLUE);
     // Manipulator Controller commands
     // manipController.y().onTrue(mLedStrand.changeLedCommand()); 
     // manipController.povUp().onTrue(mElevatorMechanism.MovePosUp());

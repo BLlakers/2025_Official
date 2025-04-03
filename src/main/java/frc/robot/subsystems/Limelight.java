@@ -17,7 +17,9 @@ import edu.wpi.first.networktables.NetworkTableInstance;
 import edu.wpi.first.networktables.TimestampedDoubleArray;
 import edu.wpi.first.util.sendable.SendableBuilder;
 import edu.wpi.first.wpilibj2.command.Command;
+import edu.wpi.first.wpilibj2.command.Commands;
 import edu.wpi.first.wpilibj2.command.SubsystemBase;
+import frc.robot.support.limelight.LimelightHelpers;
 
 public class Limelight extends SubsystemBase {
   private final DoubleArraySubscriber aprilTagPoseTopic;
@@ -100,10 +102,15 @@ public class Limelight extends SubsystemBase {
     return new Rotation2d(Math.toRadians(poseArray.value[5]));
   }
 
+  public Command setLimelightUsageField() {
+    return Commands.runOnce(()-> LimelightHelpers.setCameraPose_RobotSpace("limelight-frl", .17, 0, .2, 0, -90, 0));
+  }
+  public Command setLimelightUsageRobot() { 
+    return Commands.runOnce(()-> LimelightHelpers.setCameraPose_RobotSpace("limelight-frl", .17, 0, .2, 0, 0, 0));
+  }
   public Command PriorityIDcmd(int idBlue, int idRed){
     var alliance = DriverStation.getAlliance();
     if (alliance.isPresent() && alliance.get() == DriverStation.Alliance.Red) {
-      System.out.println("ESHDFSJDFKSDFKASDFNSDFNASJFAJSFJSDFSDFJSDJKFSKDFJSDF");
       return this.runOnce(()->this.SetTagIDToTrack(idRed));
 
     } else if (alliance.isPresent() && alliance.get() == DriverStation.Alliance.Blue){
