@@ -66,6 +66,12 @@
           "data": {
             "name": "ElevatorBottom"
           }
+        },
+        {
+          "type": "named",
+          "data": {
+            "name": "StopDrive"
+          }
         }
       ]
     }

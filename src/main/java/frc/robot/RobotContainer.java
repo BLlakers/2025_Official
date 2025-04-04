@@ -169,7 +169,7 @@ Command HANGBLUE = AutoBuilder.pathfindToPose(HANGBLUEPOS, SPEED_CONSTRAINTS,
     NamedCommands.registerCommand("ShootCoral",mCoralMechanism.CoralForwardCmd().withTimeout(.5));
     NamedCommands.registerCommand("ToggleFieldRelativel", m_DriveTrain.toggleFieldRelativeEnable());
     NamedCommands.registerCommand("WaitUntilElevatorTop", new WaitUntilCommand(()-> mElevatorMechanism.ElevatorAtPos()));
-    NamedCommands.registerCommand("StopDrive", m_DriveTrain.Break());
+    NamedCommands.registerCommand("StopDrive", m_DriveTrain.WheelLockCommand());
     // Build an auto chooser. This will use Commands.none() as the default option.
     
     autoChooser = AutoBuilder.buildAutoChooser();
