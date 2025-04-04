@@ -103,7 +103,7 @@ public class Limelight extends SubsystemBase {
   }
 
   public Command setLimelightUsageField() {
-    return Commands.runOnce(()-> LimelightHelpers.setCameraPose_RobotSpace("limelight-frl", .17, 0, .2, 0, -90, 0));
+    return Commands.runOnce(()-> LimelightHelpers.setCameraPose_RobotSpace("limelight-frl", 0, 0, 0, 0, -90, 0));
   }
   public Command setLimelightUsageRobot() { 
     return Commands.runOnce(()-> LimelightHelpers.setCameraPose_RobotSpace("limelight-frl", .17, 0, .2, 0, 0, 0));
