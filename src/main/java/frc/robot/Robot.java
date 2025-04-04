@@ -38,6 +38,56 @@ public class Robot extends TimedRobot {
     // commit
     @Override
     public void robotInit() {
+        if (LimelightHelpers.getTV("limelight-frl") && navxCalibrated == false){
+            if (m_robotContainer.m_LimelightFrl.getCurrentAprilTag().ID ==  17){
+                m_robotContainer.m_DriveTrain.navx.setAngleAdjustment(300);
+                 navxCalibrated = true;
+            }
+            if (m_robotContainer.m_LimelightFrl.getCurrentAprilTag().ID ==  18){
+                m_robotContainer.m_DriveTrain.navx.setAngleAdjustment(0);
+                navxCalibrated = true;
+            }
+            if (m_robotContainer.m_LimelightFrl.getCurrentAprilTag().ID ==  19){
+                m_robotContainer.m_DriveTrain.navx.setAngleAdjustment(60);
+                navxCalibrated = true;
+            }
+            if (m_robotContainer.m_LimelightFrl.getCurrentAprilTag().ID ==  20){
+                m_robotContainer.m_DriveTrain.navx.setAngleAdjustment(120);
+                navxCalibrated = true;
+            }
+            if (m_robotContainer.m_LimelightFrl.getCurrentAprilTag().ID ==  21){
+                m_robotContainer.m_DriveTrain.navx.setAngleAdjustment(180);
+                navxCalibrated = true;
+            }
+            if (m_robotContainer.m_LimelightFrl.getCurrentAprilTag().ID ==  22){
+                m_robotContainer.m_DriveTrain.navx.setAngleAdjustment(240);
+                navxCalibrated = true;
+            }
+            if (m_robotContainer.m_LimelightFrl.getCurrentAprilTag().ID ==  6){
+                m_robotContainer.m_DriveTrain.navx.setAngleAdjustment(240);
+                navxCalibrated = true;
+            }
+            if (m_robotContainer.m_LimelightFrl.getCurrentAprilTag().ID == 7){
+                m_robotContainer.m_DriveTrain.navx.setAngleAdjustment(180);
+                navxCalibrated = true;
+            }
+            if (m_robotContainer.m_LimelightFrl.getCurrentAprilTag().ID ==  8){
+                m_robotContainer.m_DriveTrain.navx.setAngleAdjustment(120);
+                navxCalibrated = true;
+            }
+            if (m_robotContainer.m_LimelightFrl.getCurrentAprilTag().ID ==  9){
+                m_robotContainer.m_DriveTrain.navx.setAngleAdjustment(60);
+                navxCalibrated = true;
+            }
+            if (m_robotContainer.m_LimelightFrl.getCurrentAprilTag().ID ==  10){
+                m_robotContainer.m_DriveTrain.navx.setAngleAdjustment(0);
+                navxCalibrated = true;
+            }
+            if (m_robotContainer.m_LimelightFrl.getCurrentAprilTag().ID ==  11){
+                m_robotContainer.m_DriveTrain.navx.setAngleAdjustment(300);
+                navxCalibrated = true;
+            }
+        }
         // AlgaeMechanism.AUTORunning = true;
         m_robotContainer.m_LimelightBack.SetTagIDToTrack(-1);
         m_robotContainer.m_LimelightFrl.SetTagIDToTrack(-1);
