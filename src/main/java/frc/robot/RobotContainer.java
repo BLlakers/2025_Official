@@ -130,7 +130,7 @@ Command ResetPoseAuto = Commands.runOnce(()-> m_DriveTrain.resetPose(currentPath
 Pose2d HANGREDPOS = new Pose2d(8.775, 0.794,Rotation2d.fromDegrees(-90));
 Pose2d HANGBLUEPOS = new Pose2d(8.775, 7.300,Rotation2d.fromDegrees(-90));
 
-public static final PathConstraints SPEED_CONSTRAINTS = new PathConstraints(2.5 , 2, 1.5 * Math.PI, 1 * Math.PI); // The constraints for this path.
+public static final PathConstraints SPEED_CONSTRAINTS = new PathConstraints(2 , 1.5, 1.5 * Math.PI, 1 * Math.PI); // The constraints for this path.
 Command HANGRED = AutoBuilder.pathfindToPose(HANGREDPOS, SPEED_CONSTRAINTS,
         0.0 // Goal end velocity in meters/sec
 );
@@ -156,7 +156,7 @@ Command HANGBLUE = AutoBuilder.pathfindToPose(HANGBLUEPOS, SPEED_CONSTRAINTS,
    NamedCommands.registerCommand("LimelightSetFirstRightPriority", m_LimelightFrl.PriorityIDcmd(20, 11));
    NamedCommands.registerCommand("LimelightSetSecondRightPriority", m_LimelightFrl.PriorityIDcmd(19, 6));
    NamedCommands.registerCommand("LimelightBack",LimelightCodeBack);
-   NamedCommands.registerCommand("RobotOrientedLimelight", algaeGroundCommand);
+   NamedCommands.registerCommand("RobotOrientedLimelight", m_LimelightFrl.setLimelightUsageField());
    NamedCommands.registerCommand("SETPOSEfrl", ResetPoseAuto);
    NamedCommands.registerCommand("PathRESETODMLeft", AutoBuilder.resetOdom(new Pose2d(5.002, 2.806,new Rotation2d(90))));
    NamedCommands.registerCommand("PathRESETODMRight", AutoBuilder.resetOdom(new Pose2d(5.021, 5.253,new Rotation2d(180))));

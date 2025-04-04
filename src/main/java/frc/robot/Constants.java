@@ -178,10 +178,12 @@ public final class Constants {
     public static final Pose2d TwentyRight = new Pose2d(4.82,5.23, new Rotation2d(Math.toRadians(-120)));
     public static final Pose2d TwentyoneLeft = new Pose2d(5.77,3.98, new Rotation2d(Math.toRadians(180)));
     public static final Pose2d TwentyoneRight = new Pose2d(5.78,4.36, new Rotation2d(Math.toRadians(180)));
-    public static final Pose2d TwentytwoLeft = new Pose2d(5.1,2.91, new Rotation2d(Math.toRadians(120)));
+    public static final Pose2d TwentytwoLeft = new Pose2d(5.19/*adding 9 here */,2.91, new Rotation2d(Math.toRadians(120)));
     public static final Pose2d TwentytwoRight = new Pose2d(5.34,3.13, new Rotation2d(Math.toRadians(120)));
     public static final Pose2d defaultGoal = new Pose2d(-99999,0, new Rotation2d());
 public static final Pose2d SixLeft = FlippingUtil.flipFieldPose(TwentytwoLeft);
+public static final Pose2d SixRightChanged = new Pose2d(13.94,3.08, new Rotation2d(120));
+public static final Pose2d TwentytwoRightChanged = FlippingUtil.flipFieldPose(SixRightChanged);
 public static final Pose2d SixRight = FlippingUtil.flipFieldPose(TwentytwoRight);
  public static final Pose2d SevenLeft =  FlippingUtil.flipFieldPose(TwentyoneLeft);
  public static final Pose2d SevenRight =  FlippingUtil.flipFieldPose(TwentyoneRight);
@@ -194,7 +196,7 @@ public static final Pose2d SixRight = FlippingUtil.flipFieldPose(TwentytwoRight)
  public static final Pose2d ElevenLeft = FlippingUtil.flipFieldPose(SeventeenLeft);
  public static final Pose2d ElevenRight = FlippingUtil.flipFieldPose(SeventeenRight);
 
-  public static List<Pose2d> PositionsRed = Arrays.asList(SixLeft,SixRight,SevenLeft,SevenRight, EightLeft,EightRight, NineLeft, NineRight, TenLeft, TenRight, ElevenLeft, ElevenRight, SeventeenLeft,SeventeenRight, EighteenLeft, EighteenRight, NineteenLeft, NineteenRight, TwentyLeft, TwentyRight, TwentyoneLeft, TwentyoneRight, TwentytwoLeft, TwentytwoRight);
+  public static List<Pose2d> PositionsRed = Arrays.asList(SixLeft,SixRightChanged,SevenLeft,SevenRight, EightLeft,EightRight, NineLeft, NineRight, TenLeft, TenRight, ElevenLeft, ElevenRight, SeventeenLeft,SeventeenRight, EighteenLeft, EighteenRight, NineteenLeft, NineteenRight, TwentyLeft, TwentyRight, TwentyoneLeft, TwentyoneRight, TwentytwoLeft, TwentytwoRightChanged);
   public static List<Pose2d> PositionsLeftBlue = Arrays.asList(/*SixLeft,SevenLeft, EightLeft, NineLeft, TenLeft, ElevenLeft,*/ SeventeenLeft, EighteenLeft, NineteenLeft, TwentyLeft, TwentyoneLeft, TwentytwoLeft);
   public static List<Pose2d> PositionsRightBlue = Arrays.asList(/*SixRight,SevenRight,EightRight, NineRight, TenRight, ElevenRight,*/ SeventeenRight, EighteenRight, NineteenRight, TwentyRight, TwentyoneRight, TwentytwoRight);
   public static List<Pose2d> PositionsLeftRed = Arrays.asList(SixLeft,SevenLeft, EightLeft, NineLeft, TenLeft, ElevenLeft/*, SeventeenLeft, EighteenLeft, NineteenLeft, TwentyLeft, TwentyoneLeft, TwentytwoLeft*/);
