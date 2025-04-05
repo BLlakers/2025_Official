@@ -53,7 +53,7 @@ public class RobotContainer {
   ElevatorPID elevatorPIDAlgae4 = new ElevatorPID(mElevatorMechanism,  ElevatorMechanism.AlgaeL4);
   Servo mServo = new Servo();
   AprilAlignCommand LimelightCodeFrontLeft = new AprilAlignCommand(() -> m_LimelightFrl.getCurrentAprilTag(), () ->  m_LimelightFrl.getAprilRotation2d(), m_DriveTrain, new Transform2d(.18,0.00, new Rotation2d(.15)), false, true, mLedStrand);
-  AprilAlignCommand LimelightCodeFrontRight = new AprilAlignCommand(() -> m_LimelightFrr.getCurrentAprilTag(), () ->  m_LimelightFrr.getAprilRotation2d(), m_DriveTrain, new Transform2d(.07,0.00, new Rotation2d(-0.15)), false, false, mLedStrand);
+  AprilAlignCommand LimelightCodeFrontRight = new AprilAlignCommand(() -> m_LimelightFrr.getCurrentAprilTag(), () ->  m_LimelightFrr.getAprilRotation2d(), m_DriveTrain, new Transform2d(.05,0.00, new Rotation2d(-0.15)), false, false, mLedStrand);
   AprilAlignCommand LimelightCodeBack = new AprilAlignCommand(() -> m_LimelightBack.getCurrentAprilTag(), () ->  m_LimelightBack.getAprilRotation2d(), m_DriveTrain, new Transform2d(.65,0.00, new Rotation2d()), true, false, mLedStrand);
   AlgaePID algaePIDDown = new AlgaePID(mAlgaeMechanism, AlgaeMechanism.PosDown);
   AlgaePID algaePIDDown2 = new AlgaePID(mAlgaeMechanism, AlgaeMechanism.PosDown);
@@ -231,11 +231,11 @@ Command HANGBLUE = AutoBuilder.pathfindToPose(HANGBLUEPOS, SPEED_CONSTRAINTS,
     driverController.rightStick().onTrue(m_DriveTrain.WheelLockCommand()); // lock wheels
     driverController.x().whileTrue(LimelightCodeFrontLeft); 
     driverController.y().whileTrue(LimelightCodeFrontRight);
-    driverController.povLeft().onTrue(m_LimelightFrl.setLimelightUsageField());
-    driverController.povRight().onTrue(m_LimelightFrl.setLimelightUsageRobot());
-    driverController.leftBumper().whileTrue((m_DriveTrain.PathFindLeft()));
-    driverController.rightBumper().whileTrue((m_DriveTrain.PathFindRight()));
-    driverController.start().onTrue(m_DriveTrain.ZeroGyro());
+    // driverController.povLeft().onTrue(m_LimelightFrl.setLimelightUsageField());
+    // driverController.povRight().onTrue(m_LimelightFrl.setLimelightUsageRobot());
+    // driverController.leftBumper().whileTrue((m_DriveTrain.PathFindLeft()));
+    // driverController.rightBumper().whileTrue((m_DriveTrain.PathFindRight()));
+    driverController.b().onTrue(m_DriveTrain.ZeroGyro());
     // driverController.povRight().whileTrue(HANGRED);
     // driverController.povRight().whileTrue(HANGBLUE);
     // Manipulator Controller commands

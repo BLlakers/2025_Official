@@ -137,8 +137,8 @@ Field2d field;
 
   public DriveTrain(RobotVersion version) {
     AutoBuilder.configure(
-      this::getPose2dEstimator, // Robot pose supplier NEEDS TO BE POSE2D IF WE ARE USING OLD LIMELIGHT WAY TODO
-      this::resetPoseEstimator, // Method to reset odometry (will be called if your auto has a starting pose) NEEDS TO BE RESETPOSE2D IF WE ARE USING OLD LIMELIGHT 
+      this::getPose2d, // Robot pose supplier NEEDS TO BE POSE2D IF WE ARE USING OLD LIMELIGHT WAY TODO
+      this::resetPose, // Method to reset odometry (will be called if your auto has a starting pose) NEEDS TO BE RESETPOSE2D IF WE ARE USING OLD LIMELIGHT 
       this::getChassisSpeeds, 
       (speeds) -> driveRobotRelative(speeds), // ChassisSpeeds supplier. MUST BE ROBOT RELATIVE
        // Method that will drive the robot given ROBOT RELATIVE ChassisSpeeds. Also optionally outputs individual module feedforwards
