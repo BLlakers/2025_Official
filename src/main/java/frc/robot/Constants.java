@@ -178,7 +178,7 @@ public final class Constants {
     public static final Pose2d TwentyRight = new Pose2d(4.82,5.23, new Rotation2d(Math.toRadians(-120)));
     public static final Pose2d TwentyoneLeft = new Pose2d(5.77,3.98, new Rotation2d(Math.toRadians(180)));
     public static final Pose2d TwentyoneRight = new Pose2d(5.78,4.36, new Rotation2d(Math.toRadians(180)));
-    public static final Pose2d TwentytwoLeft = new Pose2d(5.19/*adding 9 here */,2.91, new Rotation2d(Math.toRadians(120)));
+    public static final Pose2d TwentytwoLeft = new Pose2d(5.13/*adding 9 here */,2.9, new Rotation2d(Math.toRadians(120)));
     public static final Pose2d TwentytwoRight = new Pose2d(5.34,3.13, new Rotation2d(Math.toRadians(120)));
     public static final Pose2d defaultGoal = new Pose2d(-99999,0, new Rotation2d());
 public static final Pose2d SixLeft = FlippingUtil.flipFieldPose(TwentytwoLeft);
