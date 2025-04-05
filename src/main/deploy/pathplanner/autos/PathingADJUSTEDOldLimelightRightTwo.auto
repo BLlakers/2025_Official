@@ -11,6 +11,12 @@
           }
         },
         {
+          "type": "path",
+          "data": {
+            "pathName": "RightToLTree"
+          }
+        },
+        {
           "type": "parallel",
           "data": {
             "commands": [
@@ -59,6 +65,12 @@
           "data": {
             "commands": [
               {
+                "type": "named",
+                "data": {
+                  "name": "IntakeCoral"
+                }
+              },
+              {
                 "type": "sequential",
                 "data": {
                   "commands": [
@@ -71,13 +83,13 @@
                     {
                       "type": "named",
                       "data": {
-                        "name": "PathRESETODMLeft"
+                        "name": "PathRESETODMRight"
                       }
                     },
                     {
                       "type": "path",
                       "data": {
-                        "pathName": "BottomToCoralLeft"
+                        "pathName": "BottomToCoralSRight"
                       }
                     }
                   ]
@@ -93,22 +105,9 @@
           }
         },
         {
-          "type": "deadline",
+          "type": "path",
           "data": {
-            "commands": [
-              {
-                "type": "named",
-                "data": {
-                  "name": "IntakeCoral"
-                }
-              },
-              {
-                "type": "named",
-                "data": {
-                  "name": "LimelightBack"
-                }
-              }
-            ]
+            "pathName": "CoralStoLimelightPathRight"
           }
         },
         {
@@ -164,7 +163,7 @@
       ]
     }
   },
-  "resetOdom": false,
+  "resetOdom": true,
   "folder": null,
   "choreoAuto": false
 }

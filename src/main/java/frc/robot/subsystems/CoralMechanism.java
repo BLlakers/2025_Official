@@ -31,7 +31,10 @@ public class CoralMechanism extends SubsystemBase{
         m_coralMotor1.set(ControlMode.PercentOutput, -.60);
         m_coralMotor2.set(ControlMode.PercentOutput, .60);
     }
-    
+    public void CoralTroph(){
+        m_coralMotor1.set(ControlMode.PercentOutput, .95);
+        m_coralMotor2.set(ControlMode.PercentOutput,-.25);
+    }
     public void CoralStop() {
         m_coralMotor1.set(ControlMode.PercentOutput, 0);
         m_coralMotor2.set(ControlMode.PercentOutput, 0);
@@ -41,6 +44,9 @@ public class CoralMechanism extends SubsystemBase{
 
     public Command CoralForwardCmd() {
         return this.runEnd(this::CoralForward, this::CoralStop);
+    }
+    public Command CoralTrophCmd() {
+        return this.runEnd(this::CoralTroph, this::CoralStop);
     }
 
     public Command CoralBackwardCmd() {

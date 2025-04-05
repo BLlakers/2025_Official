@@ -276,11 +276,11 @@ Field2d field;
     var alliance = DriverStation.getAlliance();
     Rotation2d robotRotation;
     
-    if (alliance.isPresent() && alliance.get() == DriverStation.Alliance.Red) {
-      robotRotation = new Rotation2d(navx.getRotation2d().getRadians() + Rotation2d.fromDegrees(180).getRadians());
-    } else {
+    // if (alliance.isPresent() && alliance.get() == DriverStation.Alliance.Red) {
+    //   robotRotation = new Rotation2d(navx.getRotation2d().getRadians() + Rotation2d.fromDegrees(180).getRadians());
+    // } else {
       robotRotation = new Rotation2d(navx.getRotation2d().getRadians());
-    }
+    // }
 
     // SmartDashboard.putNumber ( "inputRotiation", robotRotation.getDegrees());
     DesiredStates =
