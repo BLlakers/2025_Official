@@ -48,7 +48,7 @@ AnalogInput AlgaeIR = new AnalogInput(2);
         m_AlgaeConfig
             .inverted(false)
             .idleMode(IdleMode.kCoast);
-        m_AlgaeConfig.alternateEncoder //TODO MAKE SURE TO USE RIGHT TYPE OF ENCODER WHEN DOING CONFIGS!
+        m_AlgaeConfig.alternateEncoder
             .positionConversionFactor(algaePositionConversionFactor)
             .velocityConversionFactor(algaeVelocityConversionFactor)
             .countsPerRevolution(8192);

@@ -5,11 +5,7 @@ import edu.wpi.first.wpilibj2.command.CommandScheduler;
 import edu.wpi.first.wpilibj2.command.Commands;
 import edu.wpi.first.wpilibj2.command.DeferredCommand;
 import edu.wpi.first.wpilibj2.command.WaitUntilCommand;
-
-import java.util.ArrayList;
-import java.util.List;
 import java.util.Set;
-
 import com.pathplanner.lib.auto.AutoBuilder;
 import com.pathplanner.lib.auto.NamedCommands;
 import com.pathplanner.lib.path.PathConstraints;
@@ -68,8 +64,6 @@ public class RobotContainer {
 
 
 Command runCoralFoward = mCoralMechanism.CoralForwardCmd().onlyWhile(()->!mCoralMechanism.IsCoralLoaded()).withName("RunCoral");
-//  Command algaeIntakeForward = m_AlgaeIntake.IntakeForwardCmd();
-//  Command algaeIntakeBackward = m_AlgaeIntake.IntakeBackwardCmd();
 
 // Compose the commands correctly, ensuring that each use is a new composition
 Command algaeDownAndRunA3 = Commands.race(new AlgaePID(mAlgaeMechanism, AlgaeMechanism.PosDown), m_AlgaeIntake.IntakeForwardOnceCmd(), new ElevatorPID(mElevatorMechanism, ElevatorMechanism.AlgaeL3));
@@ -78,23 +72,7 @@ Command algaeDownAndRunA4 = Commands.race(new AlgaePID(mAlgaeMechanism, AlgaeMec
 Command algaeUpAndStop = Commands.race(new AlgaePID(mAlgaeMechanism, AlgaeMechanism.PosUp), m_AlgaeIntake.IntakeStopCmd()); 
 Command algaeMiddleAndStop = Commands.race(new AlgaePID(mAlgaeMechanism, AlgaeMechanism.PosMiddle), m_AlgaeIntake.IntakeStopCmd());
 Command algaeGroundCommand = Commands.race(new AlgaePID(mAlgaeMechanism, AlgaeMechanism.PosGround), m_AlgaeIntake.IntakeBackwardOnceCmd(), new ElevatorPID(mElevatorMechanism, ElevatorMechanism.L2));
-// Command algaeDownAndRun = Commands.deadline(algaePIDDown2, m_AlgaeIntake.IntakeForwardOnceCmd()); 
-// Command algaeUpAndStopADown = Commands.parallel(algaePIDUp2, m_AlgaeIntake.IntakeStopCmd(), elevatorPIDDown); 
 
-
-// Command algaeL3Down = Commands.parallel(algaePIDDown, elevatorPIDAlgae3);
-//  Command algaeL4Down = Commands.parallel(algaePIDDown2, elevatorPIDAlgae4);
-//  Command algaeUp = Commands.parallel(algaePIDUp, elevatorPIDDown);
-//  Command algaeUp2 = Commands.parallel(algaePIDUp2, elevatorPIDDown2);
-
-// Command to retrieve algae from L3
-//  Command algaeL3 = Commands.sequence(algaeL3Down, algaeUp);
-
-// Command to retrieve algae from L4
-//  Command algaeL4 = Commands.sequence(algaeL4Down, algaeUp2);
-
-// Command to retrieve algae from the ground
-// Command algaeGround = Commands.parallel(algaePIDGroud, elevatorPIDAlgae3v2);
  /** 
    * Creates buttons and controller for: - the driver controller (port 0) - the manipulator
    * controller (port 1) - the debug controller (port 2)
@@ -111,15 +89,11 @@ Command algaeGroundCommand = Commands.race(new AlgaePID(mAlgaeMechanism, AlgaeMe
   final Command DriveSide =
       new SwerveDriveCommand(() -> 0, () -> 1, () -> 0, () -> .3, m_DriveTrain);
   final Command Rotate = new SwerveDriveCommand(() -> 0, () -> 0, () -> .3, () -> 0, m_DriveTrain);
-  // commands
   
 
   // A chooser for autonomous commands
   private final SendableChooser<Command> autoChooser;
-  // Creating 2d field in Sim/ShuffleBoard
-  // Trying to get feedback from auto
-  List<Pose2d> currentPath = new ArrayList<Pose2d>();
-Command ResetPoseAuto = Commands.runOnce(()-> m_DriveTrain.resetPose(currentPath.get(0)), m_DriveTrain);
+
 
 
 Pose2d HANGREDPOS = new Pose2d(8.775, 0.794,Rotation2d.fromDegrees(-90));
@@ -152,7 +126,6 @@ Command HANGBLUE = AutoBuilder.pathfindToPose(HANGBLUEPOS, SPEED_CONSTRAINTS,
    NamedCommands.registerCommand("LimelightSetSecondRightPriority", m_LimelightFrl.PriorityIDcmd(19, 6));
    NamedCommands.registerCommand("LimelightBack",LimelightCodeBack);
    NamedCommands.registerCommand("RobotOrientedLimelight", m_LimelightFrl.setLimelightUsageField());
-   NamedCommands.registerCommand("SETPOSEfrl", ResetPoseAuto);
    NamedCommands.registerCommand("PathRESETODMLeft", AutoBuilder.resetOdom(new Pose2d(5.002, 2.806,new Rotation2d(90))));
    NamedCommands.registerCommand("PathRESETODMRight", AutoBuilder.resetOdom(new Pose2d(5.021, 5.253,new Rotation2d(180))));
    NamedCommands.registerCommand("PathRESETODMMiddle", AutoBuilder.resetOdom(new Pose2d(5.802, 3.959,new Rotation2d(180))));
@@ -200,6 +173,7 @@ Command HANGBLUE = AutoBuilder.pathfindToPose(HANGBLUEPOS, SPEED_CONSTRAINTS,
    * PS4} controllers or {@link edu.wpi.first.wpilibj2.command.button.CommandJoystick Flight
    * joysticks}.
    */
+
   private void configureBindings() {
     /**
      * Swerve Drive Controller Command
@@ -221,24 +195,13 @@ Command HANGBLUE = AutoBuilder.pathfindToPose(HANGBLUEPOS, SPEED_CONSTRAINTS,
     
     // Driver Controller commands
     // - DriveTrain commands (outside of actual driving)
-    driverController.a().whileTrue(LimelightCodeBack);
-    // driverController.b().onTrue(m_DriveTrain.SetGyroAdjustmentAngle());
-    // driverController.start().onTrue(m_DriveTrain.resetPose2d()); // RESETING OUR POSE 2d/ odometry
-    // driverController.rightBumper().onTrue(m_DriveTrain.resetPoseEstimatorCmd());
+   driverController.a().whileTrue(LimelightCodeBack);
     driverController.rightStick().onTrue(m_DriveTrain.WheelLockCommand()); // lock wheels
     driverController.x().whileTrue(LimelightCodeFrontLeft); 
     driverController.y().whileTrue(LimelightCodeFrontRight);
-    // driverController.povLeft().onTrue(m_LimelightFrl.setLimelightUsageField());
-    // driverController.povRight().onTrue(m_LimelightFrl.setLimelightUsageRobot());
-    // driverController.leftBumper().whileTrue((m_DriveTrain.PathFindLeft()));
-    // driverController.rightBumper().whileTrue((m_DriveTrain.PathFindRight()));
+    driverController.leftBumper().whileTrue((m_DriveTrain.PathFindLeft()));
+    driverController.rightBumper().whileTrue((m_DriveTrain.PathFindRight()));
     driverController.b().onTrue(m_DriveTrain.ZeroGyro());
-    // driverController.povRight().whileTrue(HANGRED);
-    // driverController.povRight().whileTrue(HANGBLUE);
-    // Manipulator Controller commands
-    // manipController.y().onTrue(mLedStrand.changeLedCommand()); 
-    // manipController.povUp().onTrue(mElevatorMechanism.MovePosUp());
-    // manipController.povDown().onTrue(mElevatorMechanism.MovePosDown());
     
     //Elevator Commands
     manipController.a().onTrue(elevatorPIDDown);
@@ -254,6 +217,7 @@ Command HANGBLUE = AutoBuilder.pathfindToPose(HANGBLUEPOS, SPEED_CONSTRAINTS,
     manipController.povLeft().onTrue(algaeGroundCommand);
     manipController.povRight().whileTrue(m_AlgaeIntake.IntakeForwardCmd());
     manipController.leftStick().onTrue(algaeMiddleAndStop);
+
     //Coral Commands
     manipController.leftTrigger(.5).whileTrue(runCoralFoward);
     manipController.rightTrigger(.5).whileTrue(mCoralMechanism.CoralForwardCmd());
@@ -263,31 +227,16 @@ Command HANGBLUE = AutoBuilder.pathfindToPose(HANGBLUEPOS, SPEED_CONSTRAINTS,
 
    debugController.rightBumper().whileTrue(mElevatorMechanism.ElevatorDownLimitCmd());
    debugController.leftBumper().whileTrue(mElevatorMechanism.ElevatorUpLimitCmd());
-    // debugController.povLeft().whileTrue(m_AlgaeIntake.IntakeForwardCmd());
-    // debugController.povRight().whileTrue(mAlgaeMechanism.AlgaeBackwardCmd());
-  //   debugController.povUp().whileTrue(mAlgaeMechanism.AlgaeIntakeGet().IntakeBackwardCmd());
-  //   //debugController.a().whileTrue(IntakeAndRaise);
-  //   debugController.x().whileTrue(mAlgaeMechanism.AlgaePIDDownThroughBore());
-  //   debugController.a().whileTrue(mAlgaeMechanism.AlgaePIDUpThroughBore());
     debugController.povUp().onTrue(mAlgaeMechanism.resetAlgae());
     debugController.a().onTrue(algaePIDUp);
     debugController.b().onTrue(algaePIDMiddle);
     debugController.x().onTrue(algaePIDDown);
     debugController.y().onTrue(algaePIDGround);
-    
-    // debugController.rightBumper().whileTrue(mClimbMechanism.WindForwardCmd());
-    // debugController.leftBumper().whileTrue(mClimbMechanism.WindDownCmd());
     debugController.rightStick().onTrue(algaeDownAndRunA4);
-    // debugController.leftBumper().onTrue(algaeUpAndStop);
     debugController.povDown().onTrue(elevatorPIDAlgae3);
     debugController.leftStick().whileTrue(m_AlgaeIntake.IntakeBackwardCmd());
     debugController.start().onTrue(algaeMiddleAndStop);
     debugController.leftTrigger(.5).onTrue(algaeGroundCommand);
-    
-    // debugController.povDown().onTrue(algaeL3Down);
-  //   debugController.leftBumper().whileTrue(mClimbMechanism.WindBackwardCmd());
-  //   debugController.rightBumper().whileTrue(mClimbMechanism.WindForwardCmd());
-  
   }
 
   private void configureShuffleboard() {

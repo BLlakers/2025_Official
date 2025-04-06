@@ -81,22 +81,6 @@ public final class Constants {
   }
 
   public static class AprilTagID {
-    public static final int PracticeSpeakerCenter = 1;
-    public static final int BlueSpeakerCenter = 7;
-    public static final int RedSpeakerCenter = 4;
-
-    public static final int BlueStageCenter = 14;
-    public static final int RedStageCenter = 13;
-
-    public static final int BlueStageLeft = 15;
-    public static final int RedStageRight = 12;
-
-    public static final int RedStageLeft = 11;
-    public static final int BlueStageRight = 16;
-
-    public static final Pose2d BlueSpeakerCenterPose = new Pose2d(); // TODO
-    public static final Pose2d RedSpeakerCenterPose = new Pose2d(); // TODO
-
     public static final PathConstraints pathConstraints = new PathConstraints(2, 3, 360, 540);
   }
 
@@ -124,25 +108,10 @@ public final class Constants {
     public static final int PHChannel = 30; // REV Pneumatic Hub
     public static final int PDHChannel = 20; // REV Power Distribution Hub
   }
+
   public static class Algae {
     public static final int m_IntakeMtrC = 9;
     public static final int m_AlgaeMtrC = 10;
-  }
-
-  // SHOOTER
-  public static class Shooter {
-    public static final int LeftMtrC = 11;
-    public static final int RightMtrC = 12;
-    public static final int AngleMtrC = 13;
-    public static final int LimitSwitchTopDIO = 4;
-    public static final int LimitSwitchBottomDIO =
-        -1; // TODO: add the digital input channel for this limit
-  }
-
-  // HANGER
-  public static class Hanger {
-    public static final int LeftMtrC = 9;
-    public static final int RightMtrC = 10;
   }
 
   public abstract class RobotVersionConstants {
@@ -196,11 +165,11 @@ public static final Pose2d SixRight = FlippingUtil.flipFieldPose(TwentytwoRight)
  public static final Pose2d ElevenLeft = FlippingUtil.flipFieldPose(SeventeenLeft);
  public static final Pose2d ElevenRight = FlippingUtil.flipFieldPose(SeventeenRight);
 
-  public static List<Pose2d> PositionsRed = Arrays.asList(SixLeft,SixRightChanged,SevenLeft,SevenRight, EightLeft,EightRight, NineLeft, NineRight, TenLeft, TenRight, ElevenLeft, ElevenRight, SeventeenLeft,SeventeenRight, EighteenLeft, EighteenRight, NineteenLeft, NineteenRight, TwentyLeft, TwentyRight, TwentyoneLeft, TwentyoneRight, TwentytwoLeft, TwentytwoRightChanged);
-  public static List<Pose2d> PositionsLeftBlue = Arrays.asList(/*SixLeft,SevenLeft, EightLeft, NineLeft, TenLeft, ElevenLeft,*/ SeventeenLeft, EighteenLeft, NineteenLeft, TwentyLeft, TwentyoneLeft, TwentytwoLeft);
-  public static List<Pose2d> PositionsRightBlue = Arrays.asList(/*SixRight,SevenRight,EightRight, NineRight, TenRight, ElevenRight,*/ SeventeenRight, EighteenRight, NineteenRight, TwentyRight, TwentyoneRight, TwentytwoRight);
-  public static List<Pose2d> PositionsLeftRed = Arrays.asList(SixLeft,SevenLeft, EightLeft, NineLeft, TenLeft, ElevenLeft/*, SeventeenLeft, EighteenLeft, NineteenLeft, TwentyLeft, TwentyoneLeft, TwentytwoLeft*/);
-  public static List<Pose2d> PositionsRightRed = Arrays.asList(SixRight,SevenRight,EightRight, NineRight, TenRight, ElevenRight/* ,SeventeenRight, EighteenRight, NineteenRight, TwentyRight, TwentyoneRight, TwentytwoRight*/);
+  public static List<Pose2d> Positions = Arrays.asList(SixLeft,SixRightChanged,SevenLeft,SevenRight, EightLeft,EightRight, NineLeft, NineRight, TenLeft, TenRight, ElevenLeft, ElevenRight, SeventeenLeft,SeventeenRight, EighteenLeft, EighteenRight, NineteenLeft, NineteenRight, TwentyLeft, TwentyRight, TwentyoneLeft, TwentyoneRight, TwentytwoLeft, TwentytwoRightChanged);
+  public static List<Pose2d> PositionsLeftBlue = Arrays.asList(SeventeenLeft, EighteenLeft, NineteenLeft, TwentyLeft, TwentyoneLeft, TwentytwoLeft);
+  public static List<Pose2d> PositionsRightBlue = Arrays.asList(SeventeenRight, EighteenRight, NineteenRight, TwentyRight, TwentyoneRight, TwentytwoRight);
+  public static List<Pose2d> PositionsLeftRed = Arrays.asList(SixLeft,SevenLeft, EightLeft, NineLeft, TenLeft, ElevenLeft);
+  public static List<Pose2d> PositionsRightRed = Arrays.asList(SixRight,SevenRight,EightRight, NineRight, TenRight, ElevenRight);
 
 }
 

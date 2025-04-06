@@ -39,6 +39,8 @@ import edu.wpi.first.wpilibj2.command.SubsystemBase;
 
 /** Represents a swerve drive style drivetrain. */
 public class DriveTrain extends SubsystemBase {
+
+  double flTurnOffset, frTurnOffset, blTurnOffset, brTurnOffset;
 Field2d field;
   public SwerveDriveKinematics m_kinematics =
       new SwerveDriveKinematics(
@@ -52,51 +54,55 @@ Field2d field;
   public boolean m_FieldRelativeEnable = true;
   Pose2d goalPose;
   public static final double kMaxSpeed =
-      Units.feetToMeters(12.5); // WP this seemed to work don't know why // 3.68
-  // meters per second or 12.1
-  // ft/s (max speed of SDS Mk3 with Neo motor) // TODO KMaxSpeed needs to go with
-  // enum
+      Units.feetToMeters(12.5);
   public static final double kMaxAngularSpeed =
       Units.rotationsPerMinuteToRadiansPerSecond(
-          Constants.Conversion.NeoMaxSpeedRPM / Constants.Conversion.TurnGearRatio); // 1/2
-  // rotation
-  // per
-  // second
+          Constants.Conversion.NeoMaxSpeedRPM / Constants.Conversion.TurnGearRatio); 
   public static final double kMaxTurnAngularSpeed =
-      kMaxSpeed / Constants.Drive.SMBackLeftLocation.getNorm(); // 1/2
-  // rotation
-  // per
-  // second
+      kMaxSpeed / Constants.Drive.SMBackLeftLocation.getNorm();
   public static final double kModuleMaxAngularAcceleration =
-      Math.PI / 3; // what is this used for again?
-
-  // creates a gyro object. Gyro gives the robots rotation/ where the robot is
-  // pointed.
+      Math.PI / 3;
   public final AHRS navx = new AHRS(AHRS.NavXComType.kMXP_SPI);
 
-  // Creates each swerve module. Swerve modules have a turning and drive motor + a
-  // turning and drive encoder.
+  // Creates each swerve module. Swerve modules have a turning and drive motor + a turning and drive encoder.
   public final SwerveModule m_frontRight;
   public final SwerveModule m_frontLeft;
   public final SwerveModule m_backLeft;
   public final SwerveModule m_backRight;
 
-  // Creates an odometry object. Odometry tells the robot its position on the
-  // field.
+
+  // Creates a robot configuration for the auto builder. 
   public RobotConfig config;{
     try{
       config = RobotConfig.fromGUISettings();
     } catch (Exception e) {
-      // Handle exception as needed
       e.printStackTrace();
     }}
-  private final SwerveDriveOdometry m_odometry;
 
+  // Creating SwerveDriveOdometry Object that needs to be initialized;
+  private final SwerveDriveOdometry m_odometry;
+// Creating SwerveDrivePoseEstimator Object that needs to be initialized;
   private final SwerveDrivePoseEstimator m_poseEstimator; 
      
 
-  // Constructor
-  /**
+// Creating SwerveModuleState Object that needs to be initialized, this is our desired state of our swerve modules in M/s + Degrees;
+  SwerveModuleState[] DesiredStates;
+  // Creating SwerveModuleState Object that needs to be initialized, this is our current state of our swerve modules in M/s + Degrees;
+  SwerveModuleState[] CurrentStates;
+
+//Creating Publishers for Advantage scope
+  StructArrayPublisher<SwerveModuleState> DesiredStatePublisher = NetworkTableInstance.getDefault().getStructArrayTopic("DesiredStates", SwerveModuleState.struct).publish();
+  StructArrayPublisher<SwerveModuleState> CurrentStatePublisher = NetworkTableInstance.getDefault().getStructArrayTopic("CurrentStates", SwerveModuleState.struct).publish();
+  StructPublisher<ChassisSpeeds> CurrentSpeedsPublisher = NetworkTableInstance.getDefault().getStructTopic("CurrentSpeed", ChassisSpeeds.struct).publish();
+  StructPublisher<Pose2d> CurrentPosePublisher = NetworkTableInstance.getDefault().getStructTopic("CurrentPose", Pose2d.struct).publish();
+  StructPublisher<Pose2d> CurrentPoseEstimatorPublisher = NetworkTableInstance.getDefault().getStructTopic("CurrentPoseEstimator", Pose2d.struct).publish();
+  StructPublisher<Pose2d> GoalPosePublisher = NetworkTableInstance.getDefault().getStructTopic("GoalPoseEstimator", Pose2d.struct).publish();
+  StructPublisher<Rotation2d> CurrentRotPublisher = NetworkTableInstance.getDefault().getStructTopic("CurrentRot", Rotation2d.struct).publish();
+
+
+
+
+    /**
    * Our driveTrain Constructor.
    *
    * <p>In here, we initialize our swerve modules (example -> {@link #m_frontLeft}), Get input from
@@ -106,27 +112,12 @@ Field2d field;
    *
    * @param RobotVersion
    */
-  SwerveModuleState[] DesiredStates;
-  SwerveModuleState[] CurrentStates;
-  StructArrayPublisher<SwerveModuleState> DesiredStatePublisher = NetworkTableInstance.getDefault()
-  .getStructArrayTopic("DesiredStates", SwerveModuleState.struct).publish();
-  StructArrayPublisher<SwerveModuleState> CurrentStatePublisher = NetworkTableInstance.getDefault()
-  .getStructArrayTopic("CurrentStates", SwerveModuleState.struct).publish();
-  StructPublisher<ChassisSpeeds> CurrentSpeedsPublisher = NetworkTableInstance.getDefault()
-  .getStructTopic("CurrentSpeed", ChassisSpeeds.struct).publish();
-  StructPublisher<Pose2d> CurrentPosePublisher = NetworkTableInstance.getDefault()
-  .getStructTopic("CurrentPose", Pose2d.struct).publish();
-  StructPublisher<Pose2d> CurrentPoseEstimatorPublisher = NetworkTableInstance.getDefault()
-  .getStructTopic("CurrentPoseEstimator", Pose2d.struct).publish();
-  StructPublisher<Pose2d> GoalPosePublisher = NetworkTableInstance.getDefault()
-  .getStructTopic("GoalPoseEstimator", Pose2d.struct).publish();
- 
-  StructPublisher<Rotation2d> CurrentRotPublisher = NetworkTableInstance.getDefault()
-  .getStructTopic("CurrentRot", Rotation2d.struct).publish();
-
   public DriveTrain(RobotVersion version) {
     AutoBuilder.configure(
-      this::getPose2d, // Robot pose supplier NEEDS TO BE POSE2D IF WE ARE USING OLD LIMELIGHT WAY TODO
+      this::getPose2d, // Robot pose supplier NEEDS TO BE POSE2D IF WE ARE USING OLD LIMELIGHT WAY. Needs to be 
+
+
+
       this::resetPose, // Method to reset odometry (will be called if your auto has a starting pose) NEEDS TO BE RESETPOSE2D IF WE ARE USING OLD LIMELIGHT 
       this::getChassisSpeeds, 
       (speeds) -> driveRobotRelative(speeds), // ChassisSpeeds supplier. MUST BE ROBOT RELATIVE
@@ -147,8 +138,7 @@ Field2d field;
       },
       this); // Reference to this subsystem to set requirements
 
-    // sets our wanted offsets. Varies between 2023 and 2024.
-    double flTurnOffset = 0, frTurnOffset = 0, blTurnOffset = 0, brTurnOffset = 0;
+    // sets our wanted offsets. Varies between 2023 and 2025.
     if (Constants.defaultRobotVersion == RobotVersion.v2023) {
       flTurnOffset = Constants.RobotVersion2023.flTurnEncoderOffset;
       frTurnOffset = Constants.RobotVersion2023.frTurnEncoderOffset;
@@ -229,6 +219,14 @@ Field2d field;
     return m_odometry.getPoseMeters();
   }
 
+
+    /**
+   * Gets our Estimated current position in meters on the field.
+   *
+   * @return An Estimated current position on the field.
+   *     <pi> A translation2d (X and Y on the field) From the LimelightMegaTag2 -> {@link #getEstimatedPosition()} + A rotation2d (Rot
+   *     X and Y on the field) -> {@link #nav}
+   */
   public Pose2d getPose2dEstimator() {
     return m_poseEstimator.getEstimatedPosition();
   }/**
@@ -309,32 +307,32 @@ Field2d field;
   }
 
   /**
-   * Runnable Command.
+   * Command.
    *
-   * <p>Tells the Wheels when to stop or not based off of a boolean varible named {@link
-   * #m_WheelLock}.
-   *
-   * <p>Used in drive Method
+   * <p> Runs {@link #WheellockFlip} Once. 
    */
   public Command WheelLockCommand() {
-
-    return this.runOnce(
-        () -> {
-
-          // one-time action goes here
-          // WP - Add code here to toggle the gripper solenoid
-          if (m_WheelLock == true) {
-            m_WheelLock = false;
-          } else if (m_WheelLock == false) {
-            m_WheelLock = true;
-          }
-        });
+    return this.runOnce(this::WheellockFlip);
   }
 
+/** Void Function
+ *  Runs once, flips the boolean {@link #m_WheelLock} from true to false or false to true. 
+ * 
+ */
+
+public void WheellockFlip(){
+  if (m_WheelLock == true) {
+    m_WheelLock = false;
+  } else if (m_WheelLock == false) {
+    m_WheelLock = true;
+  }
+}
+
   /**
-   * Runnable Command.
+   * Command
    *
-   * <p>Tells the Gyro to reset its heading/which way its facing.
+   * <p> Resets the heading (yaw or RotZ) to 0. 
+   * <p> Do not run whilst running field oriented limelights, as this will completely screw up the rotation valued supplied in {@link #m_poseEstimator} 
    *
    * <p>Used in drive Method.
    */
@@ -528,8 +526,14 @@ public Command generatePath(Pose2d currentPose, Pose2d goalPose, PathConstraints
         });
   }
 
+/**
+ * Finds the nearest Pose2d From the list of Coral positions 
+ * @return
+ * Closest 
+ */
+
 public Pose2d getGoal(){
-goalPose = getPose2dEstimator().nearest(Constants.Poses.PositionsRed);
+goalPose = getPose2dEstimator().nearest(Constants.Poses.Positions);
 return goalPose;
 }
 
