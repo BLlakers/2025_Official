@@ -1,12 +1,8 @@
 package frc.robot.commands;
-
-
 import java.util.function.DoubleSupplier;
 import java.util.function.Supplier;
-
 import edu.wpi.first.apriltag.AprilTag;
 import edu.wpi.first.math.controller.ProfiledPIDController;
-import edu.wpi.first.math.geometry.Pose2d;
 import edu.wpi.first.math.geometry.Rotation2d;
 import edu.wpi.first.math.geometry.Transform2d;
 import edu.wpi.first.math.trajectory.TrapezoidProfile;
@@ -17,18 +13,12 @@ import frc.robot.subsystems.DriveTrain;
 import frc.robot.subsystems.LedStrand;
 import frc.robot.support.limelight.LimelightHelpers;
 public class AprilStrafeCommand extends Command {
-    
-
-      private static final TrapezoidProfile.Constraints BACK_XCONSTRAINTS =
-      new TrapezoidProfile.Constraints(3, 10);
   private static final TrapezoidProfile.Constraints Y_CONSTRAINTS =
       new TrapezoidProfile.Constraints(.5, .5);
       private static final TrapezoidProfile.Constraints BACK_YCONSTRAINTS =
       new TrapezoidProfile.Constraints(1.5, 5);
   private static final TrapezoidProfile.Constraints OMEGA_CONSTRAINTS =
       new TrapezoidProfile.Constraints(Units.degreesToRadians(400), Units.degreesToRadians(360));
-
-  
   private final ProfiledPIDController m_yController =
       new ProfiledPIDController(1.45, 0, 0.0, Y_CONSTRAINTS);
   private final ProfiledPIDController m_omegaController =

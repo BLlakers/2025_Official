@@ -86,7 +86,6 @@ public class SwerveDriveCommand extends Command {
   @Override
   public void execute() {
     double RT, x, y, rot, Elev;
-    double AccelerateRT = m_AccelerateRT.getAsDouble();
     double leftX = m_leftX.getAsDouble();
     double leftY = m_leftY.getAsDouble();
     double rightX = m_rightX.getAsDouble();

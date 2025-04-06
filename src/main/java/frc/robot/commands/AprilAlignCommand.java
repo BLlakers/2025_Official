@@ -1,10 +1,7 @@
 package frc.robot.commands;
-
 import java.util.function.Supplier;
-
 import edu.wpi.first.apriltag.AprilTag;
 import edu.wpi.first.math.controller.ProfiledPIDController;
-import edu.wpi.first.math.geometry.Pose2d;
 import edu.wpi.first.math.geometry.Rotation2d;
 import edu.wpi.first.math.geometry.Transform2d;
 import edu.wpi.first.math.trajectory.TrapezoidProfile;

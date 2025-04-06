@@ -1,25 +1,15 @@
 package frc.robot.subsystems;
 
-import java.net.ContentHandler;
-import java.util.function.DoubleConsumer;
-
-import javax.print.attribute.standard.RequestingUserName;
-
-import org.ejml.dense.row.misc.RrefGaussJordanRowPivot_DDRM;
-
 import com.revrobotics.spark.SparkBase.PersistMode;
 import com.revrobotics.spark.SparkBase.ResetMode;
 import com.revrobotics.spark.SparkMax;
 import com.revrobotics.spark.config.ClosedLoopConfig.FeedbackSensor;
 import com.revrobotics.spark.config.SparkBaseConfig.IdleMode;
-
-import edu.wpi.first.math.controller.ElevatorFeedforward;
 import edu.wpi.first.math.controller.ProfiledPIDController;
 import edu.wpi.first.math.trajectory.TrapezoidProfile;
 import edu.wpi.first.math.util.Units;
 import edu.wpi.first.util.sendable.SendableBuilder;
 import edu.wpi.first.wpilibj.DigitalInput;
-import edu.wpi.first.wpilibj.smartdashboard.SmartDashboard;
 import edu.wpi.first.wpilibj2.command.Command;
 import edu.wpi.first.wpilibj2.command.SubsystemBase;
 import frc.robot.Constants;
@@ -45,16 +35,9 @@ public class ElevatorMechanism extends SubsystemBase{
    public static double AlgaeL4 = 17.6;
    public static double L4 = 24.5;
    public static boolean IsMoving;
-   private static double kDt = 0.02;
-   private static double kMaxVelocity = .3;
-   private static double kMaxAcceleration = 0.3;
    private static double kP = 0.2;
    private static double kI = 0.0;
    private static double kD = 0.0;
-   private static double kS = .275;
-   private static double kG = 1;
-   private static double kV = .455; 
-   private double marginOfError = 1;
    private double elevatorPositionConversionFactor = 1.6*Math.PI; // 1.6 * Math.PI = Distance per rotation
    private double elevatorVelocityConversionFactor = 1; 
    private double desiredPos;
@@ -64,7 +47,6 @@ public class ElevatorMechanism extends SubsystemBase{
    public double elevatorPosition;
    private ProfiledPIDController pid = new ProfiledPIDController(kP, kI, kD, ELEVATOR_CONSTRAINTS);
   private static final TrapezoidProfile.Constraints ELEVATOR_CONSTRAINTS = new TrapezoidProfile.Constraints(Units.feetToMeters(140),Units.feetToMeters(125));
-  private final ElevatorFeedforward m_feedforward = new ElevatorFeedforward(kS, kG, kV);
 
     //A motor to rotate up and down
    private SparkMax m_ElevatorMotor = new SparkMax(Constants.Port.m_ElevatorMtrC, com.revrobotics.spark.SparkLowLevel.MotorType.kBrushless);

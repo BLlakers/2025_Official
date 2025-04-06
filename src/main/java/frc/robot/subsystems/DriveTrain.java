@@ -12,23 +12,13 @@ import edu.wpi.first.networktables.StructPublisher;
 import edu.wpi.first.util.sendable.SendableBuilder;
 import edu.wpi.first.wpilibj.DriverStation;
 import edu.wpi.first.wpilibj.smartdashboard.Field2d;
-import edu.wpi.first.wpilibj.smartdashboard.SendableChooser;
 import edu.wpi.first.wpilibj.DriverStation.Alliance;
 import edu.wpi.first.wpilibj.smartdashboard.SmartDashboard;
-
-import java.lang.reflect.Field;
 import java.util.List;
-import java.util.concurrent.Flow.Publisher;
-import java.util.function.BiConsumer;
-import java.util.function.Consumer;
-import java.util.function.Supplier;
-
 import com.pathplanner.lib.auto.AutoBuilder;
 import com.pathplanner.lib.config.PIDConstants;
 import com.pathplanner.lib.config.RobotConfig;
 import com.pathplanner.lib.controllers.PPHolonomicDriveController;
-import com.pathplanner.lib.controllers.PPLTVController;
-import com.pathplanner.lib.controllers.PathFollowingController;
 import com.pathplanner.lib.path.GoalEndState;
 import com.pathplanner.lib.path.PathConstraints;
 import com.pathplanner.lib.path.PathPlannerPath;
@@ -45,7 +35,6 @@ import edu.wpi.first.math.geometry.Pose2d;
 import edu.wpi.first.math.geometry.Rotation2d;
 import edu.wpi.first.math.geometry.Translation2d;
 import edu.wpi.first.wpilibj2.command.Command;
-import edu.wpi.first.wpilibj2.command.Commands;
 import edu.wpi.first.wpilibj2.command.SubsystemBase;
 
 /** Represents a swerve drive style drivetrain. */
@@ -272,17 +261,8 @@ Field2d field;
     SmartDashboard.putNumber(getName() + "/Command/Y Speed", ySpeed);
     SmartDashboard.putNumber(getName() + "/Command/Rot Speed", rot);
     SmartDashboard.putBoolean(getName() + "/Command/RobotRelative", m_FieldRelativeEnable);
-
-    var alliance = DriverStation.getAlliance();
     Rotation2d robotRotation;
-    
-    // if (alliance.isPresent() && alliance.get() == DriverStation.Alliance.Red) {
-    //   robotRotation = new Rotation2d(navx.getRotation2d().getRadians() + Rotation2d.fromDegrees(180).getRadians());
-    // } else {
-      robotRotation = new Rotation2d(navx.getRotation2d().getRadians());
-    // }
-
-    // SmartDashboard.putNumber ( "inputRotiation", robotRotation.getDegrees());
+    robotRotation = new Rotation2d(navx.getRotation2d().getRadians());
     DesiredStates =
         m_kinematics.toSwerveModuleStates(
             m_FieldRelativeEnable
@@ -359,23 +339,8 @@ Field2d field;
    * <p>Used in drive Method.
    */
   public Command ZeroGyro() {
-    // Inline construction of command goes here.
-    // Subsystem::RunOnce implicitly requires `this` subsystem.
-
-    return this.runOnce(
-        () -> {
-           navx.reset();
-        });
-      }
-      public Command SetGyroAdjustmentAngle() {
-    // Inline construction of command goes here.
-    // Subsystem::RunOnce implicitly requires `this` subsystem.
-
-    return this.runOnce(
-        () -> {
-          navx.setAngleAdjustment(LimelightHelpers.getBotPoseEstimate_wpiBlue("limelight-frl").pose.getRotation().getDegrees());
-        });
-      }
+    return this.runOnce(navx::reset);
+  }      
           
       
   /**
@@ -565,14 +530,12 @@ public Command generatePath(Pose2d currentPose, Pose2d goalPose, PathConstraints
 
 public Pose2d getGoal(){
 goalPose = getPose2dEstimator().nearest(Constants.Poses.PositionsRed);
- // Goal end velocity in meters/sec
 return goalPose;
 }
 
   /**
    * This is a runnable command.
    * <li>This toggles field relative on and off.
-   * <li>If
    *
    * @author Jared Forchheimer, Dimitri Lezcano
    * @return Pose2d
@@ -581,15 +544,10 @@ return goalPose;
 
     return this.runOnce(
         () -> {
-          // System.out.println("I am Here");
-          // one-time action goes here
-          // WP - Add code here to toggle the gripper solenoid
           if (m_FieldRelativeEnable == true) {
             m_FieldRelativeEnable = false;
-            // System.out.println("I am Here 2");
           } else if (m_FieldRelativeEnable == false) {
             m_FieldRelativeEnable = true;
-            // System.out.println("I am Here 3");
           }
         });
   }
