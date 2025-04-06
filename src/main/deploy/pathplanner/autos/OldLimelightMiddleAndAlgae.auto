@@ -5,9 +5,15 @@
     "data": {
       "commands": [
         {
-          "type": "deadline",
+          "type": "parallel",
           "data": {
             "commands": [
+              {
+                "type": "named",
+                "data": {
+                  "name": "Limelight"
+                }
+              },
               {
                 "type": "sequential",
                 "data": {
@@ -32,25 +38,6 @@
                     }
                   ]
                 }
-              },
-              {
-                "type": "sequential",
-                "data": {
-                  "commands": [
-                    {
-                      "type": "path",
-                      "data": {
-                        "pathName": " Right - Top Right L-Tree "
-                      }
-                    },
-                    {
-                      "type": "named",
-                      "data": {
-                        "name": "StopDrive"
-                      }
-                    }
-                  ]
-                }
               }
             ]
           }
@@ -64,7 +51,7 @@
         {
           "type": "named",
           "data": {
-            "name": "ElevatorBottom"
+            "name": "ElevatorA3"
           }
         }
       ]

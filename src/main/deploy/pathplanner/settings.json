@@ -2,10 +2,7 @@
   "robotWidth": 0.91,
   "robotLength": 0.91,
   "holonomicMode": true,
-  "pathFolders": [
-    "New Folder",
-    "Ben's paths"
-  ],
+  "pathFolders": [],
   "autoFolders": [],
   "defaultMaxVel": 2.5,
   "defaultMaxAccel": 2.5,

@@ -3,13 +3,13 @@
   "waypoints": [
     {
       "anchor": {
-        "x": 1.348,
-        "y": 7.3
+        "x": 1.1867827868852459,
+        "y": 7.483452868852458
       },
       "prevControl": null,
       "nextControl": {
-        "x": 2.89756307690159,
-        "y": 6.614837379329908
+        "x": 2.736345863786836,
+        "y": 6.798290248182366
       },
       "isLocked": false,
       "linkedName": "CORALSRIGHT"

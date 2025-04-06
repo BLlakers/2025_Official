@@ -160,8 +160,10 @@ Command HANGBLUE = AutoBuilder.pathfindToPose(HANGBLUEPOS, SPEED_CONSTRAINTS,
    NamedCommands.registerCommand("SETPOSEfrl", ResetPoseAuto);
    NamedCommands.registerCommand("PathRESETODMLeft", AutoBuilder.resetOdom(new Pose2d(5.002, 2.806,new Rotation2d(90))));
    NamedCommands.registerCommand("PathRESETODMRight", AutoBuilder.resetOdom(new Pose2d(5.021, 5.253,new Rotation2d(180))));
+   NamedCommands.registerCommand("PathRESETODMMiddle", AutoBuilder.resetOdom(new Pose2d(5.802, 3.959,new Rotation2d(180))));
     NamedCommands.registerCommand("ElevatorL2",new ElevatorPID(mElevatorMechanism,ElevatorMechanism.L2));
-    NamedCommands.registerCommand("ElevatorA3",new ElevatorPID(mElevatorMechanism,ElevatorMechanism.AlgaeL3));
+    NamedCommands.registerCommand("ElevatorA3",algaeDownAndRunA3);
+    NamedCommands.registerCommand("ElevatorA4",algaeDownAndRunA4);
     NamedCommands.registerCommand("IntakeCoral", mCoralMechanism.CoralIntakeAutoCmd());
     NamedCommands.registerCommand("ResetOdom", m_DriveTrain.resetPose2d());
     NamedCommands.registerCommand("ElevatorL4",new ElevatorPID(mElevatorMechanism,ElevatorMechanism.L4).onlyWhile(()-> !mElevatorMechanism.ElevatorAtPos()));
@@ -218,7 +220,7 @@ Command HANGBLUE = AutoBuilder.pathfindToPose(HANGBLUEPOS, SPEED_CONSTRAINTS,
             () -> driverController.getRightTriggerAxis(),
             () -> mElevatorMechanism.getElevatorDecelerateRatio(),
             m_DriveTrain,
-            () -> driverController.getLeftTriggerAxis() >= 0.5, "Ben"));
+            () -> driverController.getLeftTriggerAxis() >= 0.5, "Asa"));
 
     
     
